@@ -8,7 +8,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,10 @@
     "passport-openidconnect": "^0.1.1",
     "setup-polly-jest": "^0.11.0",
     "ts-jest": "^29.1.1",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   }
 }

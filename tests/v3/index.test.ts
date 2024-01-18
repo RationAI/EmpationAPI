@@ -31,5 +31,4 @@ describe('base api', () => {
         console.log(api.cases);
     });
 
-
 });

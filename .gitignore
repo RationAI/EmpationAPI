@@ -21,6 +21,9 @@ coverage
 # Dependency directory
 node_modules
 
+# Tests
+tests/__recordings__
+
 # Editors
 .idea
 *.iml
