@@ -1,4 +1,12 @@
 import {EventSource} from "./events";
+import {
+    WorkbenchServiceApiV3CustomModelsExaminationsExamination
+} from "./v3/base/types/workbench-service-api-v-3-custom-models-examinations-examination";
+import {ExaminationQuery} from "./v3/base/types/examination-query";
+import {ExaminationList} from "./v3/base/types/examination-list";
+import {ScopeTokenAndScopeId} from "./v3/base/types/scope-token-and-scope-id";
+import {Case} from "./v3/base/types/case";
+import {CaseList} from "./v3/base/types/case-list";
 
 export interface EmpationAPIOptions {
     workbenchApiUrl: string;
@@ -6,9 +14,10 @@ export interface EmpationAPIOptions {
 }
 
 export interface RawOptions {
-    body?: any;
+    body?: object;
+    query?: string | string[][] | Record<string, string>;
     method?: string;
-    headers?: any;
+    headers?: object;
 }
 
 export class RawAPI {
@@ -19,24 +28,65 @@ export class RawAPI {
         this.url = url;
     }
 
-    async http(endpoint: string, options: RawOptions={}): Promise<any> {
-        const method = options.method || (options.body ? "POST" : "GET");
+    async http(endpoint: string, options: RawOptions): Promise<any> {
+        const hasBody = !!options.body;
+        const method = options.method || (hasBody ? "POST" : "GET");
         if (!endpoint.startsWith('/')) {
             endpoint = `/${endpoint}`;
         }
-        return fetch(this.url + endpoint, {
+        let queryParams = '';
+        if (options.query) {
+            queryParams = `?${new URLSearchParams(options.query)}`;
+        }
+        const initParams = {
             method: method,
             headers: options.headers,
-            body: options.body
-        });
+            body: hasBody ? JSON.stringify(options.body) : null
+        } as RequestInit;
+        const url = this.url + endpoint + queryParams;
+        const response = await fetch(url, initParams);
+        let result;
+        try {
+            result = await response.json();
+        } catch (e) {
+            throw `Raw HTTP: '${url}': failed to parse response data. Status: ${response.status} | ${response.statusText}`;
+        }
+
+        //todo consider better parsing of the reponse error
+        if (!response.ok) {
+            throw `Raw HTTP: '${url}': ${result.detail[0]?.msg}`;
+        }
+        return result;
     }
 }
 
-export abstract class BaseAPI extends EventSource {
+class AbstractAPI extends EventSource {
+    //todo try figuring out how to print the class name too
+    //https://stackoverflow.com/questions/280389/how-do-you-find-out-the-caller-function-in-javascript
+    private getCallerName() {
+        // Get stack array
+        const orig = Error.prepareStackTrace;
+        Error.prepareStackTrace = (error, stack) => stack;
+        const { stack } = new Error();
+        Error.prepareStackTrace = orig;
+
+        const caller = stack[2];
+        return caller ? caller : 'unknown context';
+    }
+
+    protected requires(name, value): void {
+        if (!value) {
+            throw `ArgumentError[${this.getCallerName()}] ${name} is missing - required property!`
+        }
+    }
+}
+
+export abstract class BaseAPI extends AbstractAPI {
 
     //todo consider implementing 'observe' method that registers and watches certain property list..
-    abstract raw: RawAPI;
+    protected abstract raw: RawAPI;
     abstract scopes: ScopesAPI;
+    abstract cases: CaseList;
 
     options: EmpationAPIOptions;
     apiUrl: string;
@@ -68,14 +118,27 @@ export abstract class BaseAPI extends EventSource {
      * @protected
      */
     abstract useUser(userId: string): Promise<void>;
+
+    abstract rawQuery(endpoint: string, options?: RawOptions): Promise<any>;
+
+    abstract crateExamination(caseId: string, appId?: string): Promise<WorkbenchServiceApiV3CustomModelsExaminationsExamination>;
+
+    abstract queryExamination(query: ExaminationQuery, skip, limit): Promise<ExaminationList>;
+
+    abstract getExamination(examinationId?: string): Promise<ExaminationList>;
+
+    abstract getScopeForExamination(examinationId: string): Promise<ScopeTokenAndScopeId>;
+
+
 }
+
 
 /**
  * Scope Binds Examination and User.
  */
-export abstract class ScopesAPI extends EventSource {
+export abstract class ScopesAPI extends AbstractAPI {
 
-    abstract raw: RawAPI;
+    protected abstract raw: RawAPI;
     protected context: BaseAPI;
 
     protected constructor(context: BaseAPI) {
@@ -90,7 +153,9 @@ export abstract class ScopesAPI extends EventSource {
      *          if undefined, the examination is managed internally
      * @protected
      */
-    abstract use(caseId: string, examinationId: string | undefined): Promise<void>;
+    abstract use(caseId: string, examinationId?: string): Promise<void>;
+
+    abstract rawQuery(endpoint: string, options?: RawOptions): Promise<any>;
 }
 
 
