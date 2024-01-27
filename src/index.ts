@@ -1,4 +1,11 @@
-export * from "./api";
+import {EventSource} from "./events";
+
 export * from "./events";
-export * from "./v3/base/base";
-export * from "./v3/scopes/scopes";
+export * from "./base";
+export * from "./utils";
+
+export * from "./root";
+export * from "./scope";
+
+//todo: export * from "./v3";
+

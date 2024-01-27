@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-      "target": "ES5",
-      "lib": ["es5", "es6", "dom"],
+      "target": "ES6",
+      "lib": ["es6", "dom"],
       "allowJs": true,
       "skipLibCheck": true,
       "esModuleInterop": true,

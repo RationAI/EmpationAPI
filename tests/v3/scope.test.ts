@@ -1,13 +1,13 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import auth, {AuthResult} from "../auth";
 import {polly} from "../polly";
-import {BaseAPI, V3Api} from "../../src";
 import {parseJwtToken} from "../../src/utils";
 import {getEnv} from "../setup";
+import {Root} from "../../src/v3/root/root";
 
 describe('scopes api', () => {
     let authData: AuthResult = null,
-        api: BaseAPI = null;
+        api: Root = null;
     const pollyCtx = polly();
 
     beforeEach(async () => {
@@ -20,18 +20,18 @@ describe('scopes api', () => {
             pollyCtx.polly.server.any().on('request', interceptor);
         }
 
-        api = new V3Api({
+        api = new Root({
             workbenchApiUrl: getEnv('TEST_WB_URL')
         });
+
         const token = parseJwtToken(authData.access_token);
-        await api.useUser(token.sub);
+        await api.from(token);
     });
 
     it('fetch default scope', async () => {
-        console.log(api.cases);
-
-        await api.scopes.use(api.cases.items[0].id);
-        console.log(api.scopes);
+        const cases = await api.cases.list();
+        await api.scopes.use(cases.items[0].id);
+        console.log(api.scopes.scopeToken)
     });
 
 });

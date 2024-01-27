@@ -5,7 +5,7 @@
 export type EventHandler = (event: object) => void;
 
 export class EventSource {
-    events: any;
+    events = {};
 
     /**
      * Add an event handler to be triggered only once (or a given number of times)
@@ -142,7 +142,7 @@ export class EventSource {
      * @param {String} eventName - Name of event to register.
      * @param {Object} eventArgs - Event-specific data.
      */
-    raiseEvent( eventName, eventArgs ) {
+    raiseEvent( eventName, eventArgs? ) {
         const handler = this.getHandler( eventName );
         if ( handler ) {
             return handler( this, eventArgs || {} );

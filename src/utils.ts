@@ -10,7 +10,6 @@ export interface JwtToken {
     azp: string;
 }
 
-
 export function parseJwtToken(token: string): JwtToken {
     return JSON.parse(atob(token.split('.')[1]));
 }

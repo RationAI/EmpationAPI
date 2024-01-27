@@ -44,5 +44,5 @@ export default async function auth() {
     }
 
     //required to be default export
-    return  await handler.default(defaults);
+    return await handler.default(defaults);
 }

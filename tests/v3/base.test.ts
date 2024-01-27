@@ -1,9 +1,10 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import auth, {AuthResult} from "../auth";
-import { polly } from "../polly";
-import {V3Api} from "../../src";
-import {parseJwtToken} from "../../src/utils";
+import {polly} from "../polly";
 import {getEnv} from "../setup";
+
+import {Root} from "../../src/v3/root/root";
+import {parseJwtToken} from "../../src";
 
 describe('base api', () => {
     let authData: AuthResult = null;
@@ -21,14 +22,12 @@ describe('base api', () => {
     });
 
     it('setUser', async () => {
-        const api = new V3Api({
+        const api = new Root({
             workbenchApiUrl: getEnv('TEST_WB_URL')
         });
 
         const token = parseJwtToken(authData.access_token);
+        await api.from(token);
 
-        await api.useUser(token.sub);
-        console.log(api.cases);
     });
-
 });
