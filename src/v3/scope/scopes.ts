@@ -5,6 +5,7 @@ import {
     WorkbenchServiceApiV3CustomModelsExaminationsExamination
 } from "../root/types/workbench-service-api-v-3-custom-models-examinations-examination";
 import {Root} from "../root/root";
+import {parseJwtToken, ScopeToken} from "../../utils";
 
 
 export class Scopes extends ScopesAPI {
@@ -16,7 +17,9 @@ export class Scopes extends ScopesAPI {
 
     // Additional
     scopeContext: ScopeTokenAndScopeId;
-    private defaultExaminationId: string;
+    private _defaultExaminationId: string;
+    private _activeExaminationId: string;
+    private _tokenRefetchInterval: NodeJS.Timeout;
 
     constructor(context: Root) {
         super();
@@ -46,14 +49,14 @@ export class Scopes extends ScopesAPI {
         let examination;
         if (appId) {
             examination = await findExamination(appId);
-        } else if (this.defaultExaminationId) {
-            examination = await this.context.examinations.get(this.defaultExaminationId);
+        } else if (this._defaultExaminationId) {
+            examination = await this.context.examinations.get(this._defaultExaminationId);
         }
 
         if (!examination) {
             let app = await this.context.apps.default();
             examination = await findExamination(app.app_id);
-            this.defaultExaminationId = examination.id;
+            this._defaultExaminationId = examination.id;
         }
 
         await this.from(examination);
@@ -64,23 +67,47 @@ export class Scopes extends ScopesAPI {
     }
 
     async from(examination: WorkbenchServiceApiV3CustomModelsExaminationsExamination) {
+        this.reset();
         this.scopeContext = await this.context.examinations.scope(examination.id);
+        this._activeExaminationId = examination.id;
+        const token = parseJwtToken(this.scopeContext.access_token) as ScopeToken;
+        //timeout with 20 seconds slack OR 280 secs
+        const timeout = token.exp*1e3 - Date.now() - 20e3 || 280e3;
+        this._tokenRefetchInterval = setInterval(async () => {
+            this.scopeContext = await this.context.examinations.scope(examination.id);
+        }, timeout);
         this.raiseEvent('context');
     }
 
     reset(): void {
-        //todo clear all cached data
-        this.raiseEvent('reset');
+        this._activeExaminationId = null;
+        this.scopeContext = null;
+        if (this._tokenRefetchInterval) {
+            clearInterval(this._tokenRefetchInterval);
+            this._tokenRefetchInterval = null;
+            //todo clear all cached data
+            this.raiseEvent('reset');
+        }
     }
 
-    rawQuery(endpoint: string, options?: RawOptions): Promise<any> {
+    async rawQuery(endpoint: string, options?: RawOptions): Promise<any> {
         this.requires('this.scopeContext', this.scopeContext);
         options = options || {};
         options.headers = options.headers || {};
-        options.headers["Authorization"] = this.scopeContext.access_token;
-        if (!endpoint.startsWith('/')) {
+        options.headers["Authorization"] = `Bearer ${this.scopeContext.access_token}`;
+        if (endpoint && !endpoint.startsWith('/')) {
             endpoint = `/${endpoint}`;
         }
-        return this.raw.http(`/${this.scopeContext.scope_id}${endpoint}`, options);
+
+        try {
+            return await this.raw.http(`/${this.scopeContext.scope_id}${endpoint}`, options);
+        } catch (e) {
+            if (e.statusCode === 401) {
+                this.scopeContext = await this.context.examinations.scope(this._activeExaminationId);
+                return await this.raw.http(`/${this.scopeContext.scope_id}${endpoint}`, options);
+            }
+
+            throw e;
+        }
     }
 }

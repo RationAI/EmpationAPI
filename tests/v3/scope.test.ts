@@ -1,7 +1,7 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import auth, {AuthResult} from "../auth";
 import {polly} from "../polly";
-import {parseJwtToken} from "../../src/utils";
+import {JwtToken, parseJwtToken, ScopeToken, sleep} from "../../src/utils";
 import {getEnv} from "../setup";
 import {Root} from "../../src/v3/root/root";
 
@@ -24,7 +24,7 @@ describe('scopes api', () => {
             workbenchApiUrl: getEnv('TEST_WB_URL')
         });
 
-        const token = parseJwtToken(authData.access_token);
+        const token = parseJwtToken(authData.access_token) as JwtToken;
         await api.from(token);
     });
 
@@ -32,6 +32,18 @@ describe('scopes api', () => {
         const cases = await api.cases.list();
         await api.scopes.use(cases.items[0].id);
         console.log(api.scopes.scopeToken)
+
+        const token = parseJwtToken(api.scopes.scopeToken) as ScopeToken;
+        const expires = token.exp*1000 - Date.now();
+
+        console.log("Waiting token exp", expires/1000)
+
+        //await expire token should also not fail ... :)
+        //await sleep(expires+100);
+
+        const scope = await api.scopes.rawQuery("");
+        console.log(scope);
+
     });
 
 });

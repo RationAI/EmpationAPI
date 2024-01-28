@@ -1,15 +1,26 @@
 
-export interface JwtToken {
-    exp: number;
+export interface JwtTokenBase {
+    sub: string,
+    exp: number,
+}
+
+export interface JwtToken extends JwtTokenBase {
     iat: number;
     jti: string;
     iss: string;
-    sub: string;
     aud: string;
     typ: string;
     azp: string;
 }
 
-export function parseJwtToken(token: string): JwtToken {
+export interface ScopeToken extends JwtTokenBase {
+    token_id: number
+}
+
+export function parseJwtToken(token: string): JwtTokenBase {
     return JSON.parse(atob(token.split('.')[1]));
+}
+
+export function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -4,7 +4,7 @@ import {polly} from "../polly";
 import {getEnv} from "../setup";
 
 import {Root} from "../../src/v3/root/root";
-import {parseJwtToken} from "../../src";
+import {JwtToken, parseJwtToken, sleep} from "../../src";
 
 describe('base api', () => {
     let authData: AuthResult = null;
@@ -26,8 +26,7 @@ describe('base api', () => {
             workbenchApiUrl: getEnv('TEST_WB_URL')
         });
 
-        const token = parseJwtToken(authData.access_token);
+        const token = parseJwtToken(authData.access_token) as JwtToken;
         await api.from(token);
-
     });
 });

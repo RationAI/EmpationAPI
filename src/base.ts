@@ -1,5 +1,6 @@
 import {EventSource} from "./events";
 import retryTimes = jest.retryTimes;
+import { STATUS_CODES } from 'http';
 
 export interface EmpationAPIOptions {
     workbenchApiUrl: string;
@@ -11,6 +12,30 @@ export interface RawOptions {
     query?: any;
     method?: string;
     headers?: object;
+}
+
+//https://gist.github.com/TooTallNate/4fd641f820e1325695487dfd883e5285
+function httpErrorToName(code): string {
+    const suffix = (code / 100 | 0) === 4 || (code / 100 | 0) === 5 ? 'error' : '';
+    let name = ` ${String(STATUS_CODES[code]).replace(/error$/i, '')} ${suffix}`;
+    return name.split(" ").reduce((acc, c) => acc
+        + (c ? (c.charAt(0).toUpperCase() + c.slice(1)) : ""));
+}
+
+export class HTTPError extends Error {
+
+    statusCode: number;
+    [key: string]: any
+
+    public constructor(code: number, message: string, extras?: Record<string, any>) {
+        super(message || STATUS_CODES[code]);
+        if (arguments.length >= 3 && extras) {
+            // noinspection TypeScriptValidateTypes
+            Object.assign(this, extras);
+        }
+        this.name = httpErrorToName(code);
+        this.statusCode = code;
+    }
 }
 
 export class RawAPI {
@@ -56,13 +81,16 @@ export class RawAPI {
         try {
             result = await response.json();
         } catch (e) {
-            throw `Raw HTTP: '${url}': failed to parse response data. Status: ${response.status} | ${response.statusText}`;
+            throw new HTTPError(500,
+                `Failed to parse response data. Original status: ${response.status} | ${response.statusText}`,
+                {
+                    url: url,
+                    error: e
+                });
         }
 
-        //todo consider better parsing of the reponse error
         if (!response.ok) {
-            const data = result.detail || result;
-            throw `Raw HTTP: '${url}': ${typeof data === "object" ? JSON.stringify(data) : data}`;
+            throw new HTTPError(response.status, response.statusText, result);
         }
         return result;
     }

@@ -5,5 +5,6 @@ module.exports = {
   setupFiles: ["<rootDir>/tests/setup.ts"],
   testEnvironment: 'node',
   testRegex: '/tests/.*\\.(test|spec)?\\.(ts|tsx)$',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  testTimeout: 200000
 };
