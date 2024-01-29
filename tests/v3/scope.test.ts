@@ -6,6 +6,7 @@ import Root from "../../src/v3/root/root";
 import {getToken, setupIntercept} from "./setup";
 import { getScope } from "./setup";
 
+
 describe('scopes api', () => {
     const pollyCtx = polly();
     beforeEach(() => setupIntercept(pollyCtx));

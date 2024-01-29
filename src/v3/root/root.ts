@@ -25,7 +25,7 @@ export default class Root extends RootAPI {
     constructor(options: EmpationAPIOptions) {
         super(options);
         this.version = "v3";
-        this.raw = new RawAPI(this.apiUrl + Root.apiPath);
+        this.raw = new RawAPI(this.apiUrl + Root.apiPath, this.raiseConnectionError.bind(this));
         this.scopes = new Scopes(this);
 
         this.apps = new Apps(this);

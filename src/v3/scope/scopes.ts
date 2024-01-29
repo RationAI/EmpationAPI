@@ -26,7 +26,7 @@ export default class Scopes extends ScopesAPI {
     constructor(context: Root) {
         super();
         this.context = context;
-        this.raw = new RawAPI(this.context.apiUrl + Scopes.apiPath);
+        this.raw = new RawAPI(this.context.apiUrl + Scopes.apiPath, this.context.raiseConnectionError.bind(this));
         this.storage = new Storage(this);
     }
 

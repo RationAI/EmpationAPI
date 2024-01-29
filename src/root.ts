@@ -1,4 +1,4 @@
-import {AbstractAPI, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
+import {AbstractAPI, ConnectionErrorEventArgs, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
 import {ScopesAPI} from "./scope";
 import {JwtToken} from "./utils";
 
@@ -40,6 +40,14 @@ export abstract class RootAPI extends AbstractAPI {
             this.apiUrl = this.apiUrl.slice(0, -1);
         }
         this.cached = {};
+    }
+
+    /**
+     * @event 'connection-error'
+     * @param args
+     */
+    raiseConnectionError(args: ConnectionErrorEventArgs): void {
+        this.raiseEvent('connection-error', args);
     }
 
     /**
