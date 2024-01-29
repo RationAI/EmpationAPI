@@ -21,13 +21,13 @@ export function polly() {
 //         recordIfMissing = false;
 //         break;
 // }
+
     return setupPolly({
         //fetch is implemented by node-http for npm prior v18
         adapters: [NodeHttpAdapter, FetchAdapter],
         mode,
         recordIfMissing,
         flushRequestsOnStop: true,
-        logging: false,
         recordFailedRequests: true,
         persister: FSPersister,
         persisterOptions: {
@@ -35,5 +35,6 @@ export function polly() {
                 recordingsDir: path.resolve(__dirname, "__recordings__"),
             },
         },
+        logLevel: "silent"
     });
 }

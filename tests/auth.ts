@@ -1,4 +1,4 @@
-import {getEnv} from "./setup";
+import {getEnv} from "./env";
 
 export interface AuthOptions {
     authModule: string;
