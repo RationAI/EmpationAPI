@@ -1,8 +1,8 @@
 import {RootAPI, RootContext} from "../../root";
-import {Root} from "./root";
+import Root from "./root";
 import {CaseList} from "./types/case-list";
 
-export class Cases extends RootContext {
+export default class Cases extends RootContext {
     protected context: RootAPI;
     protected data: CaseList;
 

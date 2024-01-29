@@ -1,5 +1,5 @@
 import {RootContext} from "../../root";
-import {Root} from "./root";
+import Root from "./root";
 import {
     WorkbenchServiceApiV3CustomModelsExaminationsExamination
 } from "./types/workbench-service-api-v-3-custom-models-examinations-examination";
@@ -7,7 +7,7 @@ import {ExaminationQuery} from "./types/examination-query";
 import {ExaminationList} from "./types/examination-list";
 import {ScopeTokenAndScopeId} from "./types/scope-token-and-scope-id";
 
-export class Examinations extends RootContext {
+export default class Examinations extends RootContext {
     protected context: Root;
     protected data: ExaminationList;
 
