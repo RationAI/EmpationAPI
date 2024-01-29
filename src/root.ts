@@ -1,4 +1,4 @@
-import {AbstractAPI, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
+import {AbstractAPI, ConnectionErrorEventArgs, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
 import {ScopesAPI} from "./scope";
 import {JwtToken} from "./utils";
 
