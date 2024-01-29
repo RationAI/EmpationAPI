@@ -1,13 +1,13 @@
 import {EmpationAPIOptions, RawAPI, RawOptions} from "../../base";
 import {ScopesAPI} from "../../scope";
 import {RootAPI} from "../../root";
-import {Scopes} from "../scope/scopes";
-import {Apps} from "./apps";
-import {Cases} from "./cases";
-import {Examinations} from "./examinations";
+import Scopes from "../scope/scopes";
+import Apps from "./apps";
+import Cases from "./cases";
+import Examinations from "./examinations";
 import {JwtToken} from "../../utils";
 
-export class Root extends RootAPI {
+export default class Root extends RootAPI {
     static apiPath = '/v3';
 
     //interface

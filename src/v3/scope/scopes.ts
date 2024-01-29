@@ -4,12 +4,12 @@ import {ScopeTokenAndScopeId} from "../root/types/scope-token-and-scope-id";
 import {
     WorkbenchServiceApiV3CustomModelsExaminationsExamination
 } from "../root/types/workbench-service-api-v-3-custom-models-examinations-examination";
-import {Root} from "../root/root";
+import Root from "../root/root";
 import { Storage } from "./storage";
 import {parseJwtToken, ScopeToken} from "../../utils";
 
 
-export class Scopes extends ScopesAPI {
+export default class Scopes extends ScopesAPI {
     static apiPath = '/v3/scopes';
 
     // Interface

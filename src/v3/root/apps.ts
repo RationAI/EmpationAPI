@@ -1,10 +1,10 @@
 import {RootAPI, RootContext} from "../../root";
-import {Root} from "./root";
+import Root from "./root";
 import {AppList} from "./types/app-list";
 import {AppQuery} from "./types/app-query";
 import {AppOutput} from "./types/app-output";
 
-export class Apps extends RootContext {
+export default class Apps extends RootContext {
     protected context: RootAPI;
     protected data: AppList;
     private _defaultApp: AppOutput;
