@@ -5,6 +5,7 @@ import {
     WorkbenchServiceApiV3CustomModelsExaminationsExamination
 } from "../root/types/workbench-service-api-v-3-custom-models-examinations-examination";
 import Root from "../root/root";
+import Storage from "./storage";
 import {parseJwtToken, ScopeToken} from "../../utils";
 
 
@@ -14,6 +15,7 @@ export default class Scopes extends ScopesAPI {
     // Interface
     raw: RawAPI;
     context: Root;
+    storage: Storage;
 
     // Additional
     scopeContext: ScopeTokenAndScopeId;
@@ -25,6 +27,7 @@ export default class Scopes extends ScopesAPI {
         super();
         this.context = context;
         this.raw = new RawAPI(this.context.apiUrl + Scopes.apiPath);
+        this.storage = new Storage(this);
     }
 
     async use(caseId: string, appId: string = undefined): Promise<void> {

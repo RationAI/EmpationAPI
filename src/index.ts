@@ -7,5 +7,5 @@ export * from "./utils";
 export * from "./root";
 export * from "./scope";
 
-//todo: export * from "./v3";
+export * as V3 from "./v3";
 
