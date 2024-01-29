@@ -25,7 +25,11 @@ export default class Root extends RootAPI {
     constructor(options: EmpationAPIOptions) {
         super(options);
         this.version = "v3";
-        this.raw = new RawAPI(this.apiUrl + Root.apiPath, this.raiseConnectionError.bind(this));
+        this.raw = new RawAPI(this.apiUrl + Root.apiPath, {
+            errorHandler: this.raiseConnectionError.bind(this),
+            maxRetryCount: this.options.maxRetryCount,
+            nextRetryInMs: this.options.nextRetryInMs
+        });
         this.scopes = new Scopes(this);
 
         this.apps = new Apps(this);
@@ -38,8 +42,9 @@ export default class Root extends RootAPI {
     }
 
     async use(userId: string): Promise<void> {
+        if (this._userId === userId) return;
         this._userId = userId;
-        this.raiseEvent('context');
+        this.raiseEvent('init');
     }
 
     async rawQuery(endpoint: string, options: RawOptions={}): Promise<any> {

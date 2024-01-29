@@ -43,14 +43,6 @@ export abstract class RootAPI extends AbstractAPI {
     }
 
     /**
-     * @event 'connection-error'
-     * @param args
-     */
-    raiseConnectionError(args: ConnectionErrorEventArgs): void {
-        this.raiseEvent('connection-error', args);
-    }
-
-    /**
      * Change the User actor for the API. Note: the api will
      * reset it's whole state.
      * @param userId

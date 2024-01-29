@@ -1,11 +1,12 @@
 import {EventSource} from "./events";
 import { STATUS_CODES } from 'http';
-import * as assert from "assert";
 import {Logger} from "./utils";
 
 export interface EmpationAPIOptions {
     workbenchApiUrl: string;
     apiRootPath?: string;
+    maxRetryCount?: number;
+    nextRetryInMs?: number | Array<number>;
 }
 
 export interface RawOptions {
@@ -52,20 +53,26 @@ export interface ConnectionErrorEventArgs {
 
 export type ConnectionErrorEvent = (args: ConnectionErrorEventArgs) => void | Promise<void>;
 
+export interface RawApiOptions {
+    errorHandler: ConnectionErrorEvent;
+    maxRetryCount?: number;
+    nextRetryInMs?: number | Array<number>;
+}
+
 export class RawAPI {
     public url: string;
     private _queue: Array<HttpQueueItem> = [];
     private _handler: ConnectionErrorEvent;
     private _retryRoutine: NodeJS.Timeout;
-    private _running: boolean = true;
 
-    //todo params
-    public maxRetryCount: 5;
-    public timeout: number | Array<number> = [5000, 10000, 20000, 30000];
+    private _maxRetryCount;
+    private _timeout: number | Array<number>;
 
-    constructor(url: string, errorHandler: ConnectionErrorEvent) {
+    constructor(url: string, options: RawApiOptions) {
         this.url = url;
-        this._handler = errorHandler;
+        this._handler = options.errorHandler;
+        this._maxRetryCount = typeof options.maxRetryCount === "undefined" ? 4 : options.maxRetryCount;
+        this._timeout = options.nextRetryInMs || [5000, 10000, 20000, 30000];
     }
 
     private _parseQueryParams(params) {
@@ -76,7 +83,7 @@ export class RawAPI {
             if (params.constructor === Object || params.constructor === undefined) {
                 for (let k in params) {
                     const v = params[k];
-                    if (v === null || v === undefined || v == "") delete params[k];
+                    if (v === null || v === undefined) delete params[k];
                 }
 
             }
@@ -86,30 +93,28 @@ export class RawAPI {
     }
 
     private _setRetryIn(retryCount, retryTimeout) {
-        if (retryCount >= this.maxRetryCount) {
+        if (retryCount >= this._maxRetryCount) {
             Logger.error("Automated retry failed: maxRetryCount exceeded!");
         } else {
             this._retryRoutine = setTimeout(this._replay.bind(this, retryCount), retryTimeout);
         }
-        this._running = false;
         this._handler({
             queue: this._queue,
             retryCount: retryCount,
-            maxRetryCount: this.maxRetryCount,
+            maxRetryCount: this._maxRetryCount,
             nextRetryInMs: retryTimeout
         });
     }
 
     private _recordFailed(url: string, options: RawOptions, retryCount, retryTimeout) {
-        if (this._running) {
+        if (this._queue.length < 1) {
             this._setRetryIn(retryCount, retryTimeout);
         }
         this._queue.push({url, ...options});
     }
 
     private async _replay(retryCount=0) {
-        if (!this._queue) {
-            this._running = true;
+        if (this._queue.length < 1) {
             return;
         }
         if (this._retryRoutine) {
@@ -124,8 +129,8 @@ export class RawAPI {
             retryCount++;
             // index 0 == 1st replay attempt
             Logger.warn("Replay attempt ", retryCount, " failed: ", e);
-            const retryTimeout = Array.isArray(this.timeout) ?
-                this.timeout[Math.min(this.timeout.length-1, retryCount)] : this.timeout;
+            const retryTimeout = Array.isArray(this._timeout) ?
+                this._timeout[Math.min(this._timeout.length-1, retryCount)] : this._timeout;
             this._setRetryIn(retryCount, retryTimeout);
             throw e;
         }
@@ -152,6 +157,7 @@ export class RawAPI {
         }
 
         if (!response.ok) {
+            console.log("NOK", response)
             throw new HTTPError(response.status, response.statusText, result);
         }
         return result;
@@ -172,16 +178,14 @@ export class RawAPI {
 
         let err = null;
         try {
-            if (this._running) {
-                return await this._fetch(this.url + endpoint + options.query, options);
-            }
+            return await this._fetch(this.url + endpoint + options.query, options);
         } catch (e) {
             err = e;
         }
 
-        if (Array.isArray(this.timeout) && this.timeout.length < 1) this.timeout = [5000];
-        else if (!this.timeout) this.timeout = 5000;
-        const timeout = Array.isArray(this.timeout) ? this.timeout[0] : this.timeout;
+        if (Array.isArray(this._timeout) && this._timeout.length < 1) this._timeout = [5000];
+        else if (!this._timeout) this._timeout = 5000;
+        const timeout = Array.isArray(this._timeout) ? this._timeout[0] : this._timeout;
         this._recordFailed(this.url + endpoint + options.query, options, 0, timeout);
 
         if (err) throw err;
@@ -207,5 +211,13 @@ export class AbstractAPI extends EventSource {
         if (!value) {
             throw `ArgumentError[${this.getCallerName()}] ${name} is missing - required property!`
         }
+    }
+
+    /**
+     * @event 'connection-error'
+     * @param args
+     */
+    raiseConnectionError(args: ConnectionErrorEventArgs): void {
+        this.raiseEvent('connection-error', args);
     }
 }

@@ -26,7 +26,11 @@ export default class Scopes extends ScopesAPI {
     constructor(context: Root) {
         super();
         this.context = context;
-        this.raw = new RawAPI(this.context.apiUrl + Scopes.apiPath, this.context.raiseConnectionError.bind(this));
+        this.raw = new RawAPI(this.context.apiUrl + Scopes.apiPath, {
+            errorHandler: this.raiseConnectionError.bind(this),
+            maxRetryCount: this.context.options.maxRetryCount,
+            nextRetryInMs: this.context.options.nextRetryInMs
+        });
         this.storage = new Storage(this);
     }
 
@@ -79,7 +83,7 @@ export default class Scopes extends ScopesAPI {
         this._tokenRefetchInterval = setInterval(async () => {
             this.scopeContext = await this.context.examinations.scope(examination.id);
         }, timeout);
-        this.raiseEvent('context');
+        this.raiseEvent('init');
     }
 
     reset(): void {
