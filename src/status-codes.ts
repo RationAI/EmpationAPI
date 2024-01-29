@@ -1,4 +1,4 @@
-// Generated file. Do not edit
+// Source: https://github.com/prettymuchbryce/http-status-codes/blob/master/src/status-codes.ts
 export const STATUS_CODES = {
     100: 'Continue',
     101: 'Switching protocols',
