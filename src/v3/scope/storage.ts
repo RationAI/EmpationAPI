@@ -1,8 +1,8 @@
 import { ScopeContext } from "../../scope";
-import { Scopes } from "./scopes";
+import Scopes from "./scopes";
 import { AppUiStorage } from "./types/app-ui-storage";
 
-export class Storage extends ScopeContext {
+export default class Storage extends ScopeContext {
     protected context: Scopes;
     protected data: AppUiStorage;
 

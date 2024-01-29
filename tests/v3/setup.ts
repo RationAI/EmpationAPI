@@ -1,14 +1,12 @@
 import auth, {AuthResult} from "../auth";
-import {JwtToken, parseJwtToken} from "../../src";
-import { Root } from "../../src/v3/root/root";
+import {JwtToken, V3, parseJwtToken} from "../../src";
 import { getEnv } from "../env";
-import { Scopes } from "../../src/v3/scope/scopes";
 
-let rootApi: Root;
+let rootApi: V3.Root;
 
-export async function getRoot(): Promise<Root> {
+export async function getRoot(): Promise<V3.Root> {
     if (!rootApi) {
-        rootApi = new Root({
+        rootApi = new V3.Root({
             workbenchApiUrl: getEnv('TEST_WB_URL')!
         })
 
@@ -18,7 +16,7 @@ export async function getRoot(): Promise<Root> {
     return rootApi;
 }
 
-export async function getScope(): Promise<Scopes> {
+export async function getScope(): Promise<V3.Scopes> {
     const root = await getRoot();
 
     const cases = await root.cases.list();
