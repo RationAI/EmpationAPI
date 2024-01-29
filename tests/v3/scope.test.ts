@@ -1,14 +1,12 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import {polly} from "../polly";
-import {parseJwtToken, ScopeToken, sleep} from "../../src";
-import {getEnv} from "../env";
-import Root from "../../src/v3/root/root";
-import {getToken, setupIntercept} from "./setup";
+
+import {setupIntercept} from "./setup";
 import { getScope } from "./setup";
 
 describe('scopes api', () => {
     const pollyCtx = polly();
-    beforeEach(() => setupIntercept(pollyCtx));
+    beforeEach(() => setupIntercept(pollyCtx))
 
     it('fetch default scope', async () => {
 
@@ -38,11 +36,40 @@ describe('scopes api', () => {
           })
         expect(obj).toEqual({a: "dsadasd", b: [1,1,1]})
 
-        // await scope.storage.erase()
+        await scope.storage.erase()
 
-        // appStorage = await scope.storage.getRaw()
-        // expect(appStorage).toEqual({
-        //    content: {}
-        //})
+        appStorage = await scope.storage.getRaw()
+        expect(appStorage).toEqual({
+            content: {}
+        })
+    })
+
+    it('primitives', async () => {
+        const scope = await getScope()
+        const primitive = await scope.rawQuery('/primitives', {
+            method: "POST",
+            body: { 
+                name: "Some name",
+                creator_id: scope.scopeContext.scope_id,
+                creator_type: 'scope',
+                type: 'integer',
+                value: 42,
+            }   
+        })
+
+        const result = await scope.rawQuery(`/primitives/${primitive.id}`)
+
+        expect(result).toEqual({
+            id: primitive.id,
+            name: 'Some name',
+            type: 'integer',
+            value: 42,
+            is_locked: false,
+            creator_id: scope.scopeContext.scope_id,
+            description: null,
+            creator_type: 'scope',
+            reference_id: null,
+            reference_type: null
+          })
     })
 });

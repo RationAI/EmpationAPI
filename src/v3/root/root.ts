@@ -6,6 +6,7 @@ import Apps from "./apps";
 import Cases from "./cases";
 import Examinations from "./examinations";
 import {JwtToken} from "../../utils";
+import Slides from "./slides";
 
 export default class Root extends RootAPI {
     static apiPath = '/v3';
@@ -19,6 +20,7 @@ export default class Root extends RootAPI {
     apps: Apps;
     cases: Cases;
     examinations: Examinations;
+    slides: Slides;
 
     protected _userId: string;
 
