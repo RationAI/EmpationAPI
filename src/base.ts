@@ -1,5 +1,5 @@
 import {EventSource} from "./events";
-import { STATUS_CODES } from 'http';
+import { STATUS_CODES } from './status-codes';
 import {Logger} from "./utils";
 
 export interface EmpationAPIOptions {
@@ -19,7 +19,7 @@ export interface RawOptions {
 //https://gist.github.com/TooTallNate/4fd641f820e1325695487dfd883e5285
 function httpErrorToName(code): string {
     const suffix = (code / 100 | 0) === 4 || (code / 100 | 0) === 5 ? 'error' : '';
-    let name = ` ${String(STATUS_CODES[code]).replace(/error$/i, '')} ${suffix}`;
+    let name = ` ${String(STATUS_CODES[code] || `HTTP Code ${code}`).replace(/error$/i, '')} ${suffix}`;
     return name.split(" ").reduce((acc, c) => acc
         + (c ? (c.charAt(0).toUpperCase() + c.slice(1)) : ""));
 }
@@ -30,7 +30,7 @@ export class HTTPError extends Error {
     [key: string]: any
 
     public constructor(code: number, message: string, extras?: Record<string, any>) {
-        super(message || STATUS_CODES[code]);
+        super(message || STATUS_CODES[code] || `HTTP Code ${code}`);
         if (arguments.length >= 3 && extras) {
             // noinspection TypeScriptValidateTypes
             Object.assign(this, extras);
