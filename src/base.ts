@@ -148,7 +148,6 @@ export class RawAPI {
         try {
             result = await response.json();
         } catch (e) {
-            console.log(response.body)
             throw new HTTPError(500,
                 `Failed to parse response data. Original status: ${response.status} | ${response.statusText}`,
                 {
