@@ -10,7 +10,8 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --mode production",
-    "generate-v3-test-types": "npx ts-interface-builder ./src/v3/root/types/* ./src/v3/scope/types/*"
+    "ttypes-v3": "npx ts-interface-builder ./src/v3/root/types/* ./src/v3/scope/types/*",
+    "ttclean-v3": "bash rm ./src/v3/root/types/*-ti.ts ./src/v3/scope/types/*-ti.ts"
   },
   "keywords": [],
   "author": "",

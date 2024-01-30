@@ -49,7 +49,6 @@ describe('base api', () => {
         const api = await getRoot()
 
         const slides = await api.cases.slides('77945443-8124-4449-acb6-24ef77b331bd')
-        console.log(slides)
 
         const {SlideList, Slide} = getV3TypeChecker()
 
@@ -68,5 +67,4 @@ describe('base api', () => {
 
         SlideInfo.check(info)
     });
-
 });

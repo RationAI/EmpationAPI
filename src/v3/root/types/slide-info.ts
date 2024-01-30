@@ -22,9 +22,10 @@ export interface SlideInfo {
   extent: SlideExtent;
 
   /**
-   * Slide format identifier
+   * Slide format identifier 
+   * OVERRIDE - adjust type, format can be null
    */
-  format: string;
+  format: (string | null);
 
   /**
    * Slide ID
