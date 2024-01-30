@@ -12,4 +12,24 @@ export default class Slides extends RootContext {
         super();
         this.context = context;
     }
+
+    async slideInfo(slideId: string): Promise<Case> {
+        return await this.context.rawQuery(`/slides/${slideId}/info`)
+    }
+
+    async slideThumbnail(slideId: string, maxWidth: number, maxHeight: number, format: string | undefined ): Promise<Case> {
+        return await this.context.rawQuery(`/slides/${slideId}/thumbnail/max_size/${maxWidth}/${maxHeight}`, {
+            query: {
+                image_format: format
+            }
+        })
+    }
+
+    async slideLabel(slideId: string, maxWidth: number, maxHeight: number, format: string | undefined ): Promise<Case> {
+        return await this.context.rawQuery(`/slides/${slideId}/label/max_size/${maxWidth}/${maxHeight}`, {
+            query: {
+                image_format: format
+            }
+        })
+    }
 }

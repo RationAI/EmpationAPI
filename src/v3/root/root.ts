@@ -33,6 +33,7 @@ export default class Root extends RootAPI {
         this.apps = new Apps(this);
         this.cases = new Cases(this);
         this.examinations = new Examinations(this);
+        this.slides = new Slides(this)
     }
 
     get userId(): string {

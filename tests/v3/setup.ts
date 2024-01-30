@@ -26,9 +26,9 @@ export async function getScope(): Promise<V3.Scopes> {
     return root.scopes;
 }
 
-let token = undefined,
-    expires: number = null,
-    authData: AuthResult = null;
+let token: JwtToken,
+    expires: number,
+    authData: AuthResult;
 
 async function doAuth() {
     authData = await auth();
