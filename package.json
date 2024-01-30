@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "generate-v3-test-types": "npx ts-interface-builder ./src/v3/root/types/* ./src/v3/scope/types/*"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,8 @@
     "passport": "^0.7.0",
     "passport-openidconnect": "^0.1.1",
     "setup-polly-jest": "^0.11.0",
+    "ts-interface-builder": "^0.3.3",
+    "ts-interface-checker": "^1.0.2",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",

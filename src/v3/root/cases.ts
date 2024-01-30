@@ -2,7 +2,7 @@ import {RootAPI, RootContext} from "../../root";
 import Root from "./root";
 import { Case } from "./types/case";
 import {CaseList} from "./types/case-list";
-import { Slide } from "./types/slide";
+import { SlideList } from "./types/slide-list";
 
 export default class Cases extends RootContext {
     protected context: RootAPI;
@@ -21,7 +21,7 @@ export default class Cases extends RootContext {
         return await this.context.rawQuery(`/cases/${caseId}`)
     }
 
-    async slides(caseId: string): Promise<Slide[]> {
+    async slides(caseId: string): Promise<SlideList> {
         return await this.context.rawQuery(`/cases/${caseId}/slides`)
     }
 }

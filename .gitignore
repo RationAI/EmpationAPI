@@ -37,3 +37,6 @@ dist/**/*
 
 # ignore yarn.lock
 yarn.lock
+
+# ignore ts-interface-builder generated types for tests
+src/**/types/*-ti.ts
