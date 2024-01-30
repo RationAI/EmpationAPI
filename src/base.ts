@@ -9,11 +9,14 @@ export interface EmpationAPIOptions {
     nextRetryInMs?: number | Array<number>;
 }
 
+type ResponseType = "json" | "blob" | "text";
+
 export interface RawOptions {
     body?: object | string;
     query?: any;
     method?: string;
     headers?: object;
+    responseType?: ResponseType;
 }
 
 //https://gist.github.com/TooTallNate/4fd641f820e1325695487dfd883e5285
@@ -146,7 +149,7 @@ export class RawAPI {
 
         let result;
         try {
-            result = await response.json();
+            result = await response[options.responseType]();
         } catch (e) {
             throw new HTTPError(500,
                 `Failed to parse response data. Original status: ${response.status} | ${response.statusText}`,
@@ -172,6 +175,7 @@ export class RawAPI {
         options.query = this._parseQueryParams(options.query);
         options.headers = options.headers || {};
         options.headers['Content-Type'] = "application/json";
+        options.responseType = options.responseType || "json";
         if (options.body && typeof options.body !== "string") {
             options.body = JSON.stringify(options.body);
         } else options.body = null;
