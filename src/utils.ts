@@ -24,3 +24,18 @@ export function parseJwtToken(token: string): JwtTokenBase {
 export function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export class Logger {
+    static error(...args):void {
+        console.error("E:EmpationAPI", ...args);
+    }
+    static warn(...args):void {
+        console.warn("W:EmpationAPI", ...args);
+    }
+    static info(...args):void {
+        console.info("I:EmpationAPI", ...args);
+    }
+    static debug(...args):void {
+        console.debug("D:EmpationAPI", ...args);
+    }
+}

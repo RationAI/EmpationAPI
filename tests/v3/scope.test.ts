@@ -4,6 +4,7 @@ import {polly} from "../polly";
 import {setupIntercept} from "./setup";
 import { getScope } from "./setup";
 
+
 describe('scopes api', () => {
     const pollyCtx = polly();
     beforeEach(() => setupIntercept(pollyCtx))
