@@ -9,7 +9,9 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "ttypes-v3": "npx ts-interface-builder ./src/v3/root/types/* ./src/v3/scope/types/*",
+    "ttclean-v3": "rimraf --glob ./src/v3/root/types/*-ti.ts ./src/v3/scope/types/*-ti.ts"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +29,10 @@
     "oidc-client-ts": "^2.4.0",
     "passport": "^0.7.0",
     "passport-openidconnect": "^0.1.1",
+    "rimraf": "^5.0.5",
     "setup-polly-jest": "^0.11.0",
+    "ts-interface-builder": "^0.3.3",
+    "ts-interface-checker": "^1.0.2",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
