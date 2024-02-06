@@ -1,20 +1,20 @@
 import auth, {AuthResult} from "./auth";
 import {JwtToken, parseJwtToken} from "../src";
 
-let token = undefined,
-    expires: number = null,
-    authData: AuthResult = null;
+let token: string,
+    expires: number,
+    authData: AuthResult;
 
 async function doAuth() {
     authData = await auth();
     console.log("AUTH ATTEMPT");
     if (authData.access_token) {
-        token = parseJwtToken(authData.access_token) as JwtToken;
-        expires = token.exp * 1000;
+        token = authData.access_token;
+        expires = parseJwtToken(token).exp * 1000;
     }
 }
 
-export function getToken(): JwtToken {
+export function getToken(): string {
     return token;
 }
 

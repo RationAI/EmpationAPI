@@ -1,6 +1,5 @@
 import {AbstractAPI, ConnectionErrorEventArgs, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
 import {ScopesAPI} from "./scope";
-import {JwtToken} from "./utils";
 
 export abstract class RootContext {
     protected abstract context: RootAPI;
@@ -55,7 +54,7 @@ export abstract class RootAPI extends AbstractAPI {
      * reset it's whole state.
      * @param token setup context from object
      */
-    abstract from(token: JwtToken): Promise<void>;
+    abstract from(token: string): Promise<void>;
 
     abstract reset(): void;
 

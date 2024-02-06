@@ -1,11 +1,10 @@
 import {EmpationAPIOptions, RawAPI, RawOptions} from "../../base";
-import {ScopesAPI} from "../../scope";
 import {RootAPI} from "../../root";
 import Scopes from "../scope/scopes";
 import Apps from "./apps";
 import Cases from "./cases";
 import Examinations from "./examinations";
-import {JwtToken} from "../../utils";
+import { parseJwtToken} from "../../utils";
 import Slides from "./slides";
 
 export default class Root extends RootAPI {
@@ -23,6 +22,7 @@ export default class Root extends RootAPI {
     slides: Slides;
 
     protected _userId: string;
+    protected _accessToken: string;
 
     constructor(options: EmpationAPIOptions) {
         super(options);
@@ -55,11 +55,16 @@ export default class Root extends RootAPI {
         options = options || {};
         options.headers = options.headers || {};
         options.headers["User-Id"] = this._userId;
+        if (this._accessToken) {
+            options.headers['Authorization'] = options.headers['Authorization'] || `Bearer ${this._accessToken}`;
+        }
         return this.raw.http(endpoint, options);
     }
 
-    async from(token: JwtToken): Promise<void> {
-        await this.use(token.sub);
+    async from(token: string): Promise<void> {
+        this._accessToken = token;
+        const tokenSub = parseJwtToken(token).sub;
+        await this.use(tokenSub);
     }
 
     reset(): void {

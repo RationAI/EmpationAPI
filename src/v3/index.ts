@@ -1,18 +1,8 @@
-import Apps from './root/apps';
-import Cases from './root/cases';
-import Examinations from './root/examinations';
-import Root from './root/root'
+export { default as Apps } from "./root/apps"
+export { default as Cases } from "./root/cases"
+export { default as Examinations } from "./root/examinations"
+export { default as Root } from "./root/root"
+export { default as Slides } from "./root/slides"
 
-import Scopes from './scope/scopes';
-import Storage from './scope/storage';
-
-
-export {
-    Apps,
-    Cases,
-    Examinations,
-    Root,
-
-    Scopes,
-    Storage,
-}
+export { default as Scopes } from "./scope/scopes"
+export { default as Storage } from "./scope/storage"
