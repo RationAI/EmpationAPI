@@ -15,10 +15,11 @@
       "sourceMap": true,
       "baseUrl": ".",
       "rootDir": ".",
-      "outDir": "dist",
-      "useUnknownInCatchVariables": false
+      "outDir": "./dist",
+      "useUnknownInCatchVariables": false,
+      "declaration": true,
     },
     "include": [
-      "src/**/*"
+      "./src/**/*"
     ]
   }
