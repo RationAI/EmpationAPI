@@ -1,9 +1,9 @@
 /**
- * Usage: no auth set up. It is enough to return object with missing access_token prop.
+ * Usage: no auth set up. It is enough to return object with access_token=false prop.
  */
 
 import {AuthOptions, AuthResult} from "../auth";
 
 export default async function noAuth(options: AuthOptions): Promise<AuthResult> {
-    return {} as AuthResult;
+    return {access_token: false} as AuthResult;
 }

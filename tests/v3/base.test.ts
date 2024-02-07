@@ -2,7 +2,8 @@
 import {polly} from "../polly";
 
 import {getEnv} from "../env";
-import {getRoot, getToken, setupIntercept} from "./setup";
+import {getRoot} from "./setup";
+import {getToken, setupIntercept} from "../setup";
 import { V3 } from "../../src";
 import { getV3TypeChecker } from "./checker";
 
@@ -17,8 +18,7 @@ describe('base api', () => {
             workbenchApiUrl: getEnv('TEST_WB_URL') || ""
         });
 
-        const token = getToken();
-        await api.from(token);
+        await api.from(await getToken());
     });
 
     it('list cases', async () => {
