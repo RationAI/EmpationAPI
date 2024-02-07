@@ -1,8 +1,7 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import {polly} from "../polly";
-
-import {setupIntercept} from "./setup";
-import { getScope } from "./setup";
+import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
+import {getScope} from "./setup";
 
 
 describe('scopes api', () => {
@@ -45,32 +44,46 @@ describe('scopes api', () => {
         })
     })
 
-    it('primitives', async () => {
-        const scope = await getScope()
-        const primitive = await scope.rawQuery('/primitives', {
-            method: "POST",
-            body: { 
-                name: "Some name",
-                creator_id: scope.scopeContext.scope_id,
-                creator_type: 'scope',
-                type: 'integer',
-                value: 42,
-            }   
-        })
+    it('test different scopes actually differ', async () => {
+        setInterceptedUser(defaultTestUser);
+        const scope = await getScope(defaultTestUser);
+        setInterceptedUser(defaultComparisonUser);
+        const otherScope = await getScope(defaultComparisonUser);
 
-        const result = await scope.rawQuery(`/primitives/${primitive.id}`)
+        expect(typeof scope.context.userId).toBe("string");
+        expect(typeof otherScope.context.userId).toBe("string");
 
-        expect(result).toEqual({
-            id: primitive.id,
-            name: 'Some name',
+        expect(scope.context.userId).not.toEqual(otherScope.context.userId);
+    })
+
+    it('primitives shared across users', async () => {
+        setInterceptedUser(defaultTestUser);
+        const scope = await getScope(defaultTestUser);
+
+        const primitive = {
+            name: "Some name",
+            creator_id: scope.scopeContext.scope_id,
+            creator_type: 'scope',
             type: 'integer',
             value: 42,
+        };
+
+        const response = await scope.rawQuery('/primitives', {
+            method: "POST",
+            body: primitive
+        });
+
+        setInterceptedUser(defaultComparisonUser);
+        const otherScope = await getScope(defaultComparisonUser);
+        const otherUserCanSee = await otherScope.rawQuery(`/primitives/${response.id}`)
+
+        expect(otherUserCanSee).toEqual({
+            ...primitive,
+            id: response.id,
             is_locked: false,
-            creator_id: scope.scopeContext.scope_id,
             description: null,
-            creator_type: 'scope',
             reference_id: null,
             reference_type: null
-          })
+        })
     })
 });

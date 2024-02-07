@@ -7,6 +7,7 @@
 import {AuthOptions, AuthResult} from "../auth";
 
 export default async function oidcDirectAccessGrant(options: AuthOptions): Promise<AuthResult> {
+    console.log("Using OIDC Direct access grant! Note that this method must be explicitly enabled for the given client!");
 
     const url = options.url; //must be the token url
     if (!url) {
@@ -24,7 +25,8 @@ export default async function oidcDirectAccessGrant(options: AuthOptions): Promi
         method: "POST",
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': '*/*'
+            'Accept': '*/*',
+            'Bypass-Interceptor': 'true'
         },
         body: new URLSearchParams({
             client_id: options.client,
