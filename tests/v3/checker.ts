@@ -14,12 +14,14 @@ import SlideLevelTI from "../../src/v3/root/types/slide-level-ti";
 import SlidePixelSizeNmTI from "../../src/v3/root/types/slide-pixel-size-nm-ti";
 import SlideColorTI from "../../src/v3/root/types/slide-color-ti";
 import SlideListTI from "../../src/v3/root/types/slide-list-ti";
+import CaseHierarchyTI from "../../src/v3/extensions/types/case-hierarchy-result-ti"
 import { ICheckerSuite, createCheckers } from "ts-interface-checker";
 
 export function getV3TypeChecker(): ICheckerSuite {
 
   const checker = createCheckers(CaseListTI, CaseTI, CaseCreatorTypeTI, PreprocessingProgressTI, WorkbenchServiceModelsTI, ExaminationCreatorTypeTI, 
-    ExaminationStateTI, SlideTI, TagMappingTI, SlideInfoTI, SlideChannelTI, SlideExtentTI, SlideLevelTI, SlidePixelSizeNmTI, SlideColorTI, SlideListTI);
+    ExaminationStateTI, SlideTI, TagMappingTI, SlideInfoTI, SlideChannelTI, SlideExtentTI, SlideLevelTI, SlidePixelSizeNmTI, SlideColorTI, SlideListTI,
+    CaseHierarchyTI);
 
   return checker;
 }

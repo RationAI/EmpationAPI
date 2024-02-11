@@ -7,15 +7,15 @@ const getNumber = (variable: string | number) => {
 }
 
 export const getYearFromEpochTime = (epochTime: number | string) => {
-  return new Date(getNumber(epochTime)).getFullYear()
+  return new Date(getNumber(epochTime) * 1000).getFullYear()
 }
 
 export const getMonthFromEpochTime = (epochTime: number | string) => {
-  return new Date(getNumber(epochTime)).getMonth()
+  return new Date(getNumber(epochTime) * 1000).getMonth()
 }
 
 export const getDayFromEpochTime = (epochTime: number | string) => {
-  return new Date(getNumber(epochTime)).getDate()
+  return new Date(getNumber(epochTime) * 1000).getDate()
 }
 
 export const matchStringOnTokens = (stringToMatch: string, tokenString: string) => {

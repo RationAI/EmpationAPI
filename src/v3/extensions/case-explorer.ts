@@ -2,12 +2,8 @@ import Cases from "../root/cases";
 import { Case } from "../root/types/case";
 import { CaseExplorerResults } from "./types/case-explorer-results";
 import { CaseHierarchy } from "./types/case-hierarchy-result";
+import { CaseSearchParams } from "./types/case-search-params";
 import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, groupBy, matchStringOnTokens } from "./utils";
-
-interface SearchParam {
-  key: string,
-  value: string,
-}
 
 export default class CaseExplorer {
     protected context: Cases;
@@ -24,7 +20,7 @@ export default class CaseExplorer {
       this.identifierSeparator = identifierSeparator;
     }
 
-    getCaseValue(key: string, cs: Case) {
+    private getCaseValue(key: string, cs: Case) {
       switch(key) {
         case "year": {
           return this.getCaseYear(cs)
@@ -53,7 +49,7 @@ export default class CaseExplorer {
       }
     }
 
-    evaluateCaseValue(key: string, evalValue: string | string[], cs: Case) {
+    private evaluateCaseValue(key: string, evalValue: string | string[], cs: Case) {
       const caseValue = this.getCaseValue(key, cs)
       switch(key) {
         case "year": {
@@ -81,57 +77,59 @@ export default class CaseExplorer {
       }
     }
 
-    getCaseYear(cs: Case): string {
+    private getCaseYear(cs: Case): string {
       return getYearFromEpochTime(cs.created_at).toString()
     }
-    getCaseMonth(cs: Case): string {
+    private getCaseMonth(cs: Case): string {
       return getMonthFromEpochTime(cs.created_at).toString()
     }
-    getCaseDay(cs: Case): string {
+    private getCaseDay(cs: Case): string {
       return getDayFromEpochTime(cs.created_at).toString()
     }
-    getCaseIdentifierPart(cs: Case, partIdx: number): string {
+    private getCaseIdentifierPart(cs: Case, partIdx: number): string {
       if(!this.identifierSeparator) {
         throw `ArgumentError[CaseExplorer] identifierSeparator is missing - required property!`
       }
       const parts = new RegExp(this.identifierSeparator).exec(cs.local_id)
+      if(!parts) 
+        return "SEPARATOR_ERROR"
       if(partIdx < 1 || partIdx >= parts.length)
         throw `KeyError[CaseExplorer] invalid key \"id_part_<index>\", group index is not valid!`
       return parts[partIdx]
     }
-    getCaseDescription(cs: Case): string {
+    private getCaseDescription(cs: Case): string {
       return cs.description
     }
-    getCaseTissues(cs: Case): string[] {
+    private getCaseTissues(cs: Case): string[] {
       return Object.keys(cs.tissues)
     }
-    getCaseStains(cs: Case): string[] {
+    private getCaseStains(cs: Case): string[] {
       return Object.keys(cs.stains)
     }
 
-    evaulateCaseYear(value: string, evalValue: string): boolean {
+    private evaulateCaseYear(value: string, evalValue: string): boolean {
       return value === evalValue;
     }
-    evaulateCaseMonth(value: string, evalValue: string): boolean {
+    private evaulateCaseMonth(value: string, evalValue: string): boolean {
       return value === evalValue;
     }
-    evaulateCaseDay(value: string, evalValue: string): boolean {
+    private evaulateCaseDay(value: string, evalValue: string): boolean {
       return value === evalValue;
     }
-    evaulateCaseIdentifierPart(value: string, evalValue: string): boolean {
+    private evaulateCaseIdentifierPart(value: string, evalValue: string): boolean {
       return value === evalValue;
     }
-    evaluateCaseDescription(value: string, evalValue: string): boolean {
+    private evaluateCaseDescription(value: string, evalValue: string): boolean {
       return matchStringOnTokens(value, evalValue)
     }
-    evaluateCaseTissues(value: string[], evalValue: string[]): boolean {
+    private evaluateCaseTissues(value: string[], evalValue: string[]): boolean {
       // ALL searched tissues are present in case
       return evalValue.every((tissue) => Object.keys(value).includes(tissue))
 
       // SOME searched tissues are present in case
       // return evalValue.some((tissue) => Object.keys(value).includes(tissue))
     }
-    evaluateCaseStains(value: string[], evalValue: string[]): boolean {
+    private evaluateCaseStains(value: string[], evalValue: string[]): boolean {
       // ALL searched stains are present in case
       return evalValue.every((stain) => Object.keys(value).includes(stain))
 
@@ -143,9 +141,23 @@ export default class CaseExplorer {
       if (keyIdx >= keys.length) {
         return { levelName: name, lastLevel: true, items: cases}
       }
-      const groups = groupBy(cases, (cs) => this.getCaseValue(keys[keyIdx], cs) as string)
+      // grouping by array values(tissues, stains) is not expected, but works by grouping on first value of array
+      const groups = groupBy(cases, (cs) => {
+        const value = this.getCaseValue(keys[keyIdx], cs)
+        if(Array.isArray(value)) {
+          return value[0] || ""
+        }
+        return value
+      })
 
-      return { levelName: name, lastLevel: false, items: Object.keys(groups).map((name) => this.hierarchyLevel(keys, keyIdx + 1, groups[name], name)) }
+      const items = Object.keys(groups).map((name) => {
+        if(name === "SEPARATOR_ERROR") {
+          return this.hierarchyLevel(keys, keys.length, groups[name], name)
+        }
+        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], name)
+      })
+
+      return { levelName: name, lastLevel: false, items: items }
     }
 
     async hierarchy(keys: string[]): Promise<CaseHierarchy> {
@@ -154,9 +166,8 @@ export default class CaseExplorer {
       return this.hierarchyLevel(keys, 0, cases)
     }
 
-    async search(query: SearchParam[]): Promise<Case[]> {
-      const cases = (await this.context.list()).items
-      let filteredCases;
+    async search(query: CaseSearchParams[]): Promise<Case[]> {
+      let filteredCases = (await this.context.list()).items
       query.forEach(({key, value}) => filteredCases = filteredCases.filter((cs) => this.evaluateCaseValue(key, value, cs)))
 
       return filteredCases
