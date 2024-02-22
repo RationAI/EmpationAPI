@@ -16,7 +16,6 @@ describe('extensions tests', () => {
 
         root.cases.explorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
         const hierarchy = await root.cases.explorer.hierarchy(["year", "id_part_1", "id_part_2"])
-        console.log(JSON.stringify(hierarchy));
 
         const {CaseHierarchy} = getV3TypeChecker()
         CaseHierarchy.check(hierarchy)
