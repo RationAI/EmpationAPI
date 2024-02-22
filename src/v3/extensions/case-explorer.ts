@@ -92,7 +92,7 @@ export default class CaseExplorer {
       }
       const parts = new RegExp(this.identifierSeparator).exec(cs.local_id)
       if(!parts) 
-        return "SEPARATOR_ERROR"
+        return "OTHER"
       if(partIdx < 1 || partIdx >= parts.length)
         throw `KeyError[CaseExplorer] invalid key \"id_part_<index>\", group index is not valid!`
       return parts[partIdx]
@@ -151,7 +151,7 @@ export default class CaseExplorer {
       })
 
       const items = Object.keys(groups).map((name) => {
-        if(name === "SEPARATOR_ERROR") {
+        if(name === "OTHER") {
           return this.hierarchyLevel(keys, keys.length, groups[name], name)
         }
         return this.hierarchyLevel(keys, keyIdx + 1, groups[name], name)
