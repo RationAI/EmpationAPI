@@ -6,7 +6,6 @@ import { Primitive } from "./types/primitive";
 import { PrimitiveList } from "./types/primitive-list";
 import { PrimitiveQuery } from "./types/primitive-query";
 import { PrimitiveReferenceType } from "./types/primitive-reference-type";
-import { PrimitiveType } from "./types/primitive-type";
 import { UniqueReferences } from "./types/unique-references";
 
 export default class Primitives extends ScopeContext {
@@ -75,13 +74,11 @@ export default class Primitives extends ScopeContext {
     }
 
     async getRaw(id: string): Promise<Primitive> {
-        console.log(`GET RAW ${id}`)
         const primitive: Primitive = await this.context.rawQuery(`/primitives/${id}`);
         return primitive
     }
 
     async get(id: string): Promise<any> {
-        console.log(`GET ${id}`)
         const primitive = await this.getRaw(id)
         if (primitive.type === "string") {
             return JSON.parse(primitive.value as string);
@@ -90,7 +87,6 @@ export default class Primitives extends ScopeContext {
     }
 
     async delete(id: string): Promise<void> {
-        console.log(`DELETE ${id}`)
         await this.context.rawQuery(`/primitives/${id}`, {
             method: "DELETE",
         });

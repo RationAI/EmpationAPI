@@ -3,6 +3,7 @@ import { HTTPError } from "../../src";
 import { DataCreatorType } from "../../src/v3/scope/types/data-creator-type";
 import { PostPrimitive } from "../../src/v3/scope/types/post-primitive";
 import { PrimitiveQuery } from "../../src/v3/scope/types/primitive-query";
+import { PrimitiveReferenceType } from "../../src/v3/scope/types/primitive-reference-type";
 import { PrimitiveType } from "../../src/v3/scope/types/primitive-type";
 import {polly} from "../polly";
 import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
@@ -135,19 +136,67 @@ describe('scopes api', () => {
         const createdIds: string[] = []
 
         for (let i = 0; i < 6; i = i + 1) {
-            const createdPrimitive = await scope.primitives.create( i < 3 ? 2 : "some string", "test primitive", "desc");
+            const createdPrimitive = await scope.primitives.create( i < 3 ? 2 : "some string", "test primitive", "desc", "12345678", PrimitiveReferenceType.Wsi);
             createdIds.push(createdPrimitive.id!)
         }
 
         const query: PrimitiveQuery = {
             creators: [scope.scopeContext.scope_id],
-            references: [null],
-            types: [PrimitiveType.Integer, PrimitiveType.String, PrimitiveType.Bool]
+            references: ["12345678"],
+            types: [PrimitiveType.Integer]
         }
 
         const data = await scope.primitives.query(query);
 
         createdIds.forEach(async (id) => await scope.primitives.delete(id));
+
+        expect(data.length).toEqual(3)
+        data.forEach((p) => expect(p.value).toEqual(2))
+
+        // switch user
+        setInterceptedUser(defaultComparisonUser);
+        const scope2 = await getScope(defaultTestUser);
+
+        const query2: PrimitiveQuery = {
+            creators: [scope2.scopeContext.scope_id],
+            references: ["12345678"],
+            types: [PrimitiveType.Integer]
+        }
+
+        const data2 = await scope2.primitives.query(query2);
+
+        expect(data2.length).toEqual(0)
+    })
+
+    it('query primitives unique references', async () => {
+        setInterceptedUser(defaultTestUser);
+        const scope = await getScope(defaultTestUser);
+
+        const createdPrimitive = await scope.primitives.create(42, "primitive referencing wsi", "desc", "8c5608f3-a824-485c-b791-2a640405d87b", PrimitiveReferenceType.Wsi)
+
+        const query: PrimitiveQuery = {
+            creators: [scope.scopeContext.scope_id],
+            types: [PrimitiveType.Integer]
+        }
+
+        const data = await scope.primitives.queryUniqueReferences(query);
+
+        await scope.primitives.delete(createdPrimitive.id!);
+
+        expect(data.wsi?.length).toEqual(1)
+        expect(data.wsi?.[0]).toEqual("8c5608f3-a824-485c-b791-2a640405d87b")
+    })
+
+    it('delete primitive', async () => {
+        setInterceptedUser(defaultTestUser);
+        const scope = await getScope(defaultTestUser);
+
+        const createdPrimitive = await scope.primitives.create(42, "number")
+        try {
+            await scope.primitives.get(createdPrimitive.id!)
+        } catch (e) {
+            expect(e.name).toEqual("NotFoundError")
+        }
     })
 
     it('primitives shared across users', async () => {

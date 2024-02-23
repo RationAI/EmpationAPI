@@ -8,3 +8,6 @@ You can search cases by key-value pairs, key is string, value is string or strin
 
 ## User Storage (/scope/storage)
 You can store any key-value pair, where key is a string, and value is any value that can be turned into stringified json
+
+## Shared across users
+Primitives
