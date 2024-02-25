@@ -1,5 +1,6 @@
 import Cases from "../root/cases";
 import { Slide } from "../root/types/slide";
+import { SlideMetadata } from "./types/slide-metadata";
 import { matchStringOnSeparatorGroup } from "./utils";
 
 export default class SlideExplorer {
@@ -27,7 +28,7 @@ export default class SlideExplorer {
       return this.data
     }
 
-    async slides(caseId: string): Promise<Slide[]> {
+    async actualSlides(caseId: string): Promise<Slide[]> {
       if (!this.slidesData) {
         this.slidesData = (await this.getAllSlides(caseId)).filter((slide) => { 
           !matchStringOnSeparatorGroup(slide.local_id, this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
@@ -44,5 +45,4 @@ export default class SlideExplorer {
       }
       return this.masksData;
     }
-
 }
