@@ -1,5 +1,6 @@
 import {RootAPI, RootContext} from "../../root";
 import CaseExplorer from "../extensions/case-explorer";
+import SlideExplorer from "../extensions/slide-explorer";
 import Root from "./root";
 import { Case } from "./types/case";
 import {CaseList} from "./types/case-list";
@@ -9,13 +10,16 @@ export default class Cases extends RootContext {
     protected context: RootAPI;
     protected data: CaseList;
 
-    explorer: CaseExplorer;
+    caseExplorer: CaseExplorer;
+    slideExplorer: SlideExplorer;
+
 
     constructor(context: Root) {
         super();
         this.context = context;
 
-        this.explorer = new CaseExplorer(this);
+        this.caseExplorer = new CaseExplorer(this);
+        this.slideExplorer = new SlideExplorer(this);
     }
 
     async list(): Promise<CaseList> {

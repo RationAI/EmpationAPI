@@ -18,6 +18,13 @@ export const getDayFromEpochTime = (epochTime: number | string) => {
   return new Date(getNumber(epochTime) * 1000).getDate()
 }
 
+export const matchStringOnSeparatorGroup = (str: string, separator: string, groupIdx: number, value: string) => {
+  const matches = new RegExp(separator).exec(str)
+      if(!matches || groupIdx < 1 || groupIdx >= matches.length) 
+        return false
+      return matches[groupIdx] === value
+}
+
 export const matchStringOnTokens = (stringToMatch: string, tokenString: string) => {
   const tokens = tokenString
     .split(' ')
