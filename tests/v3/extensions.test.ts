@@ -14,8 +14,8 @@ describe('extensions tests', () => {
 
         const root = await getRoot()
 
-        root.cases.explorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
-        const hierarchy = await root.cases.explorer.hierarchy(["year", "id_part_1", "id_part_2"])
+        root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
+        const hierarchy = await root.cases.caseExplorer.hierarchy(["year", "id_part_1", "id_part_2"])
 
         const {CaseHierarchy} = getV3TypeChecker()
         CaseHierarchy.check(hierarchy)
@@ -25,7 +25,7 @@ describe('extensions tests', () => {
 
       const root = await getRoot()
 
-      root.cases.explorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
+      root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
 
       const searchParams: CaseSearchParams[] = [
         {
@@ -41,7 +41,7 @@ describe('extensions tests', () => {
           value: "84",
         },
       ]
-      const searchResult = await root.cases.explorer.search(searchParams)
+      const searchResult = await root.cases.caseExplorer.search(searchParams)
 
       const {Case} = getV3TypeChecker()
       searchResult.forEach((resultItem) => Case.check(resultItem))
@@ -50,7 +50,7 @@ describe('extensions tests', () => {
 
     const root = await getRoot()
 
-    root.cases.explorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
+    root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
 
     const searchParams: CaseSearchParams[] = [
       {
@@ -58,7 +58,7 @@ describe('extensions tests', () => {
         value: "1969",
       },
     ]
-    const searchResult = await root.cases.explorer.search(searchParams)
+    const searchResult = await root.cases.caseExplorer.search(searchParams)
 
     const {Case} = getV3TypeChecker()
     searchResult.forEach((resultItem) => Case.check(resultItem))
