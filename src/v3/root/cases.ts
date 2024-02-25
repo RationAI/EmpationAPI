@@ -23,7 +23,10 @@ export default class Cases extends RootContext {
     }
 
     async list(): Promise<CaseList> {
-        return this.data = await this.context.rawQuery('/cases') as CaseList;
+        if(!this.data) {
+            this.data = await this.context.rawQuery('/cases') as CaseList;
+        }
+        return this.data;
     }
 
     async get(caseId: string): Promise<Case> {

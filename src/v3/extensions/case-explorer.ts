@@ -172,4 +172,22 @@ export default class CaseExplorer {
 
       return filteredCases
     }
+
+    async tissues(): Promise<string[]> {
+      const cases = (await this.context.list()).items
+
+      const allTissues: Set<string> = new Set();
+      cases.forEach((c) => Object.values(c.tissues).map((tissue) => tissue["EN"]).forEach((t) => allTissues.add(t)));
+
+      return [...allTissues];
+    }
+
+    async stains(): Promise<string[]> {
+      const cases = (await this.context.list()).items
+
+      const allStains: Set<string> = new Set();
+      cases.forEach((c) => Object.values(c.stains).map((stain) => stain["EN"]).forEach((t) => allStains.add(t)));
+
+      return [...allStains];
+    }
 }
