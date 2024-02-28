@@ -1,15 +1,35 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface SlideMetadata {
+export interface Shader {
+  shaderTemplate: string;
+  id: string;
+  name?: string;
+  dataRefs: number[];
+}
+
+export interface Background {
+  template: string;
+  dataRef: number;
+}
+
+export interface SlideMetaVisualization {
+  visTemplate: string;
+  name: string;
+  shaders: Shader[];
+}
+
+export interface SlideMetaVisualizations {
+  paramsTemplate: string;
+  data: string[];
+  background: Background;
+  visualizations: SlideMetaVisualization[];
+}
+
+export interface SlideMetadataT {
 
   /**
    * Visualizations.
    */
-  visualizations: [
-    {
-      templateId: string;
-      data: string[]
-    }
-  ];
+  visualization: SlideMetaVisualizations;
 }

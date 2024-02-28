@@ -1,4 +1,5 @@
 import { ScopeContext } from "../../scope";
+import SlideMetadata from "../extensions/slide-metadata";
 import Scopes from "./scopes";
 import { DataCreatorType } from "./types/data-creator-type";
 import { PostPrimitive } from "./types/post-primitive";
@@ -12,9 +13,12 @@ export default class Primitives extends ScopeContext {
     protected context: Scopes;
     protected data: Primitive[];
 
+    slideMetadata: SlideMetadata;
+
     constructor(context: Scopes) {
         super();
         this.context = context;
+        this.slideMetadata = new SlideMetadata(this)
     }
 
     async query(query: PrimitiveQuery): Promise<Primitive[]> {

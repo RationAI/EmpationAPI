@@ -1,9 +1,10 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import { CaseSearchParams } from "../../src/v3/extensions/types/case-search-params";
+import { SlideMetadataT } from "../../src/v3/extensions/types/slide-metadata";
 import {polly} from "../polly";
 import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
 import { getV3TypeChecker } from "./checker";
-import {getRoot} from "./setup";
+import {getRoot, getScope} from "./setup";
 
 
 describe('extensions tests', () => {
@@ -64,4 +65,41 @@ describe('extensions tests', () => {
     searchResult.forEach((resultItem) => Case.check(resultItem))
     expect(searchResult).toEqual([]);
   });
+
+  it('create/update metadata of slide', async () => {
+    setInterceptedUser(defaultTestUser);
+    const scope = await getScope(defaultTestUser);
+
+    const slideMetadata: SlideMetadataT = {
+      visualization: {
+        paramsTemplate: "params",
+        data: ['8c5608f3-a824-485c-b791-2a640405d87b', 'eabd1f58-357a-48ed-880b-833217e59915'],
+        background: {
+          template: "default",
+          dataRef: 0,
+        },
+        visualizations: [
+          {
+            visTemplate: "visualization",
+            name: "Test visualization",
+            shaders: [
+              {
+                id: "shader_1",
+                name: "Heatmap shader",
+                shaderTemplate: "heatmap",
+                dataRefs: [1],
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+    const createdSlideMetadata = await scope.primitives.slideMetadata.updateSlideMeta('8c5608f3-a824-485c-b791-2a640405d87b', slideMetadata, scope.scopeContext.scope_id);
+
+    console.log(createdSlideMetadata);
+
+    const slideVis = await scope.primitives.slideMetadata.getVisualizations('8c5608f3-a824-485c-b791-2a640405d87b', scope.scopeContext.scope_id);
+    console.log(slideVis);
+  })
 });

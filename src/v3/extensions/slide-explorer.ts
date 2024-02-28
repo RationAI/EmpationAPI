@@ -1,6 +1,6 @@
 import Cases from "../root/cases";
 import { Slide } from "../root/types/slide";
-import { SlideMetadata } from "./types/slide-metadata";
+import { SlideMetadataT } from "./types/slide-metadata";
 import { matchStringOnSeparatorGroup } from "./utils";
 
 export default class SlideExplorer {
