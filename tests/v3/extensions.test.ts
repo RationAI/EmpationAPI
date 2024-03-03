@@ -92,7 +92,7 @@ describe('extensions tests', () => {
             ]
           }
         ]
-      }
+      },
     }
 
     const createdSlideMetadata = await scope.primitives.slideMetadata.updateSlideMeta('8c5608f3-a824-485c-b791-2a640405d87b', slideMetadata, scope.scopeContext.scope_id);
@@ -101,5 +101,11 @@ describe('extensions tests', () => {
 
     const slideVis = await scope.primitives.slideMetadata.getVisualizations('8c5608f3-a824-485c-b791-2a640405d87b', scope.scopeContext.scope_id);
     console.log(slideVis);
+
+    setInterceptedUser(defaultComparisonUser);
+    const scope2 = await getScope(defaultComparisonUser);
+
+    const two = await scope2.primitives.slideMetadata.getSlideMeta('8c5608f3-a824-485c-b791-2a640405d87b', scope2.scopeContext.scope_id);
+    console.log(two);
   })
 });

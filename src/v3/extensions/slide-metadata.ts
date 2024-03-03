@@ -17,7 +17,7 @@ export default class SlideMetadata {
     private async getSlideMetaPrimitive(slideId: string, creator: string): Promise<Primitive> {
       let metaPrimitive = (await this.context.query({ creators: [creator], references: [slideId]})).find((p) => p.name === `Metadata of slide ${slideId}`);
       if (!metaPrimitive) {
-        metaPrimitive =  await this.createSlideMetaPrimitive(slideId, { visualizations: [] })
+        metaPrimitive =  await this.createSlideMetaPrimitive(slideId, { visualization: [] })
       }
       return metaPrimitive
     }
