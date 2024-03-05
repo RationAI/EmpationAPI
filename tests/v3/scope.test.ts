@@ -8,7 +8,10 @@ import { PrimitiveReferenceType } from "../../src/v3/scope/types/primitive-refer
 import { PrimitiveType } from "../../src/v3/scope/types/primitive-type";
 import {polly} from "../polly";
 import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
-import {getScope} from "./setup";
+import {getRoot, getScope, getScopeCase} from "./setup";
+import {V3} from "../../src";
+import {Case} from "../../src/v3/root/types/case";
+import {DataCreatorType} from "../../src/v3/scope/types/data-creator-type";
 
 
 describe('scopes api', () => {
@@ -40,7 +43,7 @@ describe('scopes api', () => {
 
         expect(appStorage).toEqual({
             content: { num: '43', str: '"dsadad"', arr: '[2,3,3,3]', obj: '{"a":"dsadasd","b":[1,1,1]}' }
-          })
+        })
         expect(obj).toEqual({a: "dsadasd", b: [1,1,1]})
 
         await scope.storage.erase()
@@ -231,5 +234,74 @@ describe('scopes api', () => {
             reference_id: null,
             reference_type: null
         })
+    })
+
+    it('annotations shared across users', async () => {
+        setInterceptedUser(defaultTestUser);
+        const root: V3.Root = await getRoot(defaultTestUser);
+        const cases = await root.cases.list();
+        let caseIndex = cases.items.findIndex(c => c.slides_count > 0);
+        if (caseIndex < 0) caseIndex = 0;
+        const scope: V3.Scopes = await getScope(defaultTestUser, caseIndex);
+
+        const defaultCase: Case = await getScopeCase(defaultTestUser, caseIndex);
+        const caseSlides = await root.cases.slides(defaultCase.id);
+
+        console.log("Runs with case ID ", caseIndex);
+
+        if (caseSlides.item_count < 1) {
+            console.warn("Skipping test: no slides are available with the default case!");
+            return;
+        }
+        const slide = caseSlides.items[0];
+
+        const annotation = {
+            "items": [
+                {
+                    "name": "Annotation Name",
+                    "description": "Annotation Description",
+                    // "creator_id": scope.scopeContext.scope_id,
+                    // "creator_type": "scope",
+                    "creator_id": scope.context.userId,
+                    "creator_type": DataCreatorType.User,
+                    "reference_id": slide.id,
+                    "reference_type": "wsi",
+                    "npp_created": 499,
+                    "npp_viewing": [
+                        499,
+                        7984
+                    ],
+                    "centroid": [
+                        100,
+                        100
+                    ],
+                    "type": "point",
+                    "coordinates": [
+                        100,
+                        200
+                    ]
+                }
+            ]
+        };
+
+        const response = await scope.annotations.upload(annotation);
+
+        console.log("ORIGIN", scope.scopeContext.scope_id, response);
+        setInterceptedUser(defaultComparisonUser);
+        const otherScope = await getScope(defaultComparisonUser);
+        const otherUserCanSee = await otherScope.rawQuery('/annotations/query', {
+            method: "QUERY",
+            body: {
+                annotations: [response.items[0].id]
+            }
+        });
+        console.log("OTHER", otherScope.scopeContext.scope_id, otherUserCanSee);
+
+        expect(otherUserCanSee.items[0]).toMatchObject(annotation.items[0]);
+
+        otherUserCanSee.items[0].npp_created = 69;
+        const response2 = await scope.annotations.update(otherUserCanSee.items[0].id, otherUserCanSee);
+        annotation.items[0].npp_created = 69;
+        expect(response2).toMatchObject(annotation.items[0]);
     })
 });

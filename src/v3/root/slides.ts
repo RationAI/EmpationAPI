@@ -1,6 +1,5 @@
 import {RootAPI, RootContext} from "../../root";
 import Root from "./root";
-import { Case } from "./types/case";
 import { Slide } from "./types/slide";
 import { SlideInfo } from "./types/slide-info";
 
@@ -28,6 +27,15 @@ export default class Slides extends RootContext {
 
     async slideLabel(slideId: string, maxWidth: number, maxHeight: number, format?: string): Promise<Blob> {
         return await this.context.rawQuery(`/slides/${slideId}/label/max_size/${maxWidth}/${maxHeight}`, {
+            query: {
+                image_format: format
+            },
+            responseType: "blob"
+        })
+    }
+
+    async loadTile(slideId: string, level: number, x: number, y: number, format?: string): Promise<Blob> {
+        return await this.context.rawQuery(`/slides/${slideId}/tile/level/${level}/tile/${x}/${y}`, {
             query: {
                 image_format: format
             },

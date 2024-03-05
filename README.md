@@ -2,7 +2,13 @@
 
 This is a front-end lightweight library for communication with the workbench service.
 The library is used by RationAI javascript applications to have uniform
-and tested access to the API with selected features.
+and tested access to the API with selected features. The API is not mirrored fully, 
+but rather implements few selected uses routines. Any query can be performed easily
+on the target context class using ``rawQuery(...)`` which populates the request with
+all necessary data common to all API requests to that context.
+
+Type definitions are taken from the official Empaia frontend WBC library.
+https://gitlab.com/empaia/integration/frontend-workspace
 
 ### Supported WBS versions:
  - [x] v3

@@ -14,6 +14,7 @@ export default class Root extends RootAPI {
     protected raw: RawAPI;
     scopes: Scopes;
     version: string;
+    rootURI: string;
 
     //custom
     apps: Apps;
@@ -27,7 +28,8 @@ export default class Root extends RootAPI {
     constructor(options: EmpationAPIOptions) {
         super(options);
         this.version = "v3";
-        this.raw = new RawAPI(this.apiUrl + Root.apiPath, {
+        this.rootURI = this.apiUrl + Root.apiPath;
+        this.raw = new RawAPI(this.rootURI, {
             errorHandler: this.raiseConnectionError.bind(this),
             maxRetryCount: this.options.maxRetryCount,
             nextRetryInMs: this.options.nextRetryInMs

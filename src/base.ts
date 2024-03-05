@@ -160,7 +160,6 @@ export class RawAPI {
         }
 
         if (!response.ok) {
-            console.log("NOK", response)
             throw new HTTPError(response.status, response.statusText, result);
         }
         return result;
