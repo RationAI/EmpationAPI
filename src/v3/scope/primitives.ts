@@ -13,12 +13,9 @@ export default class Primitives extends ScopeContext {
     protected context: Scopes;
     protected data: Primitive[];
 
-    slideMetadata: SlideMetadata;
-
     constructor(context: Scopes) {
         super();
         this.context = context;
-        this.slideMetadata = new SlideMetadata(this)
     }
 
     async query(query: PrimitiveQuery): Promise<Primitive[]> {

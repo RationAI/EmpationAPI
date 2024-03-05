@@ -1,5 +1,6 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import { HTTPError } from "../../src";
+import { SlideMetadataT } from "../../src/v3/extensions/types/slide-metadata";
 import { DataCreatorType } from "../../src/v3/scope/types/data-creator-type";
 import { PostPrimitive } from "../../src/v3/scope/types/post-primitive";
 import { PrimitiveQuery } from "../../src/v3/scope/types/primitive-query";

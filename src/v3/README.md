@@ -12,29 +12,11 @@ You can store any key-value pair, where key is a string, and value is any value 
 ## Masks (/extensions/masks)
 Masks are stored as slides/wsi, mask has a specific identifier in local_id that identifies it as a mask. You can specify the place and value of identifier for the Masks class.
 
-<pre>
-a <--- b = object b references object a
-
-slide <--- string primitive               
-- contains stringified object with metadata for slide, including related vizualizations
-  name: "Metadata of slide &ltlocal_id of slide&gt"
-  reference_id: &ltlocal_id of slide&gt
-  reference_type: "wsi"
-  value: { 
-    ...,
-    visualizations: [{template: ..., data: [...]}, ...]
-  }
-
-mask <--- string primitive               
-- contains stringified object with metadata for mask
-  name: "Metadata of mask &ltlocal_id of mask&gt"
-  reference_id: &ltlocal_id of slide&gt
-  reference_type: "wsi"
-
-default_case -has- default_slide <--- string primitive 
-- contains data shared across cases
-  vizTemplates: [..., &ltid of string primitive containing serialized template&gt, ...]
-
-</pre>
 ## Shared across users
-Primitives
+<pre>
+                                    | Primitives | Collections | Class |
+Access from diff scopes with id     |     yes    |     yes     |       |
+Query from diff scopes              |     no     |     no      |       |    - valid creator_id(scope) or job id required in query
+Query coll items from diff scopes   |     ---    |     yes     |       |    - only references needed to query collection items, you need to know collectionId though
+Delete item from collection         |            |     no      |       |    - cannot delete item from collection of different scope, this blocks update of slide metadata
+</pre>
