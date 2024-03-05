@@ -1,0 +1,6 @@
+{
+  "name": "Layer",
+  "lossless": true,
+  "protocol": "path + \"#DeepZoomExt=\" + data.join(',') + \".dzi\";",
+  "shaders": []
+}

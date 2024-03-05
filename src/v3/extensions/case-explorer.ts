@@ -92,7 +92,7 @@ export default class CaseExplorer {
       }
       const parts = new RegExp(this.identifierSeparator).exec(cs.local_id)
       if(!parts) 
-        return "SEPARATOR_ERROR"
+        return "OTHER"
       if(partIdx < 1 || partIdx >= parts.length)
         throw `KeyError[CaseExplorer] invalid key \"id_part_<index>\", group index is not valid!`
       return parts[partIdx]
@@ -143,33 +143,59 @@ export default class CaseExplorer {
       }
       // grouping by array values(tissues, stains) is not expected, but works by grouping on first value of array
       const groups = groupBy(cases, (cs) => {
-        const value = this.getCaseValue(keys[keyIdx], cs)
+        const value = this.getCaseValue(keys[keyIdx], cs);
         if(Array.isArray(value)) {
-          return value[0] || ""
+          return value[0] || "";
         }
-        return value
+        return value;
       })
 
       const items = Object.keys(groups).map((name) => {
-        if(name === "SEPARATOR_ERROR") {
-          return this.hierarchyLevel(keys, keys.length, groups[name], name)
+        if(name === "OTHER") {
+          return this.hierarchyLevel(keys, keys.length, groups[name], name);
         }
-        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], name)
+        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], name);
       })
 
-      return { levelName: name, lastLevel: false, items: items }
+      return { levelName: name, lastLevel: false, items: items };
     }
 
     async hierarchy(keys: string[]): Promise<CaseHierarchy> {
-      const cases = (await this.context.list()).items
+      const cases = (await this.context.list()).items;
 
-      return this.hierarchyLevel(keys, 0, cases)
+      return this.hierarchyLevel(keys, 0, cases);
     }
 
     async search(query: CaseSearchParams[]): Promise<Case[]> {
-      let filteredCases = (await this.context.list()).items
-      query.forEach(({key, value}) => filteredCases = filteredCases.filter((cs) => this.evaluateCaseValue(key, value, cs)))
+      let filteredCases = (await this.context.list()).items;
+      query.forEach(({key, value}) => filteredCases = filteredCases.filter((cs) => this.evaluateCaseValue(key, value, cs)));
 
-      return filteredCases
+      return filteredCases;
+    }
+
+    async tissues(): Promise<string[]> {
+      const cases = (await this.context.list()).items;
+
+      const allTissues: Set<string> = new Set();
+      cases.forEach((c) => Object.values(c.tissues).map((tissue) => tissue["EN"]).forEach((t) => allTissues.add(t)));
+
+      return [...allTissues];
+    }
+
+    async stains(): Promise<string[]> {
+      const cases = (await this.context.list()).items;
+
+      const allStains: Set<string> = new Set();
+      cases.forEach((c) => Object.values(c.stains).map((stain) => stain["EN"]).forEach((t) => allStains.add(t)));
+
+      return [...allStains];
+    }
+
+    async defaultCase(namespace: string): Promise<Case> {
+      const cases = (await this.context.list()).items;
+
+      const defaultCase = cases.find((c) => c.local_id === `${namespace}.default_case`);
+
+      return defaultCase;
     }
 }

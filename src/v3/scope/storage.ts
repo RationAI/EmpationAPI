@@ -42,8 +42,8 @@ export default class Storage extends ScopeContext {
         dataRaw.content[key] = valueRaw
         this.data = dataRaw
 
-        if(flush) {
-            this.flush
+        if (flush) {
+            this.flush();
         }
     }
 

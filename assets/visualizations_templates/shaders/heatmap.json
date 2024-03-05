@@ -1,0 +1,6 @@
+{ 
+  "name": "Heatmap",
+  "type": "heatmap", 
+  "visible": 1, 
+  "params": {}
+}

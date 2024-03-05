@@ -24,6 +24,6 @@ export default {
         library: 'EmpationAPI'
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js']
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
     },
 };

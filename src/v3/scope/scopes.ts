@@ -7,7 +7,7 @@ import {
 import Root from "../root/root";
 import Storage from "./storage";
 import {parseJwtToken, ScopeToken} from "../../utils";
-
+import Collections from "./collections";
 
 export default class Scopes extends ScopesAPI {
     static apiPath = '/v3/scopes';
@@ -16,6 +16,7 @@ export default class Scopes extends ScopesAPI {
     raw: RawAPI;
     context: Root;
     storage: Storage;
+    collections: Collections;
 
     // Additional
     scopeContext: ScopeTokenAndScopeId;
@@ -32,6 +33,7 @@ export default class Scopes extends ScopesAPI {
             nextRetryInMs: this.context.options.nextRetryInMs
         });
         this.storage = new Storage(this);
+        this.collections = new Collections(this);
     }
 
     async use(caseId: string, appId: string = undefined): Promise<void> {
