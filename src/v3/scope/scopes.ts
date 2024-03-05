@@ -7,7 +7,6 @@ import {
 import Root from "../root/root";
 import Storage from "./storage";
 import {parseJwtToken, ScopeToken} from "../../utils";
-import Primitives from "./primitives";
 import Collections from "./collections";
 
 export default class Scopes extends ScopesAPI {
@@ -17,7 +16,6 @@ export default class Scopes extends ScopesAPI {
     raw: RawAPI;
     context: Root;
     storage: Storage;
-    primitives: Primitives;
     collections: Collections;
 
     // Additional
@@ -35,7 +33,6 @@ export default class Scopes extends ScopesAPI {
             nextRetryInMs: this.context.options.nextRetryInMs
         });
         this.storage = new Storage(this);
-        this.primitives = new Primitives(this);
         this.collections = new Collections(this);
     }
 
