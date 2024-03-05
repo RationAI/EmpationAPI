@@ -16,6 +16,7 @@ export abstract class RootAPI extends AbstractAPI {
 
     // Properties
     abstract version: string;
+    abstract rootURI: string;
     options: EmpationAPIOptions;
     apiUrl: string;
     cached: object;

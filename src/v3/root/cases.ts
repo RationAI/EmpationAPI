@@ -18,15 +18,15 @@ export default class Cases extends RootContext {
         this.explorer = new CaseExplorer(this);
     }
 
-    async list(): Promise<CaseList> {
-        return this.data = await this.context.rawQuery('/cases') as CaseList;
+    async list(cached = true): Promise<CaseList> {
+        return this.data = (cached && this.data) || await this.context.rawQuery('/cases');
     }
 
     async get(caseId: string): Promise<Case> {
-        return await this.context.rawQuery(`/cases/${caseId}`)
+        return await this.context.rawQuery(`/cases/${caseId}`);
     }
 
     async slides(caseId: string): Promise<SlideList> {
-        return await this.context.rawQuery(`/cases/${caseId}/slides`)
+        return await this.context.rawQuery(`/cases/${caseId}/slides`);
     }
 }

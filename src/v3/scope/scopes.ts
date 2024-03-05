@@ -7,6 +7,7 @@ import {
 import Root from "../root/root";
 import Storage from "./storage";
 import {parseJwtToken, ScopeToken} from "../../utils";
+import Annotations from "./annotations";
 
 
 export default class Scopes extends ScopesAPI {
@@ -16,6 +17,7 @@ export default class Scopes extends ScopesAPI {
     raw: RawAPI;
     context: Root;
     storage: Storage;
+    annotations: Annotations;
 
     // Additional
     scopeContext: ScopeTokenAndScopeId;
@@ -69,11 +71,11 @@ export default class Scopes extends ScopesAPI {
         await this.from(examination);
     }
 
-    get scopeToken() {
+    get scopeToken(): string {
         return this.scopeContext?.access_token;
     }
 
-    async from(examination: WorkbenchServiceApiV3CustomModelsExaminationsExamination) {
+    async from(examination: WorkbenchServiceApiV3CustomModelsExaminationsExamination): Promise<void> {
         this.reset();
         this.scopeContext = await this.context.examinations.scope(examination.id);
         this._activeExaminationId = examination.id;

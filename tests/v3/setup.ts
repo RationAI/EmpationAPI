@@ -1,6 +1,7 @@
 import {V3} from "../../src";
 import { getEnv } from "../env";
 import {defaultTestUser, getToken} from "../setup";
+import {Case} from "../../src/v3/root/types/case";
 
 let rootApis: Map<string, V3.Root> = new Map<string, V3.Root>();
 
@@ -16,10 +17,15 @@ export async function getRoot(userName=defaultTestUser): Promise<V3.Root> {
     return rootApi;
 }
 
-export async function getScope(userName=defaultTestUser): Promise<V3.Scopes> {
+export async function getScope(userName=defaultTestUser, caseIndex=0): Promise<V3.Scopes> {
     const root = await getRoot(userName);
     const cases = await root.cases.list();
 
-    await root.scopes.use(cases.items[0].id);
+    await root.scopes.use(cases.items[caseIndex].id);
     return root.scopes;
+}
+
+export async function getScopeCase(userName=defaultTestUser, caseIndex=0): Promise<Case> {
+    const root = await getRoot(userName);
+    return (await root.cases.list()).items[caseIndex];
 }
