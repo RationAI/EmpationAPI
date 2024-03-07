@@ -30,7 +30,7 @@ export default class SlideExplorer {
     async actualSlides(caseId: string): Promise<Slide[]> {
       if (!this.slidesData) {
         this.slidesData = (await this.getAllSlides(caseId)).filter((slide) => { 
-          !matchStringOnSeparatorGroup(slide.local_id, this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
+          return !matchStringOnSeparatorGroup(slide.local_id, this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
         })
       }
       return this.slidesData;
@@ -39,7 +39,7 @@ export default class SlideExplorer {
     async masks(caseId: string): Promise<Slide[]> {
       if (!this.masksData) {
         this.masksData = (await this.getAllSlides(caseId)).filter((slide) => { 
-          matchStringOnSeparatorGroup(slide.local_id, this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
+          return matchStringOnSeparatorGroup(slide.local_id, this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
         })
       }
       return this.masksData;
