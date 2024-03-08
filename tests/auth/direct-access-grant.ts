@@ -15,7 +15,7 @@ export default async function oidcDirectAccessGrant(options: AuthOptions): Promi
     }
     const formData = new FormData();
     formData.append('client_id', options.client);
-    formData.append('client_secret', options.secret);
+    if (options.secret) formData.append('client_secret', options.secret);
 
     formData.append('username', options.user);
     formData.append('password', options.userSecret);

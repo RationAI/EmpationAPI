@@ -4,7 +4,7 @@ import { AppUiStorage } from "./types/app-ui-storage";
 
 export default class Storage extends ScopeContext {
     protected context: Scopes;
-    protected data: AppUiStorage;
+    protected data: AppUiStorage | null = null;
 
     constructor(context: Scopes) {
         super();
@@ -15,11 +15,11 @@ export default class Storage extends ScopeContext {
         if(!this.data) {
             this.data = await this.context.rawQuery('/app-ui-storage/user')
         }
-        return this.data
+        return this.data as AppUiStorage
     }
 
-    async flush(): Promise<AppUiStorage> {
-        if (!this.data) return;
+    async flush(): Promise<AppUiStorage | null> {
+        if (!this.data) return null;
 
         return await this.context.rawQuery('/app-ui-storage/user', {
             method: "PUT",

@@ -21,10 +21,10 @@ export default class Scopes extends ScopesAPI {
     collections: Collections;
 
     // Additional
-    scopeContext: ScopeTokenAndScopeId;
-    private _defaultExaminationId: string;
-    private _activeExaminationId: string;
-    private _tokenRefetchInterval: NodeJS.Timeout;
+    scopeContext: ScopeTokenAndScopeId | null = null;
+    private _defaultExaminationId: string = "";
+    private _activeExaminationId: string = "";
+    private _tokenRefetchInterval: NodeJS.Timeout | null = null;
 
     constructor(context: Root) {
         super();
@@ -35,10 +35,11 @@ export default class Scopes extends ScopesAPI {
             nextRetryInMs: this.context.options.nextRetryInMs
         });
         this.storage = new Storage(this);
+        this.annotations = new Annotations(this);
         this.collections = new Collections(this);
     }
 
-    async use(caseId: string, appId: string = undefined): Promise<void> {
+    async use(caseId: string, appId: string | undefined = undefined): Promise<void> {
         //todo consider caching
 
         this.requires("root::userId", this.context.userId);
@@ -51,9 +52,10 @@ export default class Scopes extends ScopesAPI {
                 creators: [this.context.userId]
             });
             if (examinations.item_count > 0) {
-                examination = examinations.items.find(ex => ex.state === "OPEN");
+                let examination = examinations.items.find(ex => ex.state === "OPEN");
+                if (examination) return examination;
             }
-            return examination ? examination : await this.context.examinations.create(caseId, appId);
+            return await this.context.examinations.create(caseId, appId);
         }
 
 
@@ -73,7 +75,7 @@ export default class Scopes extends ScopesAPI {
         await this.from(examination);
     }
 
-    get scopeToken(): string {
+    get scopeToken(): string | undefined {
         return this.scopeContext?.access_token;
     }
 
@@ -91,7 +93,7 @@ export default class Scopes extends ScopesAPI {
     }
 
     reset(): void {
-        this._activeExaminationId = null;
+        this._activeExaminationId = "";
         this.scopeContext = null;
         if (this._tokenRefetchInterval) {
             clearInterval(this._tokenRefetchInterval);
@@ -105,13 +107,13 @@ export default class Scopes extends ScopesAPI {
         this.requires('this.scopeContext', this.scopeContext);
         options = options || {};
         options.headers = options.headers || {};
-        options.headers["Authorization"] = `Bearer ${this.scopeContext.access_token}`;
+        options.headers["Authorization"] = `Bearer ${this.scopeContext?.access_token}`;
         if (endpoint && !endpoint.startsWith('/')) {
             endpoint = `/${endpoint}`;
         }
 
         try {
-            return await this.raw.http(`/${this.scopeContext.scope_id}${endpoint}`, options);
+            return await this.raw.http(`/${this.scopeContext?.scope_id}${endpoint}`, options);
         } catch (e) {
             if (e.statusCode === 401) {
                 this.scopeContext = await this.context.examinations.scope(this._activeExaminationId);

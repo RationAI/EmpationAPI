@@ -7,9 +7,9 @@ import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, group
 
 export default class CaseExplorer {
     protected context: Cases;
-    protected data: CaseExplorerResults;
+    protected data: CaseExplorerResults | null = null;
 
-    identifierSeparator: string;
+    identifierSeparator: string = "";
 
     constructor(context: Cases) {
         this.context = context;
@@ -90,7 +90,7 @@ export default class CaseExplorer {
       if(!this.identifierSeparator) {
         throw `ArgumentError[CaseExplorer] identifierSeparator is missing - required property!`
       }
-      const parts = new RegExp(this.identifierSeparator).exec(cs.local_id)
+      const parts = new RegExp(this.identifierSeparator).exec(cs.local_id || "")
       if(!parts) 
         return "OTHER"
       if(partIdx < 1 || partIdx >= parts.length)
@@ -98,7 +98,7 @@ export default class CaseExplorer {
       return parts[partIdx]
     }
     private getCaseDescription(cs: Case): string {
-      return cs.description
+      return cs.description || ""
     }
     private getCaseTissues(cs: Case): string[] {
       return Object.keys(cs.tissues)
@@ -177,7 +177,7 @@ export default class CaseExplorer {
       const cases = (await this.context.list()).items;
 
       const allTissues: Set<string> = new Set();
-      cases.forEach((c) => Object.values(c.tissues).map((tissue) => tissue["EN"]).forEach((t) => allTissues.add(t)));
+      cases.forEach((c) => Object.values(c.tissues).map((tissue: any) => tissue["EN"]).forEach((t) => allTissues.add(t)));
 
       return [...allTissues];
     }
@@ -186,16 +186,8 @@ export default class CaseExplorer {
       const cases = (await this.context.list()).items;
 
       const allStains: Set<string> = new Set();
-      cases.forEach((c) => Object.values(c.stains).map((stain) => stain["EN"]).forEach((t) => allStains.add(t)));
+      cases.forEach((c) => Object.values(c.stains).map((stain: any) => stain["EN"]).forEach((t) => allStains.add(t)));
 
       return [...allStains];
-    }
-
-    async defaultCase(namespace: string): Promise<Case> {
-      const cases = (await this.context.list()).items;
-
-      const defaultCase = cases.find((c) => c.local_id === `${namespace}.default_case`);
-
-      return defaultCase;
     }
 }

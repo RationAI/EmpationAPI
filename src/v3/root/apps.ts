@@ -6,8 +6,8 @@ import {AppOutput} from "./types/app-output";
 
 export default class Apps extends RootContext {
     protected context: RootAPI;
-    protected data: AppList;
-    private _defaultApp: AppOutput;
+    protected data: AppList | null = null;
+    private _defaultApp: AppOutput | null = null;
 
     constructor(context: Root) {
         super();
@@ -35,7 +35,7 @@ export default class Apps extends RootContext {
 
     async default(): Promise<AppOutput> {
         if (!this.data) await this.list();
-        for (let app of this.data.items) {
+        for (let app of this.data!.items) {
             if (app.name_short === "MAP3" && app.vendor_name === "rationai") {
                 this._defaultApp = app;
                 break;

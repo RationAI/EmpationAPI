@@ -3,7 +3,7 @@ import {getEnv, getUserName, getUserPassword} from "./env";
 export interface AuthOptions {
     authModule: string;
     client: string;
-    secret: string;
+    secret?: string;
     user: string;
     userSecret: string;
     url: string;
@@ -29,12 +29,12 @@ export interface AuthResult {
  */
 export default async function auth(userName) {
     const defaults: AuthOptions = {
-        authModule: getEnv('AUTH_MODULE', 'direct-access-grant'),
-        client: getEnv('AUTH_CLIENT', 'WBC_CLIENT'),
+        authModule: getEnv('AUTH_MODULE', 'direct-access-grant')!,
+        client: getEnv('AUTH_CLIENT', 'WBC_CLIENT')!,
         secret: getEnv('AUTH_CLIENT_SECRET', undefined),
         user: getUserName(userName),
         userSecret: getUserPassword(userName),
-        url: getEnv('AUTH_URL')
+        url: getEnv('AUTH_URL')!
     }
 
     if (!defaults.authModule || defaults.authModule === "none" || defaults.authModule === "false") return false;

@@ -5,7 +5,7 @@ import { SlideInfo } from "./types/slide-info";
 
 export default class Slides extends RootContext {
     protected context: RootAPI;
-    protected data: Slide[];
+    protected data: SlideInfo | null = null;
 
     constructor(context: Root) {
         super();

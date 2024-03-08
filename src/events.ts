@@ -5,7 +5,7 @@
 export type EventHandler = (event: object) => void;
 
 export class EventSource {
-    events = {};
+    events: {[key: string]: any} = {};
 
     /**
      * Add an event handler to be triggered only once (or a given number of times)
@@ -20,11 +20,11 @@ export class EventSource {
      * before removing it.
      * @param {Number} [priority=0] - Handler priority. By default, all priorities are 0. Higher number = priority.
      */
-    addOnceHandler(eventName, handler, userData, times, priority) {
+    addOnceHandler(eventName: string, handler: EventHandler, userData: object, times: number, priority: number) {
         const self = this;
         times = times || 1;
         let count = 0;
-        const onceHandler = function(event) {
+        const onceHandler = function(event: object) {
             count++;
             if (count === times) {
                 self.removeHandler(eventName, onceHandler);
@@ -42,7 +42,7 @@ export class EventSource {
      * @param {Object} [userData=null] - Arbitrary object to be passed unchanged to the handler.
      * @param {Number} [priority=0] - Handler priority. By default, all priorities are 0. Higher number = priority.
      */
-    addHandler ( eventName, handler, userData, priority ) {
+    addHandler(eventName: string, handler: EventHandler, userData: object, priority: number) {
         let events = this.events[ eventName ];
         if ( !events ) {
             this.events[ eventName ] = events = [];
@@ -65,9 +65,9 @@ export class EventSource {
      * @param {String} eventName - Name of event for which the handler is to be removed.
      * @param {EventHandler} handler - Function to be removed.
      */
-    removeHandler ( eventName, handler ) {
+    removeHandler(eventName: string, handler: EventHandler) {
         const events = this.events[ eventName ],
-            handlers = [];
+            handlers: EventHandler[] = [];
         if ( !events ) {
             return;
         }
@@ -86,7 +86,7 @@ export class EventSource {
      * @param {String} eventName - Name of event to inspect.
      * @returns {number} amount of events
      */
-    numberOfHandlers (eventName) {
+    numberOfHandlers(eventName: string) {
         const events = this.events[ eventName ];
         if ( !events ) {
             return 0;
@@ -100,7 +100,7 @@ export class EventSource {
      * @function
      * @param {String} eventName - Name of event for which all handlers are to be removed.
      */
-    removeAllHandlers( eventName ) {
+    removeAllHandlers(eventName: string) {
         if ( eventName ){
             this.events[ eventName ] = [];
         } else{
@@ -115,7 +115,7 @@ export class EventSource {
      * @function
      * @param {String} eventName - Name of event to get handlers for.
      */
-    getHandler ( eventName) {
+    getHandler(eventName: string) {
         let events = this.events[ eventName ];
         if ( !events || !events.length ) {
             return null;
@@ -123,7 +123,7 @@ export class EventSource {
         events = events.length === 1 ?
             [ events[ 0 ] ] :
             Array.apply( null, events );
-        return function ( source, args ) {
+        return function ( source: any, args: any ) {
             let i,
                 length = events.length;
             for ( i = 0; i < length; i++ ) {
@@ -142,7 +142,7 @@ export class EventSource {
      * @param {String} eventName - Name of event to register.
      * @param {Object} eventArgs - Event-specific data.
      */
-    raiseEvent( eventName, eventArgs? ) {
+    raiseEvent( eventName: string, eventArgs?: any ) {
         const handler = this.getHandler( eventName );
         if ( handler ) {
             return handler( this, eventArgs || {} );
@@ -169,7 +169,7 @@ export class EventSource {
      * @memberof OpenSeadragon
      * @see {@link http://www.jquery.com/ jQuery}
      */
-    static isFunction( obj ) {
+    static isFunction( obj: object ) {
         return this.type(obj) === "function";
     };
 
@@ -179,9 +179,9 @@ export class EventSource {
      * @memberof OpenSeadragon
      * @see {@link http://www.jquery.com/ jQuery}
      */
-    static type( obj ) {
+    static type( obj: object ) {
         return ( obj === null ) || ( obj === undefined ) ?
             String( obj ) :
-            this.class2type[ String.toString.call(obj) ] || "object";
+            this.class2type[ String.toString.call(obj) as keyof typeof this.class2type] || "object";
     };
 }

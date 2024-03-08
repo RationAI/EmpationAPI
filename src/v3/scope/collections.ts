@@ -6,14 +6,14 @@ import { ItemQueryList } from "./types/item-query-list";
 
 export default class Collections extends ScopeContext {
     protected context: Scopes;
-    protected data: Collection;
+    protected data: Collection | null = null;
 
     constructor(context: Scopes) {
         super();
         this.context = context;
     }
 
-    async get(collectionId): Promise<Collection> {
+    async get(collectionId: string): Promise<Collection> {
         const collection: Collection = await this.context.rawQuery(`/collections/${collectionId}`);
 
         return collection;
@@ -28,7 +28,7 @@ export default class Collections extends ScopeContext {
       return createdCollection;
     }
 
-    async delete(collectionId): Promise<void> {
+    async delete(collectionId: string): Promise<void> {
         await this.context.rawQuery(`/collections/${collectionId}`, {
             method: "DELETE",
         });
