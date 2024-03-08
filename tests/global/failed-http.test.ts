@@ -5,7 +5,7 @@ import {ConnectionErrorEventArgs, RawAPI, sleep} from "../../src";
 describe('http failure handling', () => {
     const pollyCtx = polly();
 
-    let expectedRequestList = [];
+    let expectedRequestList: object[] = [];
     let desiredResponse = 200;
     function addExpectRequest(request) {
         expectedRequestList.push(request);
@@ -25,8 +25,8 @@ describe('http failure handling', () => {
 
             if (expectedRequestList.length > 0) {
                 const requestData = expectedRequestList.shift();
-                Object.keys(requestData).every(key => {
-                    expect(requestData[key]).toEqual(data[key]);
+                Object.keys(requestData!).every(key => {
+                    expect(requestData![key]).toEqual(data[key]);
                     return true;
                 });
             }

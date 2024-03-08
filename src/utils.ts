@@ -26,16 +26,16 @@ export function sleep(ms: number): Promise<void> {
 }
 
 export class Logger {
-    static error(...args):void {
+    static error(...args: any):void {
         console.error("E:EmpationAPI", ...args);
     }
-    static warn(...args):void {
+    static warn(...args: any):void {
         console.warn("W:EmpationAPI", ...args);
     }
-    static info(...args):void {
+    static info(...args: any):void {
         console.info("I:EmpationAPI", ...args);
     }
-    static debug(...args):void {
+    static debug(...args: any):void {
         console.debug("D:EmpationAPI", ...args);
     }
 }

@@ -22,8 +22,8 @@ export default class Root extends RootAPI {
     examinations: Examinations;
     slides: Slides;
 
-    protected _userId: string;
-    protected _accessToken: string;
+    protected _userId: string = "";
+    protected _accessToken: string | null = null;
 
     constructor(options: EmpationAPIOptions) {
         super(options);
@@ -73,7 +73,7 @@ export default class Root extends RootAPI {
         //todo clear all cached data
         // ... delete this.examinations.data;
 
-        this._userId = undefined;
+        this._userId = "";
         this.scopes.reset();
         this.raiseEvent('reset');
     }

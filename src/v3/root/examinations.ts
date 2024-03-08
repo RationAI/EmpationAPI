@@ -9,7 +9,7 @@ import {ScopeTokenAndScopeId} from "./types/scope-token-and-scope-id";
 
 export default class Examinations extends RootContext {
     protected context: Root;
-    protected data: ExaminationList;
+    protected data: ExaminationList | null = null;
 
     constructor(context: Root) {
         super();
@@ -28,7 +28,7 @@ export default class Examinations extends RootContext {
         });
     }
 
-    async query(query: ExaminationQuery, skip?, limit?): Promise<ExaminationList> {
+    async query(query: ExaminationQuery, skip?: number | undefined, limit?: number | undefined): Promise<ExaminationList> {
         const self = this.context;
         return self.rawQuery(`/examinations/query`, {
             method: 'PUT',

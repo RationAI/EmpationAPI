@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 // import * as fs from "fs";
 const prefix = "EMAPI_";
 
-export function getEnv(key: string, def=undefined) {
+export function getEnv(key: string, def: string | undefined = undefined) {
     let ret = process.env[`${prefix}${key}`];
     if (ret === undefined) return def;
     return ret;

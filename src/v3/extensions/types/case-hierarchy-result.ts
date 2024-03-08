@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Case } from "src/v3/root/types/case";
+import { Case } from "../../root/types/case";
 
 export interface CaseHierarchy {
 

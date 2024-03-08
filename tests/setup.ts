@@ -9,8 +9,8 @@ interface InterceptAuthData {
 }
 
 const usersData: Map<string, InterceptAuthData> = new Map<string, InterceptAuthData>();
-export const defaultTestUser: string = getEnv("AUTH_DEFAULT_USER");
-export const defaultComparisonUser: string = getEnv("AUTH_COMPARE_USER");
+export const defaultTestUser: string = getEnv("AUTH_DEFAULT_USER")!;
+export const defaultComparisonUser: string = getEnv("AUTH_COMPARE_USER")!;
 
 async function doAuth(userName) {
     let context = usersData[userName];
@@ -47,7 +47,7 @@ async function checkAuth(userName=interceptedUser) {
 
 export async function getToken(userName=interceptedUser): Promise<string> {
     let context = await checkAuth(userName);
-    if (!context) return undefined;
+    if (!context) return "";
     return context.token;
 }
 

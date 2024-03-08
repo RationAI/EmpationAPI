@@ -15,14 +15,14 @@ export interface RawOptions {
     body?: object | string;
     query?: any;
     method?: string;
-    headers?: object;
+    headers?: {[key: string]: string};
     responseType?: ResponseType;
 }
 
 //https://gist.github.com/TooTallNate/4fd641f820e1325695487dfd883e5285
-function httpErrorToName(code): string {
+function httpErrorToName(code: number): string {
     const suffix = (code / 100 | 0) === 4 || (code / 100 | 0) === 5 ? 'error' : '';
-    let name = ` ${String(STATUS_CODES[code] || `HTTP Code ${code}`).replace(/error$/i, '')} ${suffix}`;
+    let name = ` ${String(STATUS_CODES[code as keyof typeof STATUS_CODES] || `HTTP Code ${code}`).replace(/error$/i, '')} ${suffix}`;
     return name.split(" ").reduce((acc, c) => acc
         + (c ? (c.charAt(0).toUpperCase() + c.slice(1)) : ""));
 }
@@ -33,7 +33,7 @@ export class HTTPError extends Error {
     [key: string]: any
 
     public constructor(code: number, message: string, extras?: Record<string, any>) {
-        super(message || STATUS_CODES[code] || `HTTP Code ${code}`);
+        super(message || STATUS_CODES[code as keyof typeof STATUS_CODES] || `HTTP Code ${code}`);
         if (arguments.length >= 3 && extras) {
             // noinspection TypeScriptValidateTypes
             Object.assign(this, extras);
@@ -66,7 +66,7 @@ export class RawAPI {
     public url: string;
     private _queue: Array<HttpQueueItem> = [];
     private _handler: ConnectionErrorEvent;
-    private _retryRoutine: NodeJS.Timeout;
+    private _retryRoutine: NodeJS.Timeout | null = null;
 
     private _maxRetryCount;
     private _timeout: number | Array<number>;
@@ -78,7 +78,7 @@ export class RawAPI {
         this._timeout = options.nextRetryInMs || [5000, 10000, 20000, 30000];
     }
 
-    private _parseQueryParams(params) {
+    private _parseQueryParams(params: string | {[key: string]: string}) {
         if (params) {
             if (typeof params === "string") return params;
 
@@ -95,7 +95,7 @@ export class RawAPI {
         return "";
     }
 
-    private _setRetryIn(retryCount, retryTimeout) {
+    private _setRetryIn(retryCount: number, retryTimeout: number) {
         if (retryCount >= this._maxRetryCount) {
             Logger.error("Automated retry failed: maxRetryCount exceeded!");
         } else {
@@ -109,7 +109,7 @@ export class RawAPI {
         });
     }
 
-    private _recordFailed(url: string, options: RawOptions, retryCount, retryTimeout) {
+    private _recordFailed(url: string, options: RawOptions, retryCount: number, retryTimeout: number) {
         if (this._queue.length < 1) {
             this._setRetryIn(retryCount, retryTimeout);
         }
@@ -149,7 +149,7 @@ export class RawAPI {
 
         let result;
         try {
-            result = await response[options.responseType]();
+            result = await response[options.responseType || "json"]();
         } catch (e) {
             throw new HTTPError(500,
                 `Failed to parse response data. Original status: ${response.status} | ${response.statusText}`,
@@ -174,10 +174,10 @@ export class RawAPI {
         options.query = this._parseQueryParams(options.query);
         options.headers = options.headers || {};
         options.headers['Content-Type'] = "application/json";
-        options.responseType = options.responseType || "json";
+        options.responseType = options.responseType;
         if (options.body && typeof options.body !== "string") {
             options.body = JSON.stringify(options.body);
-        } else options.body = null;
+        } else options.body = undefined;
 
         let err = null;
         try {
@@ -206,11 +206,11 @@ export class AbstractAPI extends EventSource {
         const { stack } = new Error();
         Error.prepareStackTrace = orig;
 
-        const caller = stack[2];
+        const caller = stack?.[2];
         return caller ? caller : 'unknown context';
     }
 
-    requires(name, value): void {
+    requires(name: string, value: any): void {
         if (!value) {
             throw `ArgumentError[${this.getCallerName()}] ${name} is missing - required property!`
         }

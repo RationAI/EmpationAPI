@@ -8,7 +8,7 @@ import { SlideList } from "./types/slide-list";
 
 export default class Cases extends RootContext {
     protected context: RootAPI;
-    protected data: CaseList;
+    protected data: CaseList | null = null;
 
     caseExplorer: CaseExplorer;
     slideExplorer: SlideExplorer;
