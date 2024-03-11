@@ -22,13 +22,14 @@ export default class Root extends RootAPI {
     examinations: Examinations;
     slides: Slides;
 
-    protected _userId: string = "";
+    protected _userId: string;
     protected _accessToken: string | null = null;
 
     constructor(options: EmpationAPIOptions) {
         super(options);
         this.version = "v3";
-        this.rootURI = this.apiUrl + Root.apiPath;
+        this._userId = this.options.anonymousUserId;
+        this.rootURI = this.options.apiUrl + Root.apiPath;
         this.raw = new RawAPI(this.rootURI, {
             errorHandler: this.raiseConnectionError.bind(this),
             maxRetryCount: this.options.maxRetryCount,
@@ -39,7 +40,7 @@ export default class Root extends RootAPI {
         this.apps = new Apps(this);
         this.cases = new Cases(this);
         this.examinations = new Examinations(this);
-        this.slides = new Slides(this)
+        this.slides = new Slides(this);
     }
 
     get userId(): string {
@@ -47,6 +48,7 @@ export default class Root extends RootAPI {
     }
 
     async use(userId: string): Promise<void> {
+        if (!userId || userId.length > 50) throw "Invalid User ID! Must be valid string shorter than 50 characters!";
         if (this._userId === userId) return;
         this._userId = userId;
         this.raiseEvent('init');
@@ -73,7 +75,7 @@ export default class Root extends RootAPI {
         //todo clear all cached data
         // ... delete this.examinations.data;
 
-        this._userId = "";
+        this._userId = this.options.anonymousUserId;
         this.scopes.reset();
         this.raiseEvent('reset');
     }

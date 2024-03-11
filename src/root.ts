@@ -6,6 +6,15 @@ export abstract class RootContext {
     protected abstract data: any;
 }
 
+export interface RootAPIOptions {
+    anonymousUserId: string;
+    workbenchApiUrl: string;
+    apiUrl: string;
+    apiRootPath: string;
+    maxRetryCount: number;
+    nextRetryInMs: number | Array<number>;
+}
+
 // BaseAPI implements AbstractAPI over /v[version]
 export abstract class RootAPI extends AbstractAPI {
 
@@ -17,8 +26,7 @@ export abstract class RootAPI extends AbstractAPI {
     // Properties
     abstract version: string;
     abstract rootURI: string;
-    options: EmpationAPIOptions;
-    apiUrl: string;
+    options: RootAPIOptions;
     cached: object;
 
     protected constructor(options: EmpationAPIOptions) {
@@ -28,17 +36,26 @@ export abstract class RootAPI extends AbstractAPI {
             throw "WB Api url is required!";
         }
 
-        this.options = options;
+        let apiUrl;
         if (!options.apiRootPath) {
-            this.apiUrl = options.workbenchApiUrl;
+            apiUrl = options.workbenchApiUrl;
         } else if (!options.apiRootPath.startsWith("/")) {
-            this.apiUrl = `${options.workbenchApiUrl}/${options.apiRootPath}`;
+            apiUrl = `${options.workbenchApiUrl}/${options.apiRootPath}`;
         } else {
-            this.apiUrl = `${options.workbenchApiUrl}${options.apiRootPath}`;
+            apiUrl = `${options.workbenchApiUrl}${options.apiRootPath}`;
         }
-        if (this.apiUrl.endsWith('/')) {
-            this.apiUrl = this.apiUrl.slice(0, -1);
+        if (apiUrl.endsWith('/')) {
+            apiUrl = apiUrl.slice(0, -1);
         }
+
+        this.options = {
+            apiUrl,
+            workbenchApiUrl: options.workbenchApiUrl,
+            anonymousUserId: options.anonymousUserId || 'anonymous',
+            apiRootPath: options.apiRootPath || "",
+            maxRetryCount: typeof options.maxRetryCount === "undefined" ? 4 : options.maxRetryCount,
+            nextRetryInMs: options.nextRetryInMs || [5000, 10000, 20000, 30000],
+        };
         this.cached = {};
     }
 
