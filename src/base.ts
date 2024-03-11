@@ -3,6 +3,7 @@ import { STATUS_CODES } from './status-codes';
 import {Logger} from "./utils";
 
 export interface EmpationAPIOptions {
+    anonymousUserId?: string;
     workbenchApiUrl: string;
     apiRootPath?: string;
     maxRetryCount?: number;
@@ -51,15 +52,15 @@ export interface ConnectionErrorEventArgs {
     queue: Array<HttpQueueItem>;
     retryCount: number;
     maxRetryCount: number;
-    nextRetryInMs: number;
+    nextRetryInMs: number | Array<number>;
 }
 
 export type ConnectionErrorEvent = (args: ConnectionErrorEventArgs) => void | Promise<void>;
 
 export interface RawApiOptions {
     errorHandler: ConnectionErrorEvent;
-    maxRetryCount?: number;
-    nextRetryInMs?: number | Array<number>;
+    maxRetryCount: number;
+    nextRetryInMs: number | Array<number>;
 }
 
 export class RawAPI {
@@ -74,8 +75,8 @@ export class RawAPI {
     constructor(url: string, options: RawApiOptions) {
         this.url = url;
         this._handler = options.errorHandler;
-        this._maxRetryCount = typeof options.maxRetryCount === "undefined" ? 4 : options.maxRetryCount;
-        this._timeout = options.nextRetryInMs || [5000, 10000, 20000, 30000];
+        this._maxRetryCount = options.maxRetryCount;
+        this._timeout = options.nextRetryInMs;
     }
 
     private _parseQueryParams(params: string | {[key: string]: string}) {
