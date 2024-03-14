@@ -11,8 +11,8 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --mode production",
-    "ttypes-v3": "npx ts-interface-builder ./src/v3/root/types/* ./src/v3/scope/types/* ./src/v3/extensions/types/*",
-    "ttclean-v3": "rimraf --glob ./src/v3/root/types/*-ti.ts ./src/v3/scope/types/*-ti.ts ./src/v3/extensions/types/*-ti.ts"
+    "ttypes-v3": "npx ts-interface-builder ./src/v3/root/types/* ./src/v3/scope/types/* ./src/v3/rationai/types/* ./src/v3/extensions/types/*",
+    "ttclean-v3": "rimraf --glob ./src/v3/root/types/*-ti.ts ./src/v3/scope/types/*-ti.ts ./src/v3/rationai/types/*-ti.ts ./src/v3/extensions/types/*-ti.ts"
   },
   "keywords": [],
   "author": "",

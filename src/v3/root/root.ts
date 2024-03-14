@@ -6,6 +6,7 @@ import Cases from "./cases";
 import Examinations from "./examinations";
 import { parseJwtToken} from "../../utils";
 import Slides from "./slides";
+import RationAI from "../rationai/rationai";
 
 export default class Root extends RootAPI {
     static apiPath = '/v3';
@@ -13,6 +14,7 @@ export default class Root extends RootAPI {
     //interface
     protected raw: RawAPI;
     scopes: Scopes;
+    rationai: RationAI;
     version: string;
     rootURI: string;
 
@@ -36,6 +38,7 @@ export default class Root extends RootAPI {
             nextRetryInMs: this.options.nextRetryInMs
         });
         this.scopes = new Scopes(this);
+        this.rationai = new RationAI(this);
 
         this.apps = new Apps(this);
         this.cases = new Cases(this);
