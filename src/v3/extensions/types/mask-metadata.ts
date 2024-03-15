@@ -6,5 +6,5 @@ export interface MaskMetadata {
   /**
    * TEMP Something.
    */
-  something: string;
+  something?: string;
 }

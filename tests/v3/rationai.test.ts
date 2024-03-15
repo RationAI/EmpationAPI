@@ -47,5 +47,10 @@ describe('rationai api', () => {
 
         const queryResult = await rationAI.globalStorage.query(globalQuery);
         expect(queryResult.find((item) => item.id === createdItem.id)).toEqual(updatedItem)
+
+        await rationAI.globalStorage.delete(createdItem.id)
+
+        const queryResult2 = await rationAI.globalStorage.query(globalQuery);
+        expect(queryResult2.find((item) => item.id === createdItem.id)).toBeUndefined()
     });
 });

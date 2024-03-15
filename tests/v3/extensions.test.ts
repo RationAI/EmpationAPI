@@ -1,9 +1,11 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import { CaseSearchParams } from "../../src/v3/extensions/types/case-search-params";
+import { SlideMetadata } from "../../src/v3/extensions/types/slide-metadata";
+import { TemplateType } from "../../src/v3/extensions/types/template-type";
 import {polly} from "../polly";
 import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
 import { getV3TypeChecker } from "./checker";
-import {getRoot, getScope} from "./setup";
+import {getRationAI, getRoot, getScope} from "./setup";
 
 
 describe('extensions tests', () => {
@@ -64,4 +66,63 @@ describe('extensions tests', () => {
     searchResult.forEach((resultItem) => Case.check(resultItem))
     expect(searchResult).toEqual([]);
   });
+  it('slide visualizations', async () => {
+    const rationAI = await getRationAI();
+
+    // create vis templates
+    /* await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Background, "default", {
+      "lossless": false
+    })
+    await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Params, "params", {
+      "locale": "en",
+      "activeBackgroundIndex": 0,
+      "activeVisualizationIndex": 0
+    })
+    await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Shader, "heatmap", { 
+      "name": "Heatmap",
+      "type": "heatmap", 
+      "visible": 1, 
+      "params": {}
+    })
+    await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Visualization, "visualization", {
+      "name": "Layer",
+      "lossless": true,
+      "shaders": []
+    }) */
+
+    const slideId = "8c5608f3-a824-485c-b791-2a640405d87b"
+
+    const newMetadata: SlideMetadata = {
+      visualization: {
+        paramsTemplate: "params",
+        background: {
+          dataRef: 0,
+          template: "default",
+        },
+        data: ["8c5608f3-a824-485c-b791-2a640405d87b", "eabd1f58-357a-48ed-880b-833217e59915"],
+        visualizations: [
+          {
+            name: "Test visualization",
+            visTemplate: "visualization",
+            shaders: [
+              {
+                shaderTemplate: "heatmap",
+                id: "heatmap_shader",
+                name: "heatmap_shader",
+                dataRefs: [1],
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+    const slideMetadata = await rationAI.globalStorage.wsiMetadata.updateSlideMetadata(slideId, newMetadata);
+
+    console.log(slideMetadata);
+
+    const slideVis = await rationAI.globalStorage.wsiMetadata.getVisualizations(slideId);
+
+    console.log(slideVis);
+  })
 });

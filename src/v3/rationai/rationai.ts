@@ -1,6 +1,6 @@
 import {RawAPI, RawOptions} from "../../base";
 import { parseJwtToken} from "../../utils";
-import { RationAIAPI } from "src/rationai";
+import { RationAIAPI } from "../../rationai";
 import Root from "../root/root";
 import GlobalStorage from "./global-storage";
 

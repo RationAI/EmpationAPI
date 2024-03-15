@@ -1,4 +1,3 @@
 {
-  "lossless": false,
-  "protocol": "path + \"?Deepzoom=\" + data + \".dzi\";"
+  "lossless": false
 }

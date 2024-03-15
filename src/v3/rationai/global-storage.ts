@@ -1,4 +1,4 @@
-import { RationAIContext } from "src/rationai";
+import { RationAIContext } from "../../rationai";
 import RationAI from "./rationai";
 import { GlobalItem } from "./types/global-item";
 import { GlobalStorageQuery } from "./types/global-storage-query";
@@ -8,16 +8,22 @@ import { GlobalItems } from "./types/global-items";
 import { GlobalItemReferenceType } from "./types/global-item-reference-type";
 import { PostGlobalItem } from "./types/post-global-item";
 import { GlobalDataCreatorType } from "./types/global-data-creator-type";
-import { GlobalItemType } from "./types/global-item-type";
 import { PutGlobalItem } from "./types/put-global-item";
+import WsiMetadata from "../extensions/wsi-metadata";
+import VisualizationTemplates from "../extensions/visualization-templates";
 
 export default class GlobalStorage extends RationAIContext {
     protected context: RationAI;
     protected data: GlobalItem | null = null;
 
+    wsiMetadata: WsiMetadata
+    visTemplates: VisualizationTemplates
+
     constructor(context: RationAI) {
         super();
         this.context = context;
+        this.wsiMetadata = new WsiMetadata(this)
+        this.visTemplates = new VisualizationTemplates(this)
     }
 
     async get(itemId: string): Promise<GlobalItem> {
@@ -28,7 +34,11 @@ export default class GlobalStorage extends RationAIContext {
     async getValue(itemId: string): Promise<any> {
       const item = await this.get(itemId)
       if (item.type === "string") {
-          return JSON.parse(item.value as string);
+        try {
+          return JSON.parse(item.value);
+        } catch {
+          return item.value
+        }
       }
       return item.value
     }

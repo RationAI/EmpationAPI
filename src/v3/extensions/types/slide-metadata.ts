@@ -20,13 +20,13 @@ export interface SlideMetaVisualization {
 }
 
 export interface SlideMetaVisualizations {
-  paramsTemplate: string;
-  data: string[];
-  background: Background;
-  visualizations: SlideMetaVisualization[];
+  paramsTemplate?: string;
+  data?: string[];
+  background?: Background;
+  visualizations?: SlideMetaVisualization[];
 }
 
-export interface SlideMetadataT {
+export interface SlideMetadata {
 
   /**
    * Visualizations.
