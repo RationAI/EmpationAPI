@@ -34,12 +34,12 @@ export default class WsiMetadata {
       return JSON.parse((await this.getWsiMetadataItem(slideId)).value as string)
     }
 
-    async updateSlideMetadata(slideId: string, value: SlideMetadata): Promise<GlobalItem | false> {
+    async updateSlideMetadata(slideId: string, value: SlideMetadata): Promise<SlideMetadata | false> {
       const metadataItem = await this.getWsiMetadataItem(slideId);
       try {
-        const updatedItem = await this.context.update(slideId, {...metadataItem, value: JSON.stringify(value)})
-        return updatedItem
-      } catch {
+        const updatedItem = await this.context.update(metadataItem.id, {...metadataItem, value: JSON.stringify(value)})
+        return JSON.parse(updatedItem.value)
+      } catch (e) {
         return false
       }
     }
@@ -60,15 +60,15 @@ export default class WsiMetadata {
     async getVisualizations(slideId: string): Promise<any> {
       const slideVis = (await this.getSlideMetadata(slideId)).visualization;
       const visualizations = {
-        params: slideVis.paramsTemplate ? (await this.context.visTemplates.getTemplate(TemplateType.Shader, slideVis.paramsTemplate) || undefined) : undefined,
+        params: slideVis.paramsTemplate ? (await this.context.visTemplates.getTemplate(TemplateType.Params, slideVis.paramsTemplate) || undefined) : undefined,
         data: slideVis.data,
         background: {
-          ...(slideVis.background ? await this.context.visTemplates.getTemplate(TemplateType.Shader, slideVis.background?.template) : {}),
+          ...(slideVis.background ? await this.context.visTemplates.getTemplate(TemplateType.Background, slideVis.background?.template) : {}),
           data: slideVis.background && slideVis.background.dataRef,
         },
         visualizations: slideVis.visualizations && await Promise.all(slideVis.visualizations.map(async (vis) => {
           return ({
-            ...await this.context.visTemplates.getTemplate(TemplateType.Shader, vis.visTemplate),
+            ...await this.context.visTemplates.getTemplate(TemplateType.Visualization, vis.visTemplate),
             name: vis.name,
             shaders: await this.getShadersConfig(vis.shaders),
           })

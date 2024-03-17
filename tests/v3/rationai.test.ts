@@ -3,7 +3,6 @@ import { GlobalDataCreatorType } from "../../src/v3/rationai/types/global-data-c
 import { GlobalItem } from "../../src/v3/rationai/types/global-item";
 import { GlobalItemType } from "../../src/v3/rationai/types/global-item-type";
 import { GlobalStorageQuery } from "../../src/v3/rationai/types/global-storage-query";
-import { DataCreatorType } from "../../src/v3/scope/types/data-creator-type";
 import {polly} from "../polly";
 import {setupIntercept} from "../setup";
 import {getRationAI} from "./setup";
