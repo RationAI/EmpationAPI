@@ -41,7 +41,9 @@ describe('http failure handling', () => {
             throw "Error handler must not be called!";
         }
         const raw = new RawAPI("https://example.com", {
-            errorHandler: errHandler
+            errorHandler: errHandler,
+            maxRetryCount: 10,
+            nextRetryInMs: 500,
         });
 
         let res = await raw.http("some/endpoint", {});
@@ -65,7 +67,8 @@ describe('http failure handling', () => {
         }
         const raw = new RawAPI("https://example.com", {
             errorHandler: errHandler,
-            nextRetryInMs: FAILED_RETRY_IN_MS
+            nextRetryInMs: FAILED_RETRY_IN_MS,
+            maxRetryCount: 10,
         });
 
         let res = await raw.http("some/endpoint", {});

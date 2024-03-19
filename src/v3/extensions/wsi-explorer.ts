@@ -2,7 +2,7 @@ import Cases from "../root/cases";
 import { Slide } from "../root/types/slide";
 import { matchStringOnSeparatorGroup } from "./utils";
 
-export default class SlideExplorer {
+export default class WsiExplorer {
     protected context: Cases;
     protected data: Slide[] | null = null;
     protected slidesData: Slide[] | null = null;
@@ -27,7 +27,7 @@ export default class SlideExplorer {
       return this.data
     }
 
-    async actualSlides(caseId: string): Promise<Slide[]> {
+    async slides(caseId: string): Promise<Slide[]> {
       if (!this.slidesData) {
         this.slidesData = (await this.getAllSlides(caseId)).filter((slide) => { 
           return !matchStringOnSeparatorGroup(slide.local_id || "", this.maskIdentifierSeparator, 1, this.maskIdentifierValue);

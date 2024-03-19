@@ -1,9 +1,5 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import { DataCreatorType } from "../../src/v3/scope/types/data-creator-type";
-import { PostPrimitive } from "../../src/v3/scope/types/post-primitive";
-import { PrimitiveQuery } from "../../src/v3/scope/types/primitive-query";
-import { PrimitiveReferenceType } from "../../src/v3/scope/types/primitive-reference-type";
-import { PrimitiveType } from "../../src/v3/scope/types/primitive-type";
 import {polly} from "../polly";
 import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
 import {getRoot, getScope, getScopeCase} from "./setup";
