@@ -8,8 +8,8 @@ import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, group
 export default class CaseExplorer {
     protected context: Cases;
     protected caseHierarchy: CaseHierarchy | null = null;
-    protected caseTissues: string[] = [];
-    protected caseStains: string[] = []; 
+    protected caseTissues: string[] | null = null;
+    protected caseStains: string[] | null = null; 
 
     identifierSeparator: string = "";
 
@@ -196,6 +196,6 @@ export default class CaseExplorer {
         cases.forEach((c) => Object.values(c.stains).map((stain: any) => stain[localization]).forEach((t) => allStains.add(t)));
         this.caseStains = [...allStains];
       }
-      return this.caseTissues;
+      return this.caseStains;
     }
 }
