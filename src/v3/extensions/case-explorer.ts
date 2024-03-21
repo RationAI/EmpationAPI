@@ -7,7 +7,9 @@ import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, group
 
 export default class CaseExplorer {
     protected context: Cases;
-    protected data: CaseExplorerResults | null = null;
+    protected caseHierarchy: CaseHierarchy | null = null;
+    protected caseTissues: string[] = [];
+    protected caseStains: string[] = []; 
 
     identifierSeparator: string = "";
 
@@ -161,9 +163,11 @@ export default class CaseExplorer {
     }
 
     async hierarchy(keys: string[]): Promise<CaseHierarchy> {
-      const cases = (await this.context.list()).items;
-
-      return this.hierarchyLevel(keys, 0, cases);
+      if(!this.caseHierarchy) {
+        const cases = (await this.context.list()).items;
+        this.caseHierarchy = this.hierarchyLevel(keys, 0, cases);
+      }
+      return this.caseHierarchy;
     }
 
     async search(query: CaseSearchParams[]): Promise<Case[]> {
@@ -173,21 +177,25 @@ export default class CaseExplorer {
       return filteredCases;
     }
 
-    async tissues(): Promise<string[]> {
-      const cases = (await this.context.list()).items;
+    async tissues(localization: string = "EN"): Promise<string[]> {
+      if(!this.caseTissues) {
+        const cases = (await this.context.list()).items;
 
-      const allTissues: Set<string> = new Set();
-      cases.forEach((c) => Object.values(c.tissues).map((tissue: any) => tissue["EN"]).forEach((t) => allTissues.add(t)));
-
-      return [...allTissues];
+        const allTissues: Set<string> = new Set();
+        cases.forEach((c) => Object.values(c.tissues).map((tissue: any) => tissue[localization]).forEach((t) => allTissues.add(t)));
+        this.caseTissues = [...allTissues];
+      }
+      return this.caseTissues;
     }
 
-    async stains(): Promise<string[]> {
-      const cases = (await this.context.list()).items;
+    async stains(localization: string = "EN"): Promise<string[]> {
+      if(!this.caseStains) {
+        const cases = (await this.context.list()).items;
 
-      const allStains: Set<string> = new Set();
-      cases.forEach((c) => Object.values(c.stains).map((stain: any) => stain["EN"]).forEach((t) => allStains.add(t)));
-
-      return [...allStains];
+        const allStains: Set<string> = new Set();
+        cases.forEach((c) => Object.values(c.stains).map((stain: any) => stain[localization]).forEach((t) => allStains.add(t)));
+        this.caseStains = [...allStains];
+      }
+      return this.caseTissues;
     }
 }
