@@ -23,12 +23,9 @@ export default class Root extends RootAPI {
     examinations: Examinations;
     slides: Slides;
 
-    protected _userId: string;
-
     constructor(options: EmpationAPIOptions) {
         super(options);
         this.version = "v3";
-        this._userId = this.options.anonymousUserId;
         this.rootURI = this.options.apiUrl + Root.apiPath;
         this.raw = new RawAPI(this.rootURI, {
             errorHandler: this.raiseConnectionError.bind(this),
@@ -50,7 +47,7 @@ export default class Root extends RootAPI {
         options.headers = options.headers || {};
         options.headers["User-Id"] = this.userId;
         if (this.accessToken) {
-            options.headers['Authorization'] = options.headers['Authorization'] || `Bearer ${this.accessToken}`;
+            options.headers['Authorization'] = options.headers['Authorization'] || `Bearer ${this.rawToken}`;
         }
         return this.raw.http(endpoint, options);
     }
