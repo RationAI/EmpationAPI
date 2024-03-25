@@ -3,7 +3,9 @@
 import { Case } from "src/v3/root/types/case";
 
 /* eslint-disable */
-export interface CaseH extends Case {
+interface CaseCustom {
 
   pathInHierarchy: string;
 }
+
+export type CaseH = Case & CaseCustom;
