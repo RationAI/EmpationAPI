@@ -27,11 +27,7 @@ export default class Root extends RootAPI {
         super(options);
         this.version = "v3";
         this.rootURI = this.options.apiUrl + Root.apiPath;
-        this.raw = new RawAPI(this.rootURI, {
-            errorHandler: this.raiseConnectionError.bind(this),
-            maxRetryCount: this.options.maxRetryCount,
-            nextRetryInMs: this.options.nextRetryInMs
-        });
+        this.raw = new RawAPI(this.rootURI);
         this.scopes = new Scopes(this);
         this.rationai = new RationAI(this);
 
