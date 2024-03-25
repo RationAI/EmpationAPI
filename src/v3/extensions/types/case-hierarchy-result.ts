@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { Case } from "../../root/types/case";
+import { CaseH } from "./case-h";
 
 export interface CaseHierarchy {
 
@@ -19,5 +19,5 @@ export interface CaseHierarchy {
    */
   // TODO: Question for Jirka, should it be allowed to have (CaseHierarchy| Case)[] instead? 
   // is there a use case for this? mixing cases/"folders" on the same level?
-  items: CaseHierarchy[] | Case[];
+  items: CaseHierarchy[] | CaseH[];
 }
