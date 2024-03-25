@@ -7,7 +7,7 @@ let rootApis: Map<string, V3.Root> = new Map<string, V3.Root>();
 
 // TODO: tests must also write setInterceptedUser() in order to work - must be specified twice, reduce!
 export async function getRoot(userName=defaultTestUser): Promise<V3.Root> {
-    let rootApi = rootApis[userName];
+    let rootApi: V3.Root = rootApis[userName];
     if (!rootApi) {
         rootApis[userName] = rootApi = new V3.Root({
             workbenchApiUrl: getEnv('TEST_WB_URL')!
@@ -27,7 +27,6 @@ export async function getScope(userName=defaultTestUser, caseIndex=0): Promise<V
 
 export async function getRationAI(userName=defaultTestUser): Promise<V3.RationAI> {
     const root = await getRoot(userName);
-    await root.rationai.use(root.userId)
     return root.rationai;
 }
 

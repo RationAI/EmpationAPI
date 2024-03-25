@@ -1,4 +1,3 @@
-import { RationAIContext } from "../../rationai";
 import RationAI from "./rationai";
 import { GlobalItem } from "./types/global-item";
 import { GlobalStorageQuery } from "./types/global-storage-query";
@@ -12,7 +11,7 @@ import { PutGlobalItem } from "./types/put-global-item";
 import WsiMetadata from "../extensions/wsi-metadata";
 import VisualizationTemplates from "../extensions/visualization-templates";
 
-export default class GlobalStorage extends RationAIContext {
+export default class GlobalStorage {
     protected context: RationAI;
     protected data: GlobalItem | null = null;
 
@@ -20,7 +19,6 @@ export default class GlobalStorage extends RationAIContext {
     visTemplates: VisualizationTemplates
 
     constructor(context: RationAI) {
-        super();
         this.context = context;
         this.wsiMetadata = new WsiMetadata(this)
         this.visTemplates = new VisualizationTemplates(this)

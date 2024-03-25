@@ -1,6 +1,7 @@
 import Cases from "../root/cases";
 import { Case } from "../root/types/case";
 import { CaseExplorerResults } from "./types/case-explorer-results";
+import { CaseH } from "./types/case-h";
 import { CaseHierarchy } from "./types/case-hierarchy-result";
 import { CaseSearchParams } from "./types/case-search-params";
 import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, groupBy, matchStringOnTokens } from "./utils";
@@ -139,9 +140,9 @@ export default class CaseExplorer {
       // return evalValue.some((stain) => Object.keys(value).includes(stain))
     }
 
-    private hierarchyLevel(keys: string[], keyIdx: number, cases: Case[], name?: string): CaseHierarchy {
+    private hierarchyLevel(keys: string[], keyIdx: number, cases: Case[], currentHierarchyPath: string, name?: string): CaseHierarchy {
       if (keyIdx >= keys.length) {
-        return { levelName: name, lastLevel: true, items: cases}
+        return { levelName: name, lastLevel: true, items: cases.map((caseObj) => { return {...caseObj, pathInHierarchy: currentHierarchyPath}})}
       }
       // grouping by array values(tissues, stains) is not expected, but works by grouping on first value of array
       const groups = groupBy(cases, (cs) => {
@@ -154,9 +155,9 @@ export default class CaseExplorer {
 
       const items = Object.keys(groups).map((name) => {
         if(name === "OTHER") {
-          return this.hierarchyLevel(keys, keys.length, groups[name], name);
+          return this.hierarchyLevel(keys, keys.length, groups[name], `${currentHierarchyPath}/${name}`, name);
         }
-        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], name);
+        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], `${currentHierarchyPath}/${name}`, name);
       })
 
       return { levelName: name, lastLevel: false, items: items };
@@ -165,7 +166,7 @@ export default class CaseExplorer {
     async hierarchy(keys: string[]): Promise<CaseHierarchy> {
       if(!this.caseHierarchy) {
         const cases = (await this.context.list()).items;
-        this.caseHierarchy = this.hierarchyLevel(keys, 0, cases);
+        this.caseHierarchy = this.hierarchyLevel(keys, 0, cases, "");
       }
       return this.caseHierarchy;
     }

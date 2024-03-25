@@ -99,6 +99,10 @@ export abstract class RootAPI extends AbstractAPI {
     get userId(): string {
         return this._userId;
     }
+     
+    get rawToken(): string {
+        return this._rawToken;
+    }
 
     async rawQuery(endpoint: string, options?: RawOptions): Promise<any> {
         if (this._tokenExpires > 0 && Date.now() > this._tokenExpires) {

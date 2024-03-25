@@ -6,7 +6,7 @@ import {
 } from "../root/types/workbench-service-api-v-3-custom-models-examinations-examination";
 import Root from "../root/root";
 import Storage from "./storage";
-import {getJwtTokenExpires, parseJwtToken, ScopeToken} from "../../utils";
+import {getJwtTokenExpiresTimeout, parseJwtToken, ScopeToken} from "../../utils";
 import Annotations from "./annotations";
 import Collections from "./collections";
 
