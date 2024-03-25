@@ -101,6 +101,10 @@ export abstract class RootAPI extends AbstractAPI {
     }
 
     async rawQuery(endpoint: string, options?: RawOptions): Promise<any> {
+        if (!this._userId) {
+            throw "User must be configured to access Empaia API: either provide a valid 'anonymous' user ID through env variables, or configure the Root API with a valid token.";
+        }
+
         if (this._tokenExpires > 0 && Date.now() > this._tokenExpires) {
             const eventObject = {newToken: ""};
             /**
