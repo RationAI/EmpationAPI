@@ -29,11 +29,7 @@ export default class Scopes extends ScopesAPI {
     constructor(context: Root) {
         super();
         this.context = context;
-        this.raw = new RawAPI(this.context.options.apiUrl + Scopes.apiPath, {
-            errorHandler: this.raiseConnectionError.bind(this),
-            maxRetryCount: this.context.options.maxRetryCount,
-            nextRetryInMs: this.context.options.nextRetryInMs
-        });
+        this.raw = new RawAPI(this.context.options.apiUrl + Scopes.apiPath);
         this.storage = new Storage(this);
         this.annotations = new Annotations(this);
         this.collections = new Collections(this);

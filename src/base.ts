@@ -1,13 +1,10 @@
 import {EventSource} from "./events";
 import { STATUS_CODES } from './status-codes';
-import {Logger} from "./utils";
 
 export interface EmpationAPIOptions {
     anonymousUserId?: string;
     workbenchApiUrl: string;
     apiRootPath?: string;
-    maxRetryCount?: number;
-    nextRetryInMs?: number | Array<number>;
 }
 
 type ResponseType = "json" | "blob" | "text";
@@ -44,39 +41,14 @@ export class HTTPError extends Error {
     }
 }
 
-export interface HttpQueueItem extends RawOptions {
-    url: string
-}
-
-export interface ConnectionErrorEventArgs {
-    queue: Array<HttpQueueItem>;
-    retryCount: number;
-    maxRetryCount: number;
-    nextRetryInMs: number | Array<number>;
-}
-
-export type ConnectionErrorEvent = (args: ConnectionErrorEventArgs) => void | Promise<void>;
-
-export interface RawApiOptions {
-    errorHandler: ConnectionErrorEvent;
-    maxRetryCount: number;
-    nextRetryInMs: number | Array<number>;
-}
+export interface RawApiOptions {}
 
 export class RawAPI {
     public url: string;
-    private _queue: Array<HttpQueueItem> = [];
-    private _handler: ConnectionErrorEvent;
-    private _retryRoutine: NodeJS.Timeout | null = null;
-
-    private _maxRetryCount;
-    private _timeout: number | Array<number>;
-
-    constructor(url: string, options: RawApiOptions) {
+    public options: RawOptions;
+    constructor(url: string, options: RawApiOptions = {}) {
         this.url = url;
-        this._handler = options.errorHandler;
-        this._maxRetryCount = options.maxRetryCount;
-        this._timeout = options.nextRetryInMs;
+        this.options = options;
     }
 
     private _parseQueryParams(params: string | {[key: string]: string}) {
@@ -96,52 +68,8 @@ export class RawAPI {
         return "";
     }
 
-    private _setRetryIn(retryCount: number, retryTimeout: number) {
-        if (retryCount >= this._maxRetryCount) {
-            Logger.error("Automated retry failed: maxRetryCount exceeded!");
-        } else {
-            this._retryRoutine = setTimeout(this._replay.bind(this, retryCount), retryTimeout);
-        }
-        this._handler({
-            queue: this._queue,
-            retryCount: retryCount,
-            maxRetryCount: this._maxRetryCount,
-            nextRetryInMs: retryTimeout
-        });
-    }
 
-    private _recordFailed(url: string, options: RawOptions, retryCount: number, retryTimeout: number) {
-        if (this._queue.length < 1) {
-            this._setRetryIn(retryCount, retryTimeout);
-        }
-        this._queue.push({url, ...options});
-    }
-
-    private async _replay(retryCount=0) {
-        if (this._queue.length < 1) {
-            return;
-        }
-        if (this._retryRoutine) {
-            clearTimeout(this._retryRoutine);
-            this._retryRoutine = null;
-        }
-        try {
-            const item = this._queue[0];
-            await this._fetch(item.url, item);
-            this._queue.shift();
-        } catch (e) {
-            retryCount++;
-            // index 0 == 1st replay attempt
-            Logger.warn("Replay attempt ", retryCount, " failed: ", e);
-            const retryTimeout = Array.isArray(this._timeout) ?
-                this._timeout[Math.min(this._timeout.length-1, retryCount)] : this._timeout;
-            this._setRetryIn(retryCount, retryTimeout);
-            throw e;
-        }
-        await this._replay();
-    }
-
-    private async _fetch(url: string, options: RawOptions | HttpQueueItem): Promise<any> {
+    private async _fetch(url: string, options: RawOptions): Promise<any> {
         const response = await fetch(url, {
             method: options.method,
             headers: options.headers,
@@ -175,24 +103,11 @@ export class RawAPI {
         options.query = this._parseQueryParams(options.query);
         options.headers = options.headers || {};
         options.headers['Content-Type'] = "application/json";
-        options.responseType = options.responseType;
         if (options.body && typeof options.body !== "string") {
             options.body = JSON.stringify(options.body);
         } else options.body = undefined;
 
-        let err = null;
-        try {
-            return await this._fetch(this.url + endpoint + options.query, options);
-        } catch (e) {
-            err = e;
-        }
-
-        if (Array.isArray(this._timeout) && this._timeout.length < 1) this._timeout = [5000];
-        else if (!this._timeout) this._timeout = 5000;
-        const timeout = Array.isArray(this._timeout) ? this._timeout[0] : this._timeout;
-        this._recordFailed(this.url + endpoint + options.query, options, 0, timeout);
-
-        if (err) throw err;
+        return await this._fetch(this.url + endpoint + options.query, options);
     }
 }
 
@@ -215,13 +130,5 @@ export class AbstractAPI extends EventSource {
         if (!value) {
             throw `ArgumentError[${this.getCallerName()}] ${name} is missing - required property!`
         }
-    }
-
-    /**
-     * @event 'connection-error'
-     * @param args
-     */
-    raiseConnectionError(args: ConnectionErrorEventArgs): void {
-        this.raiseEvent('connection-error', args);
     }
 }

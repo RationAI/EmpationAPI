@@ -1,4 +1,4 @@
-import {AbstractAPI, ConnectionErrorEventArgs, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
+import {AbstractAPI, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
 import {ScopesAPI} from "./scope";
 import {getJwtTokenExpiresTimeout, JwtTokenBase, parseJwtToken} from "./utils";
 
@@ -12,8 +12,6 @@ export interface RootAPIOptions {
     workbenchApiUrl: string;
     apiUrl: string;
     apiRootPath: string;
-    maxRetryCount: number;
-    nextRetryInMs: number | Array<number>;
 }
 
 // BaseAPI implements AbstractAPI over /v[version]
@@ -58,8 +56,6 @@ export abstract class RootAPI extends AbstractAPI {
             workbenchApiUrl: options.workbenchApiUrl,
             anonymousUserId: options.anonymousUserId || 'anonymous',
             apiRootPath: options.apiRootPath || "",
-            maxRetryCount: typeof options.maxRetryCount === "undefined" ? 4 : options.maxRetryCount,
-            nextRetryInMs: options.nextRetryInMs || [5000, 10000, 20000, 30000],
         };
         this._userId = this.options.anonymousUserId;
         this.cached = {};
@@ -99,7 +95,7 @@ export abstract class RootAPI extends AbstractAPI {
     get userId(): string {
         return this._userId;
     }
-     
+
     get rawToken(): string {
         return this._rawToken;
     }
