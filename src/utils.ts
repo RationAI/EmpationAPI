@@ -13,6 +13,11 @@ export interface JwtToken extends JwtTokenBase {
     azp: string;
 }
 
+export function getJwtTokenExpiresTimeout(token: JwtTokenBase) {
+    //timeout with 20 seconds slack OR 280 secs
+    return token.exp*1e3 - Date.now() - 20e3 || 280e3;
+}
+
 export interface ScopeToken extends JwtTokenBase {
     token_id: number
 }
