@@ -1,5 +1,6 @@
 import {AbstractAPI, ConnectionErrorEventArgs, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
 import {ScopesAPI} from "./scope";
+import {getJwtTokenExpiresTimeout, JwtTokenBase, parseJwtToken} from "./utils";
 
 export abstract class RootContext {
     protected abstract context: RootAPI;
@@ -28,6 +29,11 @@ export abstract class RootAPI extends AbstractAPI {
     abstract rootURI: string;
     options: RootAPIOptions;
     cached: object;
+    accessToken: JwtTokenBase | null = null;
+
+    private _userId: string;
+    private _tokenExpires: number = 0;
+    private _rawToken: string = "";
 
     protected constructor(options: EmpationAPIOptions) {
         super();
@@ -47,7 +53,6 @@ export abstract class RootAPI extends AbstractAPI {
         if (apiUrl.endsWith('/')) {
             apiUrl = apiUrl.slice(0, -1);
         }
-
         this.options = {
             apiUrl,
             workbenchApiUrl: options.workbenchApiUrl,
@@ -56,27 +61,57 @@ export abstract class RootAPI extends AbstractAPI {
             maxRetryCount: typeof options.maxRetryCount === "undefined" ? 4 : options.maxRetryCount,
             nextRetryInMs: options.nextRetryInMs || [5000, 10000, 20000, 30000],
         };
+        this._userId = this.options.anonymousUserId;
         this.cached = {};
     }
 
     /**
      * Change the User actor for the API. Note: the api will
      * reset it's whole state.
-     * @param userId
-     * @protected
-     */
-    abstract use(userId: string): Promise<void>;
-
-    /**
-     * Change the User actor for the API. Note: the api will
-     * reset it's whole state.
      * @param token setup context from object
+     * @param withEvent
      */
-    abstract from(token: string): Promise<void>;
+    from(token: string, withEvent=true): void {
+        if (!token) {
+            return this.reset();
+        }
+        this._rawToken = token;
+        withEvent = withEvent && !this.accessToken; //fire event only when we configure new session
+        this.accessToken = parseJwtToken(token) as JwtTokenBase;
+        const tokenTimeout = getJwtTokenExpiresTimeout(this.accessToken);
+        this._tokenExpires = Date.now() + tokenTimeout / 2;
+        const userId = this.accessToken.sub;
+        if (!userId || userId.length > 50) throw "Invalid User ID! Must be valid string shorter than 50 characters!";
+        this._userId = userId;
+        if (this.userId === userId) return;
+        if (withEvent) this.raiseEvent('init');
+    }
 
-    abstract reset(): void;
+    reset(): void {
+        this._rawToken = "";
+        this._tokenExpires = 0;
+        this.accessToken = null;
+        this._userId = this.options.anonymousUserId;
+        this.scopes.reset();
+        this.raiseEvent('reset');
+    }
 
-    abstract rawQuery(endpoint: string, options?: RawOptions): Promise<any>;
+    get userId(): string {
+        return this._userId;
+    }
+
+    async rawQuery(endpoint: string, options?: RawOptions): Promise<any> {
+        if (this._tokenExpires > 0 && Date.now() > this._tokenExpires) {
+            const eventObject = {newToken: ""};
+            /**
+             * @event token-refresh
+             * Awaiting event. Provide newToken value in the event handler argument params object
+             * for the root API to consume.
+             */
+            await this.raiseEventAwaiting('token-refresh', eventObject);
+            this.from(eventObject.newToken);
+        }
+    };
 }
 
 

@@ -6,7 +6,7 @@ import {
 } from "../root/types/workbench-service-api-v-3-custom-models-examinations-examination";
 import Root from "../root/root";
 import Storage from "./storage";
-import {parseJwtToken, ScopeToken} from "../../utils";
+import {getJwtTokenExpires, parseJwtToken, ScopeToken} from "../../utils";
 import Annotations from "./annotations";
 import Collections from "./collections";
 
@@ -84,8 +84,7 @@ export default class Scopes extends ScopesAPI {
         this.scopeContext = await this.context.examinations.scope(examination.id);
         this._activeExaminationId = examination.id;
         const token = parseJwtToken(this.scopeContext.access_token) as ScopeToken;
-        //timeout with 20 seconds slack OR 280 secs
-        const timeout = token.exp*1e3 - Date.now() - 20e3 || 280e3;
+        const timeout = getJwtTokenExpiresTimeout(token);
         this._tokenRefetchInterval = setInterval(async () => {
             this.scopeContext = await this.context.examinations.scope(examination.id);
         }, timeout);

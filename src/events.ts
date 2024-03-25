@@ -137,6 +137,43 @@ export class EventSource {
     }
 
     /**
+     * Get a function which iterates the list of all handlers registered for a given event,
+     * calling the handler for each and awaiting async ones.
+     * @function
+     * @param {String} eventName - Name of event to get handlers for.
+     */
+    getAwaitingHandler( eventName) {
+        let events = this.events[ eventName ];
+        if ( !events || !events.length ) {
+            return null;
+        }
+        events = events.length === 1 ?
+            [ events[ 0 ] ] :
+            Array.apply( null, events );
+
+        return function ( source, args ) {
+            // We return a promise that gets resolved after all the events finish.
+            // Returning loop result is not correct, loop promises chain dynamically
+            // and outer code could process finishing logics in the middle of event loop.
+            return new Promise(resolve => {
+                const length = events.length;
+                function loop(index) {
+                    if ( index >= length || !events[ index ] ) {
+                        resolve("Resolved!");
+                        return null;
+                    }
+                    args.eventSource = source;
+                    args.userData = events[ index ].userData;
+                    let result = events[ index ].handler( args );
+                    result = (!result || EventSource.type(result) !== "promise") ? Promise.resolve() : result;
+                    return result.then(() => loop(index + 1));
+                }
+                loop(0);
+            });
+        };
+    }
+
+    /**
      * Trigger an event, optionally passing additional information.
      * @function
      * @param {String} eventName - Name of event to register.
@@ -148,6 +185,24 @@ export class EventSource {
             return handler( this, eventArgs || {} );
         }
         return undefined;
+    }
+
+    /**
+     * Trigger an event, optionally passing additional information.
+     * This events awaits every asynchronous or promise-returning function.
+     * @param {String} eventName - Name of event to register.
+     * @param {Object} eventArgs - Event-specific data.
+     * @return {Promise|undefined} - Promise resolved upon the event completion.
+     */
+    raiseEventAwaiting( eventName, eventArgs ) {
+        //uncomment if you want to get a log of all events
+        //$.console.log( "Awaiting event fired:", eventName );
+
+        const awaitingHandler = this.getAwaitingHandler(eventName);
+        if (awaitingHandler) {
+            return awaitingHandler(this, eventArgs || {});
+        }
+        return Promise.resolve("No handler for this event registered.");
     }
 
     static class2type = {
