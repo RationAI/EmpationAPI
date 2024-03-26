@@ -16,8 +16,8 @@ describe('extensions tests', () => {
 
         const root = await getRoot()
 
-        root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
-        const hierarchy = await root.cases.caseExplorer.hierarchy(["year", "id_part_1", "id_part_2"])
+        root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*", ["year", "id_part_1", "id_part_2"]);
+        const hierarchy = await root.cases.caseExplorer.hierarchy()
 
         const {CaseHierarchy} = getV3TypeChecker()
         CaseHierarchy.check(hierarchy)
@@ -27,7 +27,7 @@ describe('extensions tests', () => {
 
       const root = await getRoot()
 
-      root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
+      root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*", ["year", "id_part_1", "id_part_2"]);
 
       const searchParams: CaseSearchParams[] = [
         {
@@ -52,7 +52,7 @@ describe('extensions tests', () => {
 
     const root = await getRoot()
 
-    root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*");
+    root.cases.caseExplorer.use("\\w+.\\w*-?[0-9]{4}_([0-9]*)([0-9]{2}).*", ["year", "id_part_1", "id_part_2"]);
 
     const searchParams: CaseSearchParams[] = [
       {
