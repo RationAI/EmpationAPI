@@ -34,7 +34,7 @@ export default class CaseExplorer {
     return this.customCases;
     }
 
-    private getCaseHierarchyPath(caseObj: Case) {
+    getCaseHierarchyPath(caseObj: Case) {
       if(!this.identifierSeparator || !this.hierarchySpec) {
         throw `ArgumentError[CaseExplorer] identifierSeparator or hierarchySpec is missing - required property!`
       }
