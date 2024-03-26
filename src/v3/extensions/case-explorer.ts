@@ -43,6 +43,19 @@ export default class CaseExplorer {
       }, "")
     }
 
+    async getCase(caseId: string): Promise<CaseH> {
+      let caseObj: Case | undefined;
+      if(this.customCases) {
+        caseObj = this.customCases.find((cs) => cs.id === caseId)
+      }
+
+      if(!caseObj) {
+        caseObj = await this.context.get(caseId)
+      }
+
+      return {...caseObj, pathInHierarchy: this.getCaseHierarchyPath(caseObj)}
+    }
+
     private getCaseValue(key: string, cs: Case) {
       switch(key) {
         case "year": {
