@@ -14,8 +14,8 @@ export interface JwtToken extends JwtTokenBase {
 }
 
 export function getJwtTokenExpiresTimeout(token: JwtTokenBase) {
-    //timeout with 20 seconds slack OR 280 secs
-    return token.exp*1e3 - Date.now() - 20e3 || 280e3;
+    //timeout OR 300 secs
+    return token.exp*1e3 - Date.now() || 300e3;
 }
 
 export interface ScopeToken extends JwtTokenBase {
