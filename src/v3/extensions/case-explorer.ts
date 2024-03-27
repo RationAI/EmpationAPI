@@ -8,19 +8,52 @@ import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, group
 
 export default class CaseExplorer {
     protected context: Cases;
+    protected customCases: CaseH[] | null = null;
     protected caseHierarchy: CaseHierarchy | null = null;
     protected caseTissues: string[] | null = null;
     protected caseStains: string[] | null = null; 
 
     identifierSeparator: string = "";
+    hierarchySpec: string[] = [];
 
     constructor(context: Cases) {
         this.context = context;
     }
 
-    use(identifierSeparator: string): void {
-      if (this.identifierSeparator === identifierSeparator) return;
+    use(identifierSeparator: string, hierarchySpec: string[]): void {
+      this.hierarchySpec = hierarchySpec;
       this.identifierSeparator = identifierSeparator;
+    }
+
+    private async getCustomCases() {
+      if(!this.customCases) {
+        this.customCases = (await this.context.list()).items.map((caseObj) => {
+          return {...caseObj, pathInHierarchy: this.getCaseHierarchyPath(caseObj)}
+        });
+    }
+    return this.customCases;
+    }
+
+    getCaseHierarchyPath(caseObj: Case) {
+      if(!this.identifierSeparator || !this.hierarchySpec) {
+        throw `ArgumentError[CaseExplorer] identifierSeparator or hierarchySpec is missing - required property!`
+      }
+      return this.hierarchySpec.reduce((prev, curr) => {
+        return `${prev}/${this.getCaseValue(curr, caseObj)}`
+      }, "")
+    }
+
+    async getCase(caseId: string): Promise<CaseH> {
+      let caseObj: Case | undefined;
+      if(this.customCases) {
+        caseObj = this.customCases.find((cs) => cs.id === caseId)
+      }
+
+      if(!caseObj) {
+        caseObj = await this.context.get(caseId)
+      }
+
+      return {...caseObj, pathInHierarchy: this.getCaseHierarchyPath(caseObj)}
     }
 
     private getCaseValue(key: string, cs: Case) {
@@ -163,16 +196,16 @@ export default class CaseExplorer {
       return { levelName: name, lastLevel: false, items: items };
     }
 
-    async hierarchy(keys: string[]): Promise<CaseHierarchy> {
+    async hierarchy(): Promise<CaseHierarchy> {
       if(!this.caseHierarchy) {
-        const cases = (await this.context.list()).items;
-        this.caseHierarchy = this.hierarchyLevel(keys, 0, cases, "");
+        const cases = await this.getCustomCases();
+        this.caseHierarchy = this.hierarchyLevel(this.hierarchySpec, 0, cases, "");
       }
       return this.caseHierarchy;
     }
 
-    async search(query: CaseSearchParams[]): Promise<Case[]> {
-      let filteredCases = (await this.context.list()).items;
+    async search(query: CaseSearchParams[]): Promise<CaseH[]> {
+      let filteredCases = await this.getCustomCases();
       query.forEach(({key, value}) => filteredCases = filteredCases.filter((cs) => this.evaluateCaseValue(key, value, cs)));
 
       return filteredCases;
@@ -180,7 +213,7 @@ export default class CaseExplorer {
 
     async tissues(localization: string = "EN"): Promise<string[]> {
       if(!this.caseTissues) {
-        const cases = (await this.context.list()).items;
+        const cases = await this.getCustomCases();
 
         const allTissues: Set<string> = new Set();
         cases.forEach((c) => Object.values(c.tissues).map((tissue: any) => tissue[localization]).forEach((t) => allTissues.add(t)));
@@ -191,7 +224,7 @@ export default class CaseExplorer {
 
     async stains(localization: string = "EN"): Promise<string[]> {
       if(!this.caseStains) {
-        const cases = (await this.context.list()).items;
+        const cases = await this.getCustomCases();
 
         const allStains: Set<string> = new Set();
         cases.forEach((c) => Object.values(c.stains).map((stain: any) => stain[localization]).forEach((t) => allStains.add(t)));

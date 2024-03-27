@@ -237,6 +237,6 @@ export class EventSource {
     static type( obj: object ) {
         return ( obj === null ) || ( obj === undefined ) ?
             String( obj ) :
-            this.class2type[ String.toString.call(obj) as keyof typeof this.class2type] || "object";
+            this.class2type[ obj.toString() as keyof typeof this.class2type] || (typeof(obj) === 'function' ? "function" : "object")
     };
 }
