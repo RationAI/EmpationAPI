@@ -4,6 +4,7 @@ import { matchStringOnSeparatorGroup } from "./utils";
 
 export default class WsiExplorer {
     protected context: Cases;
+    protected lastCaseId: string | null = null;
     protected data: Slide[] | null = null;
     protected slidesData: Slide[] | null = null;
     protected masksData: Slide[] | null = null;
@@ -21,14 +22,14 @@ export default class WsiExplorer {
     }
 
     private async getAllSlides(caseId: string): Promise<Slide[]> {
-      if (!this.data) {
+      if (this.lastCaseId !== caseId || !this.data) {
         this.data = (await this.context.slides(caseId)).items;
       }
       return this.data
     }
 
     async slides(caseId: string): Promise<Slide[]> {
-      if (!this.slidesData) {
+      if (this.lastCaseId !== caseId || !this.slidesData) {
         this.slidesData = (await this.getAllSlides(caseId)).filter((slide) => { 
           return !matchStringOnSeparatorGroup(slide.local_id || "", this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
         })
@@ -37,7 +38,7 @@ export default class WsiExplorer {
     }
 
     async masks(caseId: string): Promise<Slide[]> {
-      if (!this.masksData) {
+      if (this.lastCaseId !== caseId || !this.masksData) {
         this.masksData = (await this.getAllSlides(caseId)).filter((slide) => { 
           return matchStringOnSeparatorGroup(slide.local_id || "", this.maskIdentifierSeparator, 1, this.maskIdentifierValue);
         })
