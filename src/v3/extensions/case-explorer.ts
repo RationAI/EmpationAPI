@@ -38,8 +38,15 @@ export default class CaseExplorer {
       if(!this.identifierSeparator || !this.hierarchySpec) {
         throw `ArgumentError[CaseExplorer] identifierSeparator or hierarchySpec is missing - required property!`
       }
+      let pathFinished = false
       return this.hierarchySpec.reduce((prev, curr) => {
-        return `${prev}/${this.getCaseValue(curr, caseObj)}`
+        const val = this.getCaseValue(curr, caseObj);
+
+        const returnVal = pathFinished ? prev : `${prev}/${val}`
+        if(val === "OTHER") {
+          pathFinished = true
+        }
+        return returnVal;
       }, "")
     }
 
