@@ -10,18 +10,21 @@ import { GlobalDataCreatorType } from "./types/global-data-creator-type";
 import { PutGlobalItem } from "./types/put-global-item";
 import WsiMetadata from "../extensions/wsi-metadata";
 import VisualizationTemplates from "../extensions/visualization-templates";
+import AnnotPresets from "../extensions/annot-presets";
 
 export default class GlobalStorage {
     protected context: RationAI;
     protected data: GlobalItem | null = null;
 
-    wsiMetadata: WsiMetadata
-    visTemplates: VisualizationTemplates
+    wsiMetadata: WsiMetadata;
+    visTemplates: VisualizationTemplates;
+    annotPresets: AnnotPresets;
 
     constructor(context: RationAI) {
         this.context = context;
         this.wsiMetadata = new WsiMetadata(this)
         this.visTemplates = new VisualizationTemplates(this)
+        this.annotPresets = new AnnotPresets(this);
     }
 
     async get(itemId: string): Promise<GlobalItem> {

@@ -1,9 +1,9 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
 import { CaseSearchParams } from "../../src/v3/extensions/types/case-search-params";
 import { SlideMetadata } from "../../src/v3/extensions/types/slide-metadata";
-import { TemplateType } from "../../src/v3/extensions/types/template-type";
+import { AnnotPreset } from "../../src/v3/extensions/types/annot-preset"
 import {polly} from "../polly";
-import {defaultComparisonUser, defaultTestUser, setInterceptedUser, setupIntercept} from "../setup";
+import {setupIntercept} from "../setup";
 import { getV3TypeChecker } from "./checker";
 import {getRationAI, getRoot, getScope} from "./setup";
 
@@ -125,4 +125,64 @@ describe('extensions tests', () => {
 
     console.log(slideVis);
   })
+
+  it('annotation presets', async () => {
+
+    const rationai = await getRationAI();
+    rationai.globalStorage.annotPresets.use("annot_presets_test");
+
+    // clear global items that might have been left behind from previous tests
+    const items = await rationai.globalStorage.query({data_types: ["annot_presets_test"]});
+    items.forEach((item) => rationai.globalStorage.delete(item.id));
+
+    const newPresets: AnnotPreset[] = [
+      {
+        "id": "4bc771a4-0aa6-4e60-adf8-f5386398a2b3",
+        "color": "#003fff",
+        "factoryID": "polygon",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },
+          "k1700645671744": {
+            "name": "cancer",
+            "value": "ano"
+          },
+          "k1700645680488": {
+            "name": "no cancer",
+            "value": "neco"
+          }
+        },
+      },
+      {
+        "id": "b2a1576c-45a5-4551-9bc4-cb50ddad8ff2",
+        "color": "#7f00ff",
+        "factoryID": "rectangle",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },  
+        },
+      },
+    ]
+
+    const currentPresets = await rationai.globalStorage.annotPresets.getAnnotPresets();
+    expect(currentPresets.presets).toEqual([]);
+
+    const updatedPresets = await rationai.globalStorage.annotPresets.updateAnnotPresets(newPresets, currentPresets.lastModifiedAt);
+
+    expect(updatedPresets.presets).toEqual(newPresets);
+    expect(updatedPresets.successfulUpdate).toEqual(true);
+
+    await rationai.globalStorage.annotPresets.deleteAnnotPresets();
+
+    const currentPresets2 = await rationai.globalStorage.annotPresets.getAnnotPresets();
+    expect(currentPresets2.presets).toEqual([]);
+
+    await rationai.globalStorage.annotPresets.deleteAnnotPresets();
+  });
 });
