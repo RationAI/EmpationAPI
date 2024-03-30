@@ -11,6 +11,7 @@ type AnnotPresetGetResult = {
 type AnnotPresetUpdateResult = {
   presets: AnnotPreset[];
   successfulUpdate: boolean;
+  lastModifiedAt: number;
 }
 
 export default class AnnotPresets {
@@ -64,7 +65,7 @@ export default class AnnotPresets {
 
       if(remotePresetsItem.modified_at !== lastModified) {
         if(failOnParallelUpdate) {
-          return { presets: remotePresets, successfulUpdate: false}
+          return { presets: remotePresets, successfulUpdate: false, lastModifiedAt: remotePresetsItem.modified_at}
         }
         localPresets = this.mergePresets(remotePresets, localPresets);
         successfulUpdate = false
@@ -73,7 +74,7 @@ export default class AnnotPresets {
       try {
         const updatedItem = await this.context.update(remotePresetsItem.id, {...remotePresetsItem, value: JSON.stringify({presets: localPresets})})
         const updatedPresets =  (JSON.parse(updatedItem.value) as AnnotPresetObject).presets;
-        return {presets: updatedPresets, successfulUpdate: successfulUpdate}
+        return {presets: updatedPresets, successfulUpdate: successfulUpdate, lastModifiedAt: updatedItem.modified_at}
       } catch (e) {
         if((e as HTTPError).statusCode === 409) {
           const retryAttempt =  await this.updateAnnotPresets(localPresets, remotePresetsItem.modified_at);
