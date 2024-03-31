@@ -49,13 +49,14 @@ export default class AnnotPresets {
       return {presets: (JSON.parse(presetItem.value as string) as AnnotPresetObject).presets, lastModifiedAt: presetItem.modified_at};
     }
 
-    private mergePresets(primaryArr: AnnotPreset[], secondaryArr: AnnotPreset[]): AnnotPreset[] {
+    private mergePresets(primaryArr: AnnotPreset[], secondaryArr: AnnotPreset[], localVersion: number): AnnotPreset[] {
       const newArr = [...primaryArr];
-      secondaryArr.forEach((secItem) => (newArr.some((primItem) => primItem.id === secItem.id) ? null : newArr.push(secItem)))
+      // item from secondary array is pushed only if item with the same id is not present in primary array, and createdAt date is bigger than localVersion date, meaning item is new
+      secondaryArr.forEach((secItem) => ((newArr.some((primItem) => primItem.id === secItem.id) || !secItem.createdAt || secItem.createdAt <= localVersion) ? null : newArr.push(secItem)))
     return newArr;
     }
 
-    async updateAnnotPresets(value: AnnotPreset[], lastModified: number, failOnParallelUpdate: boolean = false): Promise<AnnotPresetUpdateResult> {
+    async updateAnnotPresets(value: AnnotPreset[], localVersion: number, failOnParallelUpdate: boolean = false): Promise<AnnotPresetUpdateResult> {
       // fetch fresh presets
       const remotePresetsItem = await this.getPresetsItem(true);
       const remotePresets = (JSON.parse(remotePresetsItem.value as string) as AnnotPresetObject).presets;
@@ -63,11 +64,11 @@ export default class AnnotPresets {
       let localPresets = value;
       let successfulUpdate = true;
 
-      if(remotePresetsItem.modified_at !== lastModified) {
+      if(remotePresetsItem.modified_at !== localVersion) {
         if(failOnParallelUpdate) {
           return { presets: remotePresets, successfulUpdate: false, lastModifiedAt: remotePresetsItem.modified_at}
         }
-        localPresets = this.mergePresets(remotePresets, localPresets);
+        localPresets = this.mergePresets(remotePresets, localPresets, localVersion);
         successfulUpdate = false
       }
 

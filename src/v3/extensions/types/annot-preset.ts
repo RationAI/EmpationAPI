@@ -36,4 +36,9 @@ export interface AnnotPreset {
       value: string;
     }
   }
+
+  /**
+   * Date of creation in epoch time, used during update with merge strategy
+   */
+  createdAt?: number;
 }

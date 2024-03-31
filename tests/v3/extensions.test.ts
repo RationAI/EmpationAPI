@@ -6,6 +6,7 @@ import {polly} from "../polly";
 import {setupIntercept} from "../setup";
 import { getV3TypeChecker } from "./checker";
 import {getRationAI, getRoot, getScope} from "./setup";
+import { sleep } from "../../src";
 
 
 describe('extensions tests', () => {
@@ -133,7 +134,7 @@ describe('extensions tests', () => {
 
     // clear global items that might have been left behind from previous tests
     const items = await rationai.globalStorage.query({data_types: ["annot_presets_test"]});
-    items.forEach(async (item) => await rationai.globalStorage.delete(item.id));
+    await Promise.all(items.map(async (item) => await rationai.globalStorage.delete(item.id)));
 
     const newPresets: AnnotPreset[] = [
       {
@@ -177,6 +178,158 @@ describe('extensions tests', () => {
 
     expect(updatedPresets.presets).toEqual(newPresets);
     expect(updatedPresets.successfulUpdate).toEqual(true);
+
+    await rationai.globalStorage.annotPresets.deleteAnnotPresets();
+
+    const currentPresets2 = await rationai.globalStorage.annotPresets.getAnnotPresets();
+    expect(currentPresets2.presets).toEqual([]);
+
+    await rationai.globalStorage.annotPresets.deleteAnnotPresets();
+  });
+
+  it('annotation presets parallel update', async () => {
+    const rationai = await getRationAI();
+    rationai.globalStorage.annotPresets.use("annot_presets_test2");
+
+    // clear global items that might have been left behind from previous tests
+    const items = await rationai.globalStorage.query({data_types: ["annot_presets_test2"]});
+    await Promise.all(items.map(async (item) => await rationai.globalStorage.delete(item.id)));
+
+    // fetch presets
+    const emptyPresets = await rationai.globalStorage.annotPresets.getAnnotPresets();
+    expect(emptyPresets.presets).toEqual([]);
+
+    await sleep(2000);
+    console.log("base preset")
+
+    //UPDATE 1
+    const basePreset: AnnotPreset[] = [
+      {
+        "id": "4wc771a4-0aa6-4e60-adf8-f5386398a2b3",
+        "color": "#003fff",
+        "factoryID": "polygon",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },
+        },
+        "createdAt": emptyPresets.lastModifiedAt + 5,
+      },
+    ]
+    const currentPresets = await rationai.globalStorage.annotPresets.updateAnnotPresets(basePreset, emptyPresets.lastModifiedAt);
+    expect(currentPresets.presets).toEqual(basePreset);
+    expect(currentPresets.successfulUpdate).toEqual(true);
+
+    await sleep(2000);
+    console.log("1st update starting")
+    
+    //PARALLEL UPDATE 1
+    const creationDate1 = currentPresets.lastModifiedAt + 10;
+    const newPresets1: AnnotPreset[] = [
+      ...basePreset,
+      {
+        "id": "4bc771a4-0aa6-4e60-adf8-f5386398a2b3",
+        "color": "#003fff",
+        "factoryID": "polygon",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },
+          "k1700645671744": {
+            "name": "cancer",
+            "value": "ano"
+          },
+          "k1700645680488": {
+            "name": "no cancer",
+            "value": "neco"
+          }
+        },
+        "createdAt": creationDate1,
+      },
+    ]
+    const updatedPresets1 = await rationai.globalStorage.annotPresets.updateAnnotPresets(newPresets1, currentPresets.lastModifiedAt);
+    expect(updatedPresets1.presets).toEqual([...newPresets1]);
+    expect(updatedPresets1.successfulUpdate).toEqual(true);
+
+    await sleep(2000);
+    console.log("2nd update starting");
+
+    //PARALLEL UPDATE 2
+    const creationDate2 = currentPresets.lastModifiedAt + 15;
+    const newPresets2 = [
+      ...basePreset,
+      {
+        "id": "b2a1576c-45a5-4551-9bc4-cb50ddad8ff2",
+        "color": "#7f00ff",
+        "factoryID": "rectangle",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },  
+        },
+        "createdAt": creationDate2,
+      },
+    ]
+    const updatedPresets2 = await rationai.globalStorage.annotPresets.updateAnnotPresets(newPresets2, currentPresets.lastModifiedAt);
+    expect(updatedPresets2.presets).toEqual([...updatedPresets1.presets, newPresets2[1]]);
+    expect(updatedPresets2.successfulUpdate).toEqual(false);
+
+    await sleep(2000);
+    console.log("3rd update starting");
+
+    //PARALLEL UPDATE 3 - contains one old item, thats been meanwhile deleted, also modifying old item (color change)
+    const creationDate3 = currentPresets.lastModifiedAt + 100;
+    const newPresets3 = [
+      {
+        "id": "4wc771a4-0aa6-4e60-adf8-f5386398a2b3",
+        "color": "#000000",
+        "factoryID": "polygon",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },
+        },
+        "createdAt": emptyPresets.lastModifiedAt + 5,
+      },
+      {
+        "id": "b3a1576c-45a5-4551-9bc4-cb50ddad8ff2",
+        "color": "#7f00ff",
+        "factoryID": "rectangle",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },  
+        },
+        "createdAt": currentPresets.lastModifiedAt - 100,
+      },
+      {
+        "id": "b4a1576c-45a5-4551-9bc4-cb50ddad8ff2",
+        "color": "#7f00ff",
+        "factoryID": "rectangle",
+        "presetID": "Ignore*",
+        "meta": {
+          "category": {
+            "name": "Category",
+            "value": "Ignore*"
+          },  
+        },
+        "createdAt": creationDate3,
+      },
+    ]
+    const updatedPresets3 = await rationai.globalStorage.annotPresets.updateAnnotPresets(newPresets3, currentPresets.lastModifiedAt);
+    console.log(updatedPresets3.presets)
+    expect(updatedPresets3.presets).toEqual([...updatedPresets2.presets, newPresets3[2]]);
+    expect(updatedPresets3.successfulUpdate).toEqual(false);
 
     await rationai.globalStorage.annotPresets.deleteAnnotPresets();
 
