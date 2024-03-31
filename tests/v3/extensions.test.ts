@@ -133,7 +133,7 @@ describe('extensions tests', () => {
 
     // clear global items that might have been left behind from previous tests
     const items = await rationai.globalStorage.query({data_types: ["annot_presets_test"]});
-    items.forEach((item) => rationai.globalStorage.delete(item.id));
+    items.forEach(async (item) => await rationai.globalStorage.delete(item.id));
 
     const newPresets: AnnotPreset[] = [
       {
