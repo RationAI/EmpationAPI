@@ -41,3 +41,11 @@ Mask metadata attributes:
 ### Visualization templates (/extensions/visualization-templates)
 Globally accesible items without reference, 'data_type' of format 'vis_templates_&lt;template type&gt;' (currently template type can be 'params', 'background', 'shader', 'visualization').
 
+### Annotation presets
+We assume annotation presets are global for deployment, and one object with data_type "annot_presets" exists. Here all the presets are stored in a serialized array. When it does not exist and GET is performed, an empty one is created. Update changes the whole array (new presets, edit old presets). Since presets are global, two parallel updates can happen. The first one succeeds, second succeeds partially, new presets are created, but the edits to the old ones and deletion of old ones are not performed, since that could overwrite changes of first update. This behaviour can be overruled by argument in update method. This would mean the second update fails, no changes are performed.
+
+Global item:
+{
+  presets: [...]
+}
+
