@@ -1,6 +1,5 @@
 import Cases from "../root/cases";
 import { Case } from "../root/types/case";
-import { CaseExplorerResults } from "./types/case-explorer-results";
 import { CaseH } from "./types/case-h";
 import { CaseHierarchy } from "./types/case-hierarchy-result";
 import { CaseSearchParams } from "./types/case-search-params";

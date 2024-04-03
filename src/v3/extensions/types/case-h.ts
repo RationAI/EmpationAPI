@@ -1,8 +1,8 @@
 /* tslint:disable */
 
-import { CaseCreatorType } from "src/v3/root/types/case-creator-type";
-import { PreprocessingProgress } from "src/v3/root/types/preprocessing-progress";
-import { WorkbenchServiceModelsV3ExaminationExamination } from "src/v3/root/types/workbench-service-models-v-3-examination-examination";
+import { CaseCreatorType } from "../../../../src/v3/root/types/case-creator-type";
+import { PreprocessingProgress } from "../../../../src/v3/root/types/preprocessing-progress";
+import { WorkbenchServiceModelsV3ExaminationExamination } from "../../../../src/v3/root/types/workbench-service-models-v-3-examination-examination";
 
 /* eslint-disable */
 export interface CaseH {

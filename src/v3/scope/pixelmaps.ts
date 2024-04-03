@@ -3,7 +3,6 @@ import Scopes from "./scopes";
 import { ContinuousPixelmap } from "./types/continuous-pixelmap";
 import { DiscretePixelmap } from "./types/discrete-pixelmap";
 import { IdObject } from "./types/id-object";
-import { Job } from "./types/job";
 import { NominalPixelmap } from "./types/nominal-pixelmap";
 import { PixelmapList } from "./types/pixelmap-list";
 import { PixelmapQuery } from "./types/pixelmap-query";
