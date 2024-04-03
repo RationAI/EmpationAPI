@@ -164,14 +164,20 @@ export default class CaseExplorer {
     private evaluateCaseDescription(value: string, evalValue: string): boolean {
       return matchStringOnTokens(value, evalValue)
     }
-    private evaluateCaseTissues(value: string[], evalValue: string[]): boolean {
+    private evaluateCaseTissues(value: string[], evalValue: string | string[]): boolean {
+      if(!(evalValue instanceof Array)) {
+        evalValue = [evalValue];
+      }
       // ALL searched tissues are present in case
       return evalValue.every((tissue) => Object.keys(value).includes(tissue))
 
       // SOME searched tissues are present in case
       // return evalValue.some((tissue) => Object.keys(value).includes(tissue))
     }
-    private evaluateCaseStains(value: string[], evalValue: string[]): boolean {
+    private evaluateCaseStains(value: string[], evalValue: string | string[]): boolean {
+      if(!(evalValue instanceof Array)) {
+        evalValue = [evalValue];
+      }
       // ALL searched stains are present in case
       return evalValue.every((stain) => Object.keys(value).includes(stain))
 
