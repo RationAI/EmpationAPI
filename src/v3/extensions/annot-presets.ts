@@ -1,4 +1,4 @@
-import { HTTPError } from "src/base";
+import { HTTPError } from "../../../src/base";
 import GlobalStorage from "../rationai/global-storage";
 import { GlobalItem } from "../rationai/types/global-item";
 import { AnnotPreset, AnnotPresetObject } from "./types/annot-preset";
