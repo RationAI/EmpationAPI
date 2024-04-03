@@ -39,18 +39,23 @@ export default class Scopes extends ScopesAPI {
         //todo consider caching
 
         this.requires("root::userId", this.context.userId);
+        this.requires("arg: caseId", caseId);
 
         const findExamination = async (appId: string):
             Promise<WorkbenchServiceApiV3CustomModelsExaminationsExamination> => {
 
             let examinations = await this.context.examinations.query({
                 apps: [appId],
+                cases: [caseId],
                 creators: [this.context.userId]
             });
+
             if (examinations.item_count > 0) {
                 let examination = examinations.items.find(ex => ex.state === "OPEN");
                 if (examination) return examination;
             }
+
+            //throws 404 if app does not exist...
             return await this.context.examinations.create(caseId, appId);
         }
 
@@ -58,10 +63,13 @@ export default class Scopes extends ScopesAPI {
         let examination;
         if (appId) {
             examination = await findExamination(appId);
-        } else if (this._defaultExaminationId) {
-            examination = await this.context.examinations.get(this._defaultExaminationId);
+            console.log("APP", appId, examination);
+            if (!examination) throw `Could not create examination for App ${appId} - is it a valid app?`;
         }
 
+        if (this._defaultExaminationId) {
+            examination = await this.context.examinations.get(this._defaultExaminationId);
+        }
         if (!examination) {
             let app = await this.context.apps.default();
             examination = await findExamination(app.app_id);
@@ -84,7 +92,7 @@ export default class Scopes extends ScopesAPI {
         this._tokenRefetchInterval = setInterval(async () => {
             this.scopeContext = await this.context.examinations.scope(examination.id);
         }, timeout);
-        this.raiseEvent('init');
+        this.raiseEvent('init', {examination: examination});
     }
 
     reset(): void {
