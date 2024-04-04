@@ -11,6 +11,7 @@ import { PutGlobalItem } from "./types/put-global-item";
 import WsiMetadata from "../extensions/wsi-metadata";
 import VisualizationTemplates from "../extensions/visualization-templates";
 import AnnotPresets from "../extensions/annot-presets";
+import JobConfig from "../extensions/job-config";
 
 export default class GlobalStorage {
     protected context: RationAI;
@@ -19,12 +20,14 @@ export default class GlobalStorage {
     wsiMetadata: WsiMetadata;
     visTemplates: VisualizationTemplates;
     annotPresets: AnnotPresets;
+    jobConfig: JobConfig;
 
     constructor(context: RationAI) {
         this.context = context;
         this.wsiMetadata = new WsiMetadata(this)
         this.visTemplates = new VisualizationTemplates(this)
         this.annotPresets = new AnnotPresets(this);
+        this.jobConfig = new JobConfig(this);
     }
 
     async get(itemId: string): Promise<GlobalItem> {
