@@ -19,8 +19,11 @@ export abstract class RootAPI extends AbstractAPI {
 
     // RawAPI implements access to the http endpoints
     protected abstract raw: RawAPI;
-    // ScopesAPI implements AbstractAPI over /v[version]/scopes
-    abstract scopes: ScopesAPI;
+    // default ScopesAPI implements AbstractAPI over /v[version]/scopes
+    abstract defaultScope: ScopesAPI;
+
+    // Map of ScopesAPI, that implement AbstractAPI over /v[version]/scopes, allows keeping multiple scopes open at once
+    abstract scopes: Map<string, ScopesAPI>;
 
     // Properties
     abstract version: string;
@@ -88,7 +91,7 @@ export abstract class RootAPI extends AbstractAPI {
         this._tokenExpires = 0;
         this.accessToken = null;
         this._userId = this.options.anonymousUserId;
-        this.scopes.reset();
+        this.defaultScope.reset();
         this.raiseEvent('reset');
     }
 
