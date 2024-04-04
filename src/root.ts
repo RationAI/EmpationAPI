@@ -1,5 +1,5 @@
 import {AbstractAPI, EmpationAPIOptions, RawAPI, RawOptions} from "./base";
-import {ScopesAPI} from "./scope";
+import {ScopeAPI} from "./scope";
 import {getJwtTokenExpiresTimeout, JwtTokenBase, parseJwtToken} from "./utils";
 
 export abstract class RootContext {
@@ -19,11 +19,11 @@ export abstract class RootAPI extends AbstractAPI {
 
     // RawAPI implements access to the http endpoints
     protected abstract raw: RawAPI;
-    // default ScopesAPI implements AbstractAPI over /v[version]/scopes
-    abstract defaultScope: ScopesAPI;
+    // default ScopeAPI implements AbstractAPI over /v[version]/scopes
+    abstract defaultScope: ScopeAPI;
 
-    // Map of ScopesAPI, that implement AbstractAPI over /v[version]/scopes, allows keeping multiple scopes open at once
-    abstract scopes: Map<string, ScopesAPI>;
+    // Map of ScopeAPI, that implement AbstractAPI over /v[version]/scopes, allows keeping multiple scopes open at once
+    abstract scopes: Map<string, ScopeAPI>;
 
     // Properties
     abstract version: string;
@@ -92,6 +92,8 @@ export abstract class RootAPI extends AbstractAPI {
         this.accessToken = null;
         this._userId = this.options.anonymousUserId;
         this.defaultScope.reset();
+        this.scopes.forEach((scp) => scp.reset());
+        this.scopes.clear();
         this.raiseEvent('reset');
     }
 

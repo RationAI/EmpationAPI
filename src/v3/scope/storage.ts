@@ -1,12 +1,12 @@
 import { ScopeContext } from "../../scope";
-import Scopes from "./scopes";
+import Scope from "./scope";
 import { AppUiStorage } from "./types/app-ui-storage";
 
 export default class Storage extends ScopeContext {
-    protected context: Scopes;
+    protected context: Scope;
     protected data: AppUiStorage | null = null;
 
-    constructor(context: Scopes) {
+    constructor(context: Scope) {
         super();
         this.context = context;
     }

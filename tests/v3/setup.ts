@@ -17,7 +17,7 @@ export async function getRoot(userName=defaultTestUser): Promise<V3.Root> {
     return rootApi;
 }
 
-export async function getScope(userName=defaultTestUser, caseIndex=0): Promise<V3.Scopes> {
+export async function getScope(userName=defaultTestUser, caseIndex=0): Promise<V3.Scope> {
     const root = await getRoot(userName);
     const cases = await root.cases.list();
 

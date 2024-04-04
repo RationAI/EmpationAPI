@@ -100,7 +100,7 @@ describe('scopes api', () => {
         const cases = await root.cases.list();
         let caseIndex = cases.items.findIndex(c => c.slides_count > 0);
         if (caseIndex < 0) caseIndex = 0;
-        const scope: V3.Scopes = await getScope(defaultTestUser, caseIndex);
+        const scope: V3.Scope = await getScope(defaultTestUser, caseIndex);
 
         const defaultCase: Case = await getScopeCase(defaultTestUser, caseIndex);
         const caseSlides = await root.cases.slides(defaultCase.id);
