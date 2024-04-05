@@ -94,6 +94,7 @@ describe('scopes api', () => {
         })
     })
 
+
     it('annotations shared across users', async () => {
         setInterceptedUser(defaultTestUser);
         const root: V3.Root = await getRoot(defaultTestUser);

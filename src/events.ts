@@ -2,7 +2,7 @@
  * OpenSeadragon inspired event system for reduction of dependencies and uniform event approach
  */
 
-export type EventHandler = (event: object) => void;
+export type EventHandler = (event: any) => void;
 
 export class EventSource {
     events: {[key: string]: any} = {};
@@ -42,7 +42,7 @@ export class EventSource {
      * @param {Object} [userData=null] - Arbitrary object to be passed unchanged to the handler.
      * @param {Number} [priority=0] - Handler priority. By default, all priorities are 0. Higher number = priority.
      */
-    addHandler(eventName: string, handler: EventHandler, userData: object, priority: number) {
+    addHandler(eventName: string, handler: EventHandler, userData: object | null = null, priority: number = 0) {
         let events = this.events[ eventName ];
         if ( !events ) {
             this.events[ eventName ] = events = [];
