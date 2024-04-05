@@ -1,14 +1,14 @@
 import { ScopeContext } from "../../scope";
-import Scopes from "./scopes";
+import Scope from "./scope";
 import { Collection } from "./types/collection";
 import { ItemQuery } from "./types/item-query";
 import { ItemQueryList } from "./types/item-query-list";
 
 export default class Collections extends ScopeContext {
-    protected context: Scopes;
+    protected context: Scope;
     protected data: Collection | null = null;
 
-    constructor(context: Scopes) {
+    constructor(context: Scope) {
         super();
         this.context = context;
     }

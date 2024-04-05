@@ -338,4 +338,54 @@ describe('extensions tests', () => {
 
     await rationai.globalStorage.annotPresets.deleteAnnotPresets();
   });
+
+  it('app job config', async () => {
+
+    const root = await getRoot();
+
+    const items1 = await root.rationai.globalStorage.query({data_types: ["app_job_config_test"]});
+    await Promise.all(items1.map(async (item) => await root.rationai.globalStorage.delete(item.id)));
+
+    const appId = "b6a43f9a-83d6-45f2-b141-bd287053f8ff";
+    const config = 
+    {
+      "appId": appId,
+      "modes": {
+        "preproccesing": {
+          "inputs": {
+            "analyzed_scan": {
+              "_layer_loc": "background",
+              "lossless": false,
+              "protocol": "`{\"type\":\"leav3\",\"slide\":\"${data}\"}`"
+            }
+          },
+          "outputs": {
+            "prediction_mask": {
+              "name": "Cancer prediction",
+              "type": "heatmap",
+              "visible": 1,
+              "protocol": "`{\"type\":\"leav3\",\"pixelmap\":\"${data}\"}`",
+              "params": {
+                "opacity": 0.5,
+              }
+            },
+          }
+        }
+      }
+    }
+
+    const jobConfigApi = root.rationai.globalStorage.jobConfig;
+
+    jobConfigApi.use("app_job_config_test");
+    const createdConfigItem = await jobConfigApi.createJobConfig(appId, config);
+    const getConfig = await jobConfigApi.getJobConfig(appId);
+
+    expect(getConfig).toEqual(config);
+
+    await jobConfigApi.deleteJobConfig(appId);
+
+    const getConfig2 = await jobConfigApi.getJobConfig(appId);
+
+    expect(getConfig2).toEqual(false);
+  });
 });

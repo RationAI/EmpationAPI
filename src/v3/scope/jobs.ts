@@ -1,13 +1,13 @@
 import { ScopeContext } from "../../scope";
-import Scopes from "./scopes";
+import Scope from "./scope";
 import { Job } from "./types/job";
 import { JobList } from "./types/job-list";
 
 export default class Jobs extends ScopeContext {
-    protected context: Scopes;
+    protected context: Scope;
     protected data: Job[] | null = null;
 
-    constructor(context: Scopes) {
+    constructor(context: Scope) {
         super();
         this.context = context;
     }

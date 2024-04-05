@@ -27,9 +27,13 @@ const api = new V3.Root({
 api.from(token);
 api.cases.list(); //lists available cases
 
-// To access SCOPES API you need to provide a case ID and optionally app ID:
-api.scopes.use(caseId); //default scope bound only to the case
-api.scopes.use(caseId, appId); //default scope bound to case AND app
+// To access SCOPE API you need to provide a case ID and optionally app ID:
+api.defaultScope.use(caseId); //default scope bound only to the case
+api.defaultScope.use(caseId, appId); //default scope bound to case AND app
+
+// To have multiple scopes active at once, use:
+api.scopes.getScopeUse(caseId, appId?);
+api.scopes.getScopesFrom(examination);
 ````
 
 ### Testing

@@ -1,5 +1,5 @@
 import { ScopeContext } from "../../scope";
-import Scopes from "./scopes";
+import Scope from "./scope";
 import {PointAnnotation} from "./types/point-annotation";
 import {LineAnnotation} from "./types/line-annotation";
 import {ArrowAnnotation} from "./types/arrow-annotation";
@@ -27,10 +27,10 @@ export interface PostAnnotationQueryParams {
 }
 
 export default class Annotations extends ScopeContext {
-    protected context: Scopes;
+    protected context: Scope;
     protected data: undefined; //unused
 
-    constructor(context: Scopes) {
+    constructor(context: Scope) {
         super();
         this.context = context;
     }

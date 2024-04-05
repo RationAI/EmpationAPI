@@ -1,14 +1,14 @@
 import {AbstractAPI, RawAPI, RawOptions} from "./base";
 
 export abstract class ScopeContext {
-    protected abstract context: ScopesAPI;
+    protected abstract context: ScopeAPI;
     protected abstract data: any;
 }
 
 /**
  * Scope Binds Examination and User.
  */
-export abstract class ScopesAPI extends AbstractAPI {
+export abstract class ScopeAPI extends AbstractAPI {
 
     protected abstract raw: RawAPI;
 

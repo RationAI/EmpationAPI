@@ -1,5 +1,5 @@
 import { ScopeContext } from "../../scope";
-import Scopes from "./scopes";
+import Scope from "./scope";
 import { ContinuousPixelmap } from "./types/continuous-pixelmap";
 import { DiscretePixelmap } from "./types/discrete-pixelmap";
 import { IdObject } from "./types/id-object";
@@ -10,10 +10,10 @@ import { PixelmapQuery } from "./types/pixelmap-query";
 type Pixelmap = ContinuousPixelmap | DiscretePixelmap | NominalPixelmap;
 
 export default class Pixelmaps extends ScopeContext {
-    protected context: Scopes;
+    protected context: Scope;
     protected data: Pixelmap | null = null;
 
-    constructor(context: Scopes) {
+    constructor(context: Scope) {
         super();
         this.context = context;
     }
