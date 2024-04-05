@@ -13,7 +13,7 @@ export default class Root extends RootAPI {
 
     //interface
     protected raw: RawAPI;
-    defaultScope: Scope;
+    protected defaultScopeKey: string = "";
     rationai: RationAI;
     version: string;
     rootURI: string;
@@ -31,7 +31,6 @@ export default class Root extends RootAPI {
         this.version = "v3";
         this.rootURI = this.options.apiUrl + Root.apiPath;
         this.raw = new RawAPI(this.rootURI);
-        this.defaultScope = new Scope(this);
         this.rationai = new RationAI(this);
 
         this.apps = new Apps(this);
@@ -42,10 +41,15 @@ export default class Root extends RootAPI {
         this.scopes = new Map<string, Scope>();
     }
 
+    get defaultScope(): Scope | undefined {
+        return this.scopes.get(this.defaultScopeKey);
+    }
+
     private async newScopeFrom(examination: WorkbenchServiceApiV3CustomModelsExaminationsExamination) {
         const scope = new Scope(this);
         await scope.from(examination);
         this.scopes.set(examination.id, scope);
+        if(this.defaultScopeKey === "") this.defaultScopeKey = examination.id;
         return scope;
     }
 
@@ -53,6 +57,7 @@ export default class Root extends RootAPI {
         const scope = new Scope(this);
         await scope.use(caseId, appId);
         this.scopes.set(scope.activeExaminationId, scope);
+        if(this.defaultScopeKey === "") this.defaultScopeKey = scope.activeExaminationId;
         return scope;
     }
 

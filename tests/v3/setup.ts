@@ -21,8 +21,7 @@ export async function getScope(userName=defaultTestUser, caseIndex=0): Promise<V
     const root = await getRoot(userName);
     const cases = await root.cases.list();
 
-    await root.defaultScope.use(cases.items[caseIndex].id);
-    return root.defaultScope;
+    return await root.getScopeUse(cases.items[caseIndex].id);
 }
 
 export async function getRationAI(userName=defaultTestUser): Promise<V3.RationAI> {
