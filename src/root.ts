@@ -86,6 +86,20 @@ export abstract class RootAPI extends AbstractAPI {
         if (withEvent) this.raiseEvent('init');
     }
 
+    /**
+     * Change the User actor for the API, without providing token. Used in no-token configuration. Note: the api will
+     * reset it's whole state.
+     * @param token setup context from object
+     * @param withEvent
+     */
+    use(userId: string, withEvent=true): void {
+        withEvent = withEvent && !this._userId; //fire event only when we configure new session
+        this.reset();
+        if (!userId || userId.length > 50) throw "Invalid User ID! Must be valid string shorter than 50 characters!";
+        this._userId = userId;
+        if (withEvent) this.raiseEvent('init_no_token');
+    }
+
     reset(): void {
         this._rawToken = "";
         this._tokenExpires = 0;
