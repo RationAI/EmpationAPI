@@ -5,12 +5,17 @@ import { CaseHierarchy } from "./types/case-hierarchy-result";
 import { CaseSearchParams } from "./types/case-search-params";
 import { getDayFromEpochTime, getMonthFromEpochTime, getYearFromEpochTime, groupBy, matchStringOnTokens } from "./utils";
 
+export type CaseTissuesStains = {
+  name: string,
+  locName: string,
+}
+
 export default class CaseExplorer {
     protected context: Cases;
     protected customCases: CaseH[] | null = null;
     protected caseHierarchy: CaseHierarchy | null = null;
-    protected caseTissues: string[] | null = null;
-    protected caseStains: string[] | null = null; 
+    protected caseTissues: CaseTissuesStains[] | null = null;
+    protected caseStains: CaseTissuesStains[] | null = null; 
 
     identifierSeparator: string = "";
     hierarchySpec: string[] = [];
@@ -107,10 +112,10 @@ export default class CaseExplorer {
           return this.evaluateCaseDescription(caseValue as string, evalValue as string)
         }
         case "tissues": {
-          return this.evaluateCaseTissues(caseValue as string[], evalValue as string[])
+          return this.evaluateCaseTissues(caseValue as string[], evalValue as (string |string[]))
         }
         case "stains": {
-          return this.evaluateCaseStains(caseValue as string[], evalValue as string[])
+          return this.evaluateCaseStains(caseValue as string[], evalValue as (string |string[]))
         }
         default: {
           // any invalid key will be caught in getCaseValue call
@@ -169,20 +174,20 @@ export default class CaseExplorer {
         evalValue = [evalValue];
       }
       // ALL searched tissues are present in case
-      return evalValue.every((tissue) => Object.keys(value).includes(tissue))
+      return evalValue.every((tissue) => value.includes(tissue))
 
       // SOME searched tissues are present in case
-      // return evalValue.some((tissue) => Object.keys(value).includes(tissue))
+      // return evalValue.some((tissue) => value.includes(tissue))
     }
     private evaluateCaseStains(value: string[], evalValue: string | string[]): boolean {
       if(!(evalValue instanceof Array)) {
         evalValue = [evalValue];
       }
       // ALL searched stains are present in case
-      return evalValue.every((stain) => Object.keys(value).includes(stain))
+      return evalValue.every((stain) => value.includes(stain))
 
       // SOME searched stains are present in case
-      // return evalValue.some((stain) => Object.keys(value).includes(stain))
+      // return evalValue.some((stain) => value.includes(stain))
     }
 
     private hierarchyLevel(keys: string[], keyIdx: number, cases: Case[], currentHierarchyPath: string, name?: string): CaseHierarchy {
@@ -223,23 +228,23 @@ export default class CaseExplorer {
       return filteredCases;
     }
 
-    async tissues(localization: string = "EN"): Promise<string[]> {
+    async tissues(localization: string = "EN"): Promise<CaseTissuesStains[]> {
       if(!this.caseTissues) {
         const cases = await this.getCustomCases();
 
-        const allTissues: Set<string> = new Set();
-        cases.forEach((c) => Object.values(c.tissues).map((tissue: any) => tissue[localization]).forEach((t) => allTissues.add(t)));
+        const allTissues: Set<CaseTissuesStains> = new Set();
+        cases.forEach((c) => Object.entries(c.tissues).map(([tisName, tisValue]: [string, any]) => ({name: tisName, locName: tisValue[localization]})).forEach((t) => allTissues.add(t)));
         this.caseTissues = [...allTissues];
       }
       return this.caseTissues;
     }
 
-    async stains(localization: string = "EN"): Promise<string[]> {
+    async stains(localization: string = "EN"): Promise<CaseTissuesStains[]> {
       if(!this.caseStains) {
         const cases = await this.getCustomCases();
 
-        const allStains: Set<string> = new Set();
-        cases.forEach((c) => Object.values(c.stains).map((stain: any) => stain[localization]).forEach((t) => allStains.add(t)));
+        const allStains: Set<CaseTissuesStains> = new Set();
+        cases.forEach((c) => Object.entries(c.stains).map(([stnName, stnValue]: [string, any]) => ({name: stnName, locName: stnValue[localization]})).forEach((s) => allStains.add(s)));
         this.caseStains = [...allStains];
       }
       return this.caseStains;
