@@ -232,9 +232,9 @@ export default class CaseExplorer {
       if(!this.caseTissues) {
         const cases = await this.getCustomCases();
 
-        const allTissues: Set<CaseTissuesStains> = new Set();
-        cases.forEach((c) => Object.entries(c.tissues).map(([tisName, tisValue]: [string, any]) => ({name: tisName, locName: tisValue[localization]})).forEach((t) => allTissues.add(t)));
-        this.caseTissues = [...allTissues];
+        const allTissues: CaseTissuesStains[] = [];
+        cases.forEach((c) => Object.entries(c.tissues).map(([tisName, tisValue]: [string, any]) => ({name: tisName, locName: tisValue[localization]})).forEach((t) => allTissues.push(t)));
+        this.caseTissues = [...new Map(allTissues.map(t => [JSON.stringify([t.name,t.locName]), t])).values()];
       }
       return this.caseTissues;
     }
@@ -243,9 +243,9 @@ export default class CaseExplorer {
       if(!this.caseStains) {
         const cases = await this.getCustomCases();
 
-        const allStains: Set<CaseTissuesStains> = new Set();
-        cases.forEach((c) => Object.entries(c.stains).map(([stnName, stnValue]: [string, any]) => ({name: stnName, locName: stnValue[localization]})).forEach((s) => allStains.add(s)));
-        this.caseStains = [...allStains];
+        const allStains: CaseTissuesStains[] = [];
+        cases.forEach((c) => Object.entries(c.stains).map(([stnName, stnValue]: [string, any]) => ({name: stnName, locName: stnValue[localization]})).forEach((s) => allStains.push(s)));
+        this.caseStains = [...new Map(allStains.map(s => [JSON.stringify([s.name,s.locName]), s])).values()];
       }
       return this.caseStains;
     }
