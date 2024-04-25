@@ -10,6 +10,12 @@ export type CaseTissuesStains = {
   locName: string,
 }
 
+export type HierarchyNameOverrides = {
+  [key: string]: {
+    [key: string]: string
+  }
+}
+
 export default class CaseExplorer {
     protected context: Cases;
     protected customCases: CaseH[] | null = null;
@@ -19,14 +25,16 @@ export default class CaseExplorer {
 
     identifierSeparator: string = "";
     hierarchySpec: string[] = [];
+    hierarchyNameOverrides: HierarchyNameOverrides = {};
 
     constructor(context: Cases) {
         this.context = context;
     }
 
-    use(identifierSeparator: string, hierarchySpec: string[]): void {
+    use(identifierSeparator: string, hierarchySpec: string[], hierarchyNameOverrides: HierarchyNameOverrides): void {
       this.hierarchySpec = hierarchySpec;
       this.identifierSeparator = identifierSeparator;
+      this.hierarchyNameOverrides = hierarchyNameOverrides;
     }
 
     private async getCustomCases() {
@@ -204,10 +212,11 @@ export default class CaseExplorer {
       })
 
       const items = Object.keys(groups).map((name) => {
+        const overrideName = this.hierarchyNameOverrides[keys[keyIdx]]?.[name] || name;
         if(name === "OTHER") {
-          return this.hierarchyLevel(keys, keys.length, groups[name], `${currentHierarchyPath}/${name}`, name);
+          return this.hierarchyLevel(keys, keys.length, groups[name], `${currentHierarchyPath}/${overrideName}`, overrideName);
         }
-        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], `${currentHierarchyPath}/${name}`, name);
+        return this.hierarchyLevel(keys, keyIdx + 1, groups[name], `${currentHierarchyPath}/${overrideName}`, overrideName);
       })
 
       return { levelName: name, lastLevel: false, items: items };
