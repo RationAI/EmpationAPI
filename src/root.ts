@@ -79,10 +79,14 @@ export abstract class RootAPI extends AbstractAPI {
         this.accessToken = parseJwtToken(token) as JwtTokenBase;
         const tokenTimeout = getJwtTokenExpiresTimeout(this.accessToken);
         this._tokenExpires = Date.now() + tokenTimeout / 2;
-        const userId = this.accessToken.sub;
-        if (!userId || userId.length > 50) throw "Invalid User ID! Must be valid string shorter than 50 characters!";
-        this._userId = userId;
+        let userId = this.accessToken.sub;
+        if (!userId) throw "Invalid User ID! Must be valid string shorter than 50 characters!";
+        if(userId.length > 50) {
+            console.warn("User ID exceeded 50 characters! Using User ID shortened to first 50 characters!");
+            userId = userId.slice(0, 50);
+        }
         if (this.userId === userId) return;
+        this._userId = userId;
         if (withEvent) this.raiseEvent('init');
     }
 
