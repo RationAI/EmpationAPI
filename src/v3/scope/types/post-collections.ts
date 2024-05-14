@@ -18,9 +18,26 @@ import { PostRectangleCollection } from './post-rectangle-collection';
 import { PostSlideCollection } from './post-slide-collection';
 import { PostStringCollection } from './post-string-collection';
 export interface PostCollections {
-
   /**
    * List of items
    */
-  items?: (Array<(PostPointCollection | PostLineCollection | PostArrowCollection | PostCirceCollection | PostRectangleCollection | PostPolygonCollection | PostClassCollection | PostIntegerCollection | PostFloatCollection | PostBoolCollection | PostStringCollection | PostContinuousPixelmapCollection | PostDiscretePixelmapCollection | PostNominalPixelmapCollection | PostSlideCollection | PostIdCollection | PostNestedCollection)> | null);
+  items?: Array<
+    | PostPointCollection
+    | PostLineCollection
+    | PostArrowCollection
+    | PostCirceCollection
+    | PostRectangleCollection
+    | PostPolygonCollection
+    | PostClassCollection
+    | PostIntegerCollection
+    | PostFloatCollection
+    | PostBoolCollection
+    | PostStringCollection
+    | PostContinuousPixelmapCollection
+    | PostDiscretePixelmapCollection
+    | PostNominalPixelmapCollection
+    | PostSlideCollection
+    | PostIdCollection
+    | PostNestedCollection
+  > | null;
 }

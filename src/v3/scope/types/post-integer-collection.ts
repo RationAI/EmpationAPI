@@ -4,7 +4,6 @@ import { CollectionReferenceType } from './collection-reference-type';
 import { DataCreatorType } from './data-creator-type';
 import { PostIntegerPrimitive } from './post-integer-primitive';
 export interface PostIntegerCollection {
-
   /**
    * Creator Id
    */
@@ -18,12 +17,12 @@ export interface PostIntegerCollection {
   /**
    * Collection description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Item type of collection
@@ -33,22 +32,22 @@ export interface PostIntegerCollection {
   /**
    * List of integer primitives
    */
-  items?: (Array<PostIntegerPrimitive> | null);
+  items?: Array<PostIntegerPrimitive> | null;
 
   /**
    * Collection name
    */
-  name?: (string | null);
+  name?: string | null;
 
   /**
    * Id of the object referenced by this collection
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Refrence type
    */
-  reference_type?: (CollectionReferenceType | null);
+  reference_type?: CollectionReferenceType | null;
 
   /**
    * Collection type

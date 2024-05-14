@@ -16,7 +16,6 @@ import { PolygonAnnotation } from './polygon-annotation';
 import { RectangleAnnotation } from './rectangle-annotation';
 import { StringPrimitive } from './string-primitive';
 export interface ItemQueryList {
-
   /**
    * Count of all items
    */
@@ -25,5 +24,20 @@ export interface ItemQueryList {
   /**
    * Items returned by item query
    */
-  items: (Array<IntegerPrimitive> | Array<FloatPrimitive> | Array<BoolPrimitive> | Array<StringPrimitive> | Array<PointAnnotation> | Array<LineAnnotation> | Array<ArrowAnnotation> | Array<CircleAnnotation> | Array<RectangleAnnotation> | Array<PolygonAnnotation> | Array<Class> | Array<ContinuousPixelmap> | Array<DiscretePixelmap> | Array<NominalPixelmap> | Array<Collection>);
+  items:
+    | Array<IntegerPrimitive>
+    | Array<FloatPrimitive>
+    | Array<BoolPrimitive>
+    | Array<StringPrimitive>
+    | Array<PointAnnotation>
+    | Array<LineAnnotation>
+    | Array<ArrowAnnotation>
+    | Array<CircleAnnotation>
+    | Array<RectangleAnnotation>
+    | Array<PolygonAnnotation>
+    | Array<Class>
+    | Array<ContinuousPixelmap>
+    | Array<DiscretePixelmap>
+    | Array<NominalPixelmap>
+    | Array<Collection>;
 }

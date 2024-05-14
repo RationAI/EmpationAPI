@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { Slide } from './slide';
 export interface SlideList {
-
   /**
    * Number of slides (not affected by skip/limit pagination)
    */

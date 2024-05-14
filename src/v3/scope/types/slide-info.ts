@@ -5,16 +5,15 @@ import { SlideExtent } from './slide-extent';
 import { SlideLevel } from './slide-level';
 import { SlidePixelSizeNm } from './slide-pixel-size-nm';
 export interface SlideInfo {
-
   /**
    * Color depth (bitness) of each channel
    */
-  channel_depth?: (number | null);
+  channel_depth?: number | null;
 
   /**
    * List of channels
    */
-  channels?: (Array<SlideChannel> | null);
+  channels?: Array<SlideChannel> | null;
 
   /**
    * Image extent (finest level, level=0)

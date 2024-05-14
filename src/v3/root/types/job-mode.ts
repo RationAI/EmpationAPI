@@ -8,5 +8,5 @@ export enum JobMode {
   Standalone = 'STANDALONE',
   Preprocessing = 'PREPROCESSING',
   Postprocessing = 'POSTPROCESSING',
-  Report = 'REPORT'
+  Report = 'REPORT',
 }

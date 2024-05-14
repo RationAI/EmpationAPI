@@ -1,60 +1,74 @@
-import { ScopeContext } from "../../scope";
-import Scope from "./scope";
-import { Collection } from "./types/collection";
-import { ItemQuery } from "./types/item-query";
-import { ItemQueryList } from "./types/item-query-list";
+import { ScopeContext } from '../../scope';
+import Scope from './scope';
+import { Collection } from './types/collection';
+import { ItemQuery } from './types/item-query';
+import { ItemQueryList } from './types/item-query-list';
 
 export default class Collections extends ScopeContext {
-    protected context: Scope;
-    protected data: Collection | null = null;
+  protected context: Scope;
+  protected data: Collection | null = null;
 
-    constructor(context: Scope) {
-        super();
-        this.context = context;
-    }
+  constructor(context: Scope) {
+    super();
+    this.context = context;
+  }
 
-    async get(collectionId: string): Promise<Collection> {
-        const collection: Collection = await this.context.rawQuery(`/collections/${collectionId}`);
+  async get(collectionId: string): Promise<Collection> {
+    const collection: Collection = await this.context.rawQuery(
+      `/collections/${collectionId}`,
+    );
 
-        return collection;
-    }
+    return collection;
+  }
 
-    async create(collection: Collection): Promise<Collection> {
-        const createdCollection: Collection = await this.context.rawQuery(`/collections`, {
-            method: "POST",
-            body: collection,
-      });
+  async create(collection: Collection): Promise<Collection> {
+    const createdCollection: Collection = await this.context.rawQuery(
+      `/collections`,
+      {
+        method: 'POST',
+        body: collection,
+      },
+    );
 
-      return createdCollection;
-    }
+    return createdCollection;
+  }
 
-    async delete(collectionId: string): Promise<void> {
-        await this.context.rawQuery(`/collections/${collectionId}`, {
-            method: "DELETE",
-        });
-    }
+  async delete(collectionId: string): Promise<void> {
+    await this.context.rawQuery(`/collections/${collectionId}`, {
+      method: 'DELETE',
+    });
+  }
 
-    async queryItems(collectionId: string, query: ItemQuery): Promise<ItemQueryList> {
-        const queryResult: ItemQueryList = await this.context.rawQuery(`/collections/${collectionId}/items/query`, {
-            method: "PUT",
-            body: query,
-        })
+  async queryItems(
+    collectionId: string,
+    query: ItemQuery,
+  ): Promise<ItemQueryList> {
+    const queryResult: ItemQueryList = await this.context.rawQuery(
+      `/collections/${collectionId}/items/query`,
+      {
+        method: 'PUT',
+        body: query,
+      },
+    );
 
-        return queryResult;
-    }
+    return queryResult;
+  }
 
-    async createItems(collectionId: string, items: any): Promise<void> {
-        await this.context.rawQuery(`/collections/${collectionId}/items`, {
-            method: "POST",
-            body: {
-                ...items,
-            }
-        })
-    }
+  async createItems(collectionId: string, items: any): Promise<void> {
+    await this.context.rawQuery(`/collections/${collectionId}/items`, {
+      method: 'POST',
+      body: {
+        ...items,
+      },
+    });
+  }
 
-    async deleteItem(collectionId: string, itemId: string): Promise<void> {
-        await this.context.rawQuery(`/collections/${collectionId}/items/${itemId}`, {
-            method: "DELETE",
-        });
-    }
+  async deleteItem(collectionId: string, itemId: string): Promise<void> {
+    await this.context.rawQuery(
+      `/collections/${collectionId}/items/${itemId}`,
+      {
+        method: 'DELETE',
+      },
+    );
+  }
 }

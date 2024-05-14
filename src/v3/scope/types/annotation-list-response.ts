@@ -7,7 +7,6 @@ import { PointAnnotation } from './point-annotation';
 import { PolygonAnnotation } from './polygon-annotation';
 import { RectangleAnnotation } from './rectangle-annotation';
 export interface AnnotationListResponse {
-
   /**
    * Count of all items
    */
@@ -16,5 +15,12 @@ export interface AnnotationListResponse {
   /**
    * List of items
    */
-  items: Array<(PointAnnotation | LineAnnotation | ArrowAnnotation | CircleAnnotation | RectangleAnnotation | PolygonAnnotation)>;
+  items: Array<
+    | PointAnnotation
+    | LineAnnotation
+    | ArrowAnnotation
+    | CircleAnnotation
+    | RectangleAnnotation
+    | PolygonAnnotation
+  >;
 }

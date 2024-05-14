@@ -3,5 +3,5 @@
 export enum DataCreatorType {
   Job = 'job',
   User = 'user',
-  Scope = 'scope'
+  Scope = 'scope',
 }

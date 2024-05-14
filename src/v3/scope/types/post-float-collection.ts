@@ -4,7 +4,6 @@ import { CollectionReferenceType } from './collection-reference-type';
 import { DataCreatorType } from './data-creator-type';
 import { PostFloatPrimitive } from './post-float-primitive';
 export interface PostFloatCollection {
-
   /**
    * Creator Id
    */
@@ -18,12 +17,12 @@ export interface PostFloatCollection {
   /**
    * Collection description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Item type of collection
@@ -33,22 +32,22 @@ export interface PostFloatCollection {
   /**
    * List of float primitives
    */
-  items?: (Array<PostFloatPrimitive> | null);
+  items?: Array<PostFloatPrimitive> | null;
 
   /**
    * Collection name
    */
-  name?: (string | null);
+  name?: string | null;
 
   /**
    * Id of the object referenced by this collection
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Refrence type
    */
-  reference_type?: (CollectionReferenceType | null);
+  reference_type?: CollectionReferenceType | null;
 
   /**
    * Collection type

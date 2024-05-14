@@ -6,11 +6,10 @@ import { NumberClassMapping } from './number-class-mapping';
 import { PixelmapLevel } from './pixelmap-level';
 import { PixelmapReferenceType } from './pixelmap-reference-type';
 export interface ContinuousPixelmap {
-
   /**
    * A dict that maps the index values of the channels to fully qualified class names to express the semantic         meaning of that channel.
    */
-  channel_class_mapping?: (Array<NumberClassMapping> | null);
+  channel_class_mapping?: Array<NumberClassMapping> | null;
 
   /**
    * number of channels the Pixelmap contains (must be > 0)
@@ -35,7 +34,7 @@ export interface ContinuousPixelmap {
   /**
    * Pixelmap description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * The type of the scalar elements in the Pixelmap. All channels of a Pixelmap have the same element type.
@@ -45,7 +44,7 @@ export interface ContinuousPixelmap {
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Meta data describing which WSI levels will receive Pixelmap tiles and in which region (position_min_x,         position_min_y, position_max_x, position_max_y) of the given level the Pixelmap tiles will be written.         This meta data serves as a hint for viewers to not request non-existing tiles outside these regions.         If a certain level will not receive Pixelmap data, it should not be added to the list.
@@ -66,7 +65,7 @@ export interface ContinuousPixelmap {
    * Pixelmap name
    */
   name: string;
-  neutral_value?: (number | null);
+  neutral_value?: number | null;
 
   /**
    * ID of referenced Slide

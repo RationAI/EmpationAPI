@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface AnnotationQueryPosition {
-
   /**
    * ID of type UUID4
    */

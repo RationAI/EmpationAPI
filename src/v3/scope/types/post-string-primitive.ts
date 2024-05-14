@@ -3,7 +3,6 @@
 import { DataCreatorType } from './data-creator-type';
 import { PrimitiveReferenceType } from './primitive-reference-type';
 export interface PostStringPrimitive {
-
   /**
    * Id of the creator of this primitive
    */
@@ -17,12 +16,12 @@ export interface PostStringPrimitive {
   /**
    * Primitive description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Primitive name
@@ -32,12 +31,12 @@ export interface PostStringPrimitive {
   /**
    * Id of the object referenced by this primitive
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Reference type
    */
-  reference_type?: (PrimitiveReferenceType | null);
+  reference_type?: PrimitiveReferenceType | null;
 
   /**
    * String type

@@ -1,22 +1,22 @@
-import {getEnv, getUserName, getUserPassword} from "./env";
+import { getEnv, getUserName, getUserPassword } from './env';
 
 export interface AuthOptions {
-    authModule: string;
-    client: string;
-    secret?: string;
-    user: string;
-    userSecret: string;
-    url: string;
+  authModule: string;
+  client: string;
+  secret?: string;
+  user: string;
+  userSecret: string;
+  url: string;
 }
 
 // If access_token = false, then auth is disabled
 export interface AuthResult {
-    access_token: string | false;
-    expires_in: number;
-    refresh_expires_in: number;
-    refresh_token: string;
-    session_state: string;
-    scope: string;
+  access_token: string | false;
+  expires_in: number;
+  refresh_expires_in: number;
+  refresh_token: string;
+  session_state: string;
+  scope: string;
 }
 
 /**
@@ -28,22 +28,27 @@ export interface AuthResult {
  *   ... and polly.auth contains the AuthResult item
  */
 export default async function auth(userName) {
-    const defaults: AuthOptions = {
-        authModule: getEnv('AUTH_MODULE', 'direct-access-grant')!,
-        client: getEnv('AUTH_CLIENT', 'WBC_CLIENT')!,
-        secret: getEnv('AUTH_CLIENT_SECRET', undefined),
-        user: getUserName(userName),
-        userSecret: getUserPassword(userName),
-        url: getEnv('AUTH_URL')!
-    }
+  const defaults: AuthOptions = {
+    authModule: getEnv('AUTH_MODULE', 'direct-access-grant')!,
+    client: getEnv('AUTH_CLIENT', 'WBC_CLIENT')!,
+    secret: getEnv('AUTH_CLIENT_SECRET', undefined),
+    user: getUserName(userName),
+    userSecret: getUserPassword(userName),
+    url: getEnv('AUTH_URL')!,
+  };
 
-    if (!defaults.authModule || defaults.authModule === "none" || defaults.authModule === "false") return false;
+  if (
+    !defaults.authModule ||
+    defaults.authModule === 'none' ||
+    defaults.authModule === 'false'
+  )
+    return false;
 
-    const handler = await import(`./auth/${defaults.authModule}`);
-    if (!handler) {
-        throw `Invalid authentication: module ${defaults.authModule} does not exist!`;
-    }
+  const handler = await import(`./auth/${defaults.authModule}`);
+  if (!handler) {
+    throw `Invalid authentication: module ${defaults.authModule} does not exist!`;
+  }
 
-    //required to be default export
-    return await handler.default(defaults);
+  //required to be default export
+  return await handler.default(defaults);
 }

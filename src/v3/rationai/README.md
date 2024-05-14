@@ -6,5 +6,6 @@ This folder implements support for these endpoints
 ## Current endpoint groups
 
 ### Global Storage
+
 Offers global storage, where items similar to string primitives can be stored, that are accesible across more users/scopes.
 AUTH: the same token as for root API

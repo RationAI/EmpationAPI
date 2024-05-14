@@ -3,11 +3,10 @@
 import { AnnotationReferenceType } from './annotation-reference-type';
 import { DataCreatorType } from './data-creator-type';
 export interface PostArrowAnnotation {
-
   /**
    * Centroid of the annotation
    */
-  centroid?: (Array<number> | null);
+  centroid?: Array<number> | null;
 
   /**
    * Creator ID
@@ -22,7 +21,7 @@ export interface PostArrowAnnotation {
   /**
    * Annotation description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * Point coordinates of arrow head (must be >= 0)
@@ -32,7 +31,7 @@ export interface PostArrowAnnotation {
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Annotation name
@@ -47,7 +46,7 @@ export interface PostArrowAnnotation {
   /**
    * Recommended viewing resolution range in npp (nanometer per pixel) - Can be set by app
    */
-  npp_viewing?: (Array<number> | null);
+  npp_viewing?: Array<number> | null;
 
   /**
    * ID of referenced Slide

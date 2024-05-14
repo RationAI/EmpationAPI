@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { SlideExtent } from './slide-extent';
 export interface SlideLevel {
-
   /**
    * Downsample factor for this level
    */

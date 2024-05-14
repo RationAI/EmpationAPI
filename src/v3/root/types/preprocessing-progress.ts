@@ -3,5 +3,5 @@
 export enum PreprocessingProgress {
   None = 'none',
   Running = 'running',
-  Finished = 'finished'
+  Finished = 'finished',
 }

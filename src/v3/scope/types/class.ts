@@ -3,7 +3,6 @@
 import { ClassReferenceType } from './class-reference-type';
 import { DataCreatorType } from './data-creator-type';
 export interface Class {
-
   /**
    * Creator ID
    */
@@ -17,12 +16,12 @@ export interface Class {
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Flag to mark a class as immutable
    */
-  is_locked?: (boolean | null);
+  is_locked?: boolean | null;
 
   /**
    * ID of type UUID4 - ID of referenced annotation

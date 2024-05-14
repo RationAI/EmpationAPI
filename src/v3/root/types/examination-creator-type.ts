@@ -2,5 +2,5 @@
 /* eslint-disable */
 export enum ExaminationCreatorType {
   User = 'USER',
-  Service = 'SERVICE'
+  Service = 'SERVICE',
 }

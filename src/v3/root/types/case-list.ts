@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { Case } from './case';
 export interface CaseList {
-
   /**
    * Total number of cases accessible by user (number is not affected by skip/limit pagination)
    */

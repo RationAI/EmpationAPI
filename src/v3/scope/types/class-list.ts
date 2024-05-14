@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { Class } from './class';
 export interface ClassList {
-
   /**
    * Count of all items
    */
@@ -16,5 +15,5 @@ export interface ClassList {
   /**
    * List of unique class values (for classes matching given filter criteria when returned by query)
    */
-  unique_class_values?: (Array<string> | null);
+  unique_class_values?: Array<string> | null;
 }

@@ -1,28 +1,38 @@
 import * as dotenv from 'dotenv';
 // import * as fs from "fs";
-const prefix = "EMAPI_";
+const prefix = 'EMAPI_';
 
 export function getEnv(key: string, def: string | undefined = undefined) {
-    let ret = process.env[`${prefix}${key}`];
-    if (ret === undefined) return def;
-    return ret;
+  let ret = process.env[`${prefix}${key}`];
+  if (ret === undefined) return def;
+  return ret;
 }
 
 export function getUserName(user: string) {
-    let key = (user || "").trim().split(/\.?(?=[A-Z])/).join('_').toUpperCase();
-    if (!key) throw `Invalid user name: '${user}'!`;
-    let ret = process.env[`${prefix}AUTH_USER_${key}`];
-    if (ret === undefined) throw `Invalid user name: '${user}': the env variable '${prefix}AUTH_USER_${key}' is not set!`;
-    if (!ret) return user; //if set to empty suppose it is inherited
-    return ret;
+  let key = (user || '')
+    .trim()
+    .split(/\.?(?=[A-Z])/)
+    .join('_')
+    .toUpperCase();
+  if (!key) throw `Invalid user name: '${user}'!`;
+  let ret = process.env[`${prefix}AUTH_USER_${key}`];
+  if (ret === undefined)
+    throw `Invalid user name: '${user}': the env variable '${prefix}AUTH_USER_${key}' is not set!`;
+  if (!ret) return user; //if set to empty suppose it is inherited
+  return ret;
 }
 
 export function getUserPassword(user: string) {
-    let key = (user || "").trim().split(/\.?(?=[A-Z])/).join('_').toUpperCase();
-    if (!key) throw `Invalid user name: '${user}'!`;
-    let ret = process.env[`${prefix}AUTH_USER_SECRET_${key}`];
-    if (!ret) throw `Invalid user password: '${user}': the env variable '${prefix}AUTH_USER_SECRET_${key}' is not set!`;
-    return ret;
+  let key = (user || '')
+    .trim()
+    .split(/\.?(?=[A-Z])/)
+    .join('_')
+    .toUpperCase();
+  if (!key) throw `Invalid user name: '${user}'!`;
+  let ret = process.env[`${prefix}AUTH_USER_SECRET_${key}`];
+  if (!ret)
+    throw `Invalid user password: '${user}': the env variable '${prefix}AUTH_USER_SECRET_${key}' is not set!`;
+  return ret;
 }
 
 // First loaded has assignment precedence

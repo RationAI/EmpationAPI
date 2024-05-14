@@ -20,7 +20,6 @@ import { RectangleAnnotation } from './rectangle-annotation';
 import { SlideItem } from './slide-item';
 import { StringPrimitive } from './string-primitive';
 export interface Collection {
-
   /**
    * Creator Id
    */
@@ -34,27 +33,27 @@ export interface Collection {
   /**
    * Collection description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Flag to mark a collection as immutable
    */
-  is_locked?: (boolean | null);
+  is_locked?: boolean | null;
 
   /**
    * The number of items in the collection
    */
-  item_count?: (number | null);
+  item_count?: number | null;
 
   /**
    * Ids of items in collection
    */
-  item_ids?: (Array<string> | null);
+  item_ids?: Array<string> | null;
 
   /**
    * Item type of collection
@@ -64,22 +63,40 @@ export interface Collection {
   /**
    * Items of the collection
    */
-  items?: (Array<PointAnnotation> | Array<LineAnnotation> | Array<ArrowAnnotation> | Array<CircleAnnotation> | Array<RectangleAnnotation> | Array<PolygonAnnotation> | Array<Class> | Array<IntegerPrimitive> | Array<FloatPrimitive> | Array<BoolPrimitive> | Array<StringPrimitive> | Array<ContinuousPixelmap> | Array<DiscretePixelmap> | Array<NominalPixelmap> | Array<SlideItem> | Array<IdObject> | Array<Collection> | null);
+  items?:
+    | Array<PointAnnotation>
+    | Array<LineAnnotation>
+    | Array<ArrowAnnotation>
+    | Array<CircleAnnotation>
+    | Array<RectangleAnnotation>
+    | Array<PolygonAnnotation>
+    | Array<Class>
+    | Array<IntegerPrimitive>
+    | Array<FloatPrimitive>
+    | Array<BoolPrimitive>
+    | Array<StringPrimitive>
+    | Array<ContinuousPixelmap>
+    | Array<DiscretePixelmap>
+    | Array<NominalPixelmap>
+    | Array<SlideItem>
+    | Array<IdObject>
+    | Array<Collection>
+    | null;
 
   /**
    * Collection name
    */
-  name?: (string | null);
+  name?: string | null;
 
   /**
    * Id of the object referenced by this collection
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Refrence type
    */
-  reference_type?: (CollectionReferenceType | null);
+  reference_type?: CollectionReferenceType | null;
 
   /**
    * Collection type

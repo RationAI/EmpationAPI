@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface NumberClassMapping {
-
   /**
    * A valid class value.
    */

@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { TagListInput } from './tag-list-input';
 export interface AppInput {
-
   /**
    * App ID
    */
@@ -36,33 +35,33 @@ export interface AppInput {
   /**
    * App description taken from store
    */
-  store_description?: (string | null);
+  store_description?: string | null;
 
   /**
    * URL to app documentation
    */
-  store_docs_url?: (string | null);
+  store_docs_url?: string | null;
 
   /**
    * URL to app image icon
    */
-  store_icon_url?: (string | null);
+  store_icon_url?: string | null;
 
   /**
    * Url of the portal app preview after hover
    */
-  store_preview_after_url?: (string | null);
+  store_preview_after_url?: string | null;
 
   /**
    * Url of the portal app preview before hover
    */
-  store_preview_before_url?: (string | null);
+  store_preview_before_url?: string | null;
 
   /**
    * URL to app in store
    */
-  store_url?: (string | null);
-  tags?: (TagListInput | null);
+  store_url?: string | null;
+  tags?: TagListInput | null;
 
   /**
    * Name of the app vendor

@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { GlobalItem } from './global-item';
 export interface GlobalItemList {
-
   /**
    * Count of all items
    */
@@ -11,5 +10,5 @@ export interface GlobalItemList {
   /**
    * List of items
    */
-  items: Array<(GlobalItem)>;
+  items: Array<GlobalItem>;
 }

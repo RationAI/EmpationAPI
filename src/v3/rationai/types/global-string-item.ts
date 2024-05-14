@@ -3,7 +3,6 @@
 import { GlobalDataCreatorType } from './global-data-creator-type';
 import { GlobalItemReferenceType } from './global-item-reference-type';
 export interface GlobalStringItem {
-
   /**
    * Id of the creator of this global item
    */
@@ -17,7 +16,7 @@ export interface GlobalStringItem {
   /**
    * Global item description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4
@@ -32,12 +31,12 @@ export interface GlobalStringItem {
   /**
    * Id of the object referenced by this global item
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Reference type
    */
-  reference_type?: (GlobalItemReferenceType | null);
+  reference_type?: GlobalItemReferenceType | null;
 
   /**
    * String type
@@ -52,7 +51,7 @@ export interface GlobalStringItem {
   /**
    * Data type
    */
-  data_type?: (string | null);
+  data_type?: string | null;
 
   /**
    * Date of creation stored in seconds from start of epoch

@@ -4,7 +4,6 @@ import { CollectionReferenceType } from './collection-reference-type';
 import { DataCreatorType } from './data-creator-type';
 import { PostPolygonAnnotation } from './post-polygon-annotation';
 export interface PostPolygonCollection {
-
   /**
    * Creator Id
    */
@@ -18,12 +17,12 @@ export interface PostPolygonCollection {
   /**
    * Collection description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Item type of collection
@@ -33,22 +32,22 @@ export interface PostPolygonCollection {
   /**
    * List of polygon annotations
    */
-  items?: (Array<PostPolygonAnnotation> | null);
+  items?: Array<PostPolygonAnnotation> | null;
 
   /**
    * Collection name
    */
-  name?: (string | null);
+  name?: string | null;
 
   /**
    * Id of the object referenced by this collection
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Refrence type
    */
-  reference_type?: (CollectionReferenceType | null);
+  reference_type?: CollectionReferenceType | null;
 
   /**
    * Collection type

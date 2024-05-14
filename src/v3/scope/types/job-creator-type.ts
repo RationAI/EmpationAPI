@@ -7,5 +7,5 @@
 export enum JobCreatorType {
   User = 'USER',
   Scope = 'SCOPE',
-  Service = 'SERVICE'
+  Service = 'SERVICE',
 }
