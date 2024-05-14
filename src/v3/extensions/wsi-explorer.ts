@@ -16,11 +16,20 @@ export default class WsiExplorer {
     this.context = context;
   }
 
+  /**
+   * Configure WsiExplorer with regex identifying the local_id part and value this part should contain to distiguish masks and slides.
+   * @param maskIdentifierSeparator Regex specifying part of local_id that should identify the WSI type
+   * @param maskIdentifierValue Value the local_id part of WSI should have to identify the WSI as mask
+   */
   use(maskIdentifierSeparator: string, maskIdentifierValue: string): void {
     this.maskIdentifierSeparator = maskIdentifierSeparator;
     this.maskIdentifierValue = maskIdentifierValue;
   }
 
+  /**
+   * Fetch all WSIs of case
+   * @param caseId ID of case
+   */
   private async getAllSlides(caseId: string): Promise<Slide[]> {
     if (this.lastCaseId !== caseId || !this.data) {
       this.data = (await this.context.slides(caseId)).items;
@@ -28,6 +37,10 @@ export default class WsiExplorer {
     return this.data;
   }
 
+  /**
+   * Fetch all actual slides of case
+   * @param caseId ID of case
+   */
   async slides(caseId: string): Promise<Slide[]> {
     if (this.lastCaseId !== caseId || !this.slidesData) {
       this.slidesData = (await this.getAllSlides(caseId)).filter((slide) => {
@@ -42,6 +55,10 @@ export default class WsiExplorer {
     return this.slidesData;
   }
 
+  /**
+   * Fetch all masks of a case
+   * @param caseId ID of case
+   */
   async masks(caseId: string): Promise<Slide[]> {
     if (this.lastCaseId !== caseId || !this.masksData) {
       this.masksData = (await this.getAllSlides(caseId)).filter((slide) => {

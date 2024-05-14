@@ -12,6 +12,11 @@ export default class VisualizationTemplates {
     this.context = context;
   }
 
+  /**
+   * Fetch global item containing template.
+   * @param type Type of the template (backgroung, params, shader, visualization)
+   * @param name Name of the template
+   */
   async fetchTemplateItem(
     type: TemplateType,
     name: string,
@@ -24,6 +29,11 @@ export default class VisualizationTemplates {
     ).find((item) => item.name === name);
   }
 
+  /**
+   * Fetch template.
+   * @param type Type of the template (backgroung, params, shader, visualization)
+   * @param name Name of the template
+   */
   async getTemplate(type: TemplateType, name: string): Promise<object | false> {
     const tmpl = await this.fetchTemplateItem(type, name);
     if (tmpl) {
@@ -32,6 +42,12 @@ export default class VisualizationTemplates {
     return false;
   }
 
+  /**
+   * Create new template.
+   * @param type Type of the template (background, params, shader, visualization)
+   * @param name Name of the template
+   * @param value Value of the template
+   */
   async createTemplate(
     type: TemplateType,
     name: string,
@@ -51,6 +67,11 @@ export default class VisualizationTemplates {
     );
   }
 
+  /**
+   * Delete template.
+   * @param type Type of the template (backgroung, params, shader, visualization)
+   * @param name Name of the template
+   */
   async deleteTemplate(type: TemplateType, name: string): Promise<boolean> {
     const existingTmpl = await this.fetchTemplateItem(type, name);
     if (!existingTmpl) {

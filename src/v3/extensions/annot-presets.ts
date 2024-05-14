@@ -24,11 +24,18 @@ export default class AnnotPresets {
     this.context = context;
   }
 
-  // used only in tests
+  /**
+   * Configure AnnotPresets class with data type. Data type is used to filter global items.
+   * @param presetDataType Data type of global items used to store annotation presets.
+   */
   use(presetDataType: string): void {
     this.presetDataType = presetDataType;
   }
 
+  /**
+   * Fetch global item containing annotation presets (only one should exist).
+   * @param fresh Force fresh fetch of global item, otherwise cached version might be used
+   */
   private async getPresetsItem(fresh: boolean = false): Promise<GlobalItem> {
     if (!this.data || fresh) {
       let presetsItem = (
@@ -45,6 +52,10 @@ export default class AnnotPresets {
     return this.data;
   }
 
+  /**
+   * Create global item containing annotation presets (only one should exist).
+   * @param value Annotation preset
+   */
   private async createPresetsItem(
     value: AnnotPresetObject,
   ): Promise<GlobalItem> {
@@ -58,6 +69,10 @@ export default class AnnotPresets {
     );
   }
 
+  /**
+   * Get annotation presets.
+   * @param fresh Force fresh fetch
+   */
   async getAnnotPresets(fresh: boolean = false): Promise<AnnotPresetGetResult> {
     const presetItem = await this.getPresetsItem(fresh);
     return {
@@ -67,6 +82,9 @@ export default class AnnotPresets {
     };
   }
 
+  /**
+   * Helper function to merge annotation presets during parallel updates.
+   */
   private mergePresets(
     primaryArr: AnnotPreset[],
     secondaryArr: AnnotPreset[],
@@ -84,6 +102,12 @@ export default class AnnotPresets {
     return newArr;
   }
 
+  /**
+   * Update annotation presets.
+   * @param value New presets
+   * @param localVersion Local version of presets (modified_at attribute of global item)
+   * @param failOnParallelUpdate Force update fail if local version is outdated
+   */
   async updateAnnotPresets(
     value: AnnotPreset[],
     localVersion: number,
@@ -139,6 +163,9 @@ export default class AnnotPresets {
     }
   }
 
+  /**
+   * Delete annotation presets.
+   */
   async deleteAnnotPresets(): Promise<void> {
     const presetsItem = await this.getPresetsItem(true);
     await this.context.delete(presetsItem.id);

@@ -18,6 +18,11 @@ export default class WsiMetadata {
 
   // Slide
 
+  /**
+   * Fetch global item containing metadata of WSI.
+   * @param wsiId ID of WSI
+   * @param isSlide Specify if WSI is a slide or a mask
+   */
   private async getWsiMetadataItem(
     wsiId: string,
     isSlide: boolean = true,
@@ -34,6 +39,12 @@ export default class WsiMetadata {
     return metadata;
   }
 
+  /**
+   * Create global item containing metadata of WSI.
+   * @param wsiId ID of WSI
+   * @param value Metadata of WSI
+   * @param isSlide Specify if WSI is a slide or a mask
+   */
   private async createWsiMetadataItem(
     wsiId: string,
     value: any,
@@ -49,10 +60,19 @@ export default class WsiMetadata {
     );
   }
 
+  /**
+   * Get metadata of slide WSI.
+   * @param slideId ID of slide WSI
+   */
   async getSlideMetadata(slideId: string): Promise<SlideMetadata> {
     return JSON.parse((await this.getWsiMetadataItem(slideId)).value as string);
   }
 
+  /**
+   * Update metadata of slide WSI.
+   * @param slideId ID of slide WSI
+   * @param value New metadata of WSI
+   */
   async updateSlideMetadata(
     slideId: string,
     value: SlideMetadata,
@@ -69,6 +89,10 @@ export default class WsiMetadata {
     }
   }
 
+  /**
+   * Helper method generating shader config for user-created xOpat visualisations
+   * @param shaders Array of shaders
+   */
   private async getShadersConfig(shaders: Shader[]): Promise<object> {
     const shadersConfig = {};
     for (let i = 0; i < shaders.length; i++) {
@@ -85,6 +109,10 @@ export default class WsiMetadata {
     return shadersConfig;
   }
 
+  /**
+   * Fetch user-created xOpat visualisations of a slide
+   * @param slideId ID of a slide
+   */
   async getVisualizations(slideId: string): Promise<any> {
     const slideVis = (await this.getSlideMetadata(slideId)).visualization;
     const visualizations = {
@@ -124,9 +152,13 @@ export default class WsiMetadata {
 
   // MASK
 
-  async getMaskMetadata(slideId: string): Promise<MaskMetadata> {
+  /**
+   * Get metadata of mask WSI.
+   * @param slideId ID of mask WSI
+   */
+  async getMaskMetadata(maskId: string): Promise<MaskMetadata> {
     return JSON.parse(
-      (await this.getWsiMetadataItem(slideId, false)).value as string,
+      (await this.getWsiMetadataItem(maskId, false)).value as string,
     );
   }
 }

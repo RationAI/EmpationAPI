@@ -37,6 +37,12 @@ export default class CaseExplorer {
     this.context = context;
   }
 
+  /**
+   * Configure CaseExplorer.
+   * @param identifierSeparator Regex matching local_id and its parts.
+   * @param hierarchySpec Array of hierarchy keys defining hierarchy.
+   * @param hierarchyNameOverrides Override specific values of specific keys to use as names in hierarchy.
+   */
   use(
     identifierSeparator: string,
     hierarchySpec: string[],
@@ -47,6 +53,9 @@ export default class CaseExplorer {
     this.hierarchyNameOverrides = hierarchyNameOverrides;
   }
 
+  /**
+   * Returns cases extended with path in the specified hierarchy.
+   */
   private async getCustomCases() {
     if (!this.customCases) {
       this.customCases = (await this.context.list()).items.map((caseObj) => {
@@ -59,6 +68,10 @@ export default class CaseExplorer {
     return this.customCases;
   }
 
+  /**
+   * Returns case's path in the specified hierarchy.
+   * @param caseObj EMPAIA Case.
+   */
   getCaseHierarchyPath(caseObj: Case) {
     if (!this.identifierSeparator || !this.hierarchySpec) {
       throw `ArgumentError[CaseExplorer] identifierSeparator or hierarchySpec is missing - required property!`;
@@ -75,6 +88,10 @@ export default class CaseExplorer {
     }, '');
   }
 
+  /**
+   * Returns single case.
+   * @param caseId ID of a case.
+   */
   async getCase(caseId: string): Promise<CaseH> {
     let caseObj: Case | undefined;
     if (this.customCases) {
@@ -88,6 +105,11 @@ export default class CaseExplorer {
     return { ...caseObj, pathInHierarchy: this.getCaseHierarchyPath(caseObj) };
   }
 
+  /**
+   * Returns case's value, can be a simple attribute, or some derived value.
+   * @param key Key specifying value that can be extracted from a case.
+   * @param cs Case object.
+   */
   private getCaseValue(key: string, cs: Case) {
     switch (key) {
       case 'year': {
@@ -117,6 +139,12 @@ export default class CaseExplorer {
     }
   }
 
+  /**
+   * Evaluates case's value against a provided value.
+   * @param key Key specifying value that can be extracted from a case.
+   * @param evalValue Value for comparison/evaluation.
+   * @param cs Case object.
+   */
   private evaluateCaseValue(
     key: string,
     evalValue: string | string[],
@@ -235,6 +263,9 @@ export default class CaseExplorer {
     // return evalValue.some((stain) => value.includes(stain))
   }
 
+  /**
+   * Recursively constructs a hierarchy by single levels
+   */
   private hierarchyLevel(
     keys: string[],
     keyIdx: number,
@@ -284,6 +315,9 @@ export default class CaseExplorer {
     return { levelName: name, lastLevel: false, items: items };
   }
 
+  /**
+   * Constructs a hierarchy based on spec configured in the CaseExplorer class.
+   */
   async hierarchy(): Promise<CaseHierarchy> {
     if (!this.caseHierarchy) {
       const cases = await this.getCustomCases();
@@ -297,6 +331,10 @@ export default class CaseExplorer {
     return this.caseHierarchy;
   }
 
+  /**
+   * Search cases.
+   * @param query Search query.
+   */
   async search(query: CaseSearchParams[]): Promise<CaseH[]> {
     let filteredCases = await this.getCustomCases();
     query.forEach(
@@ -309,6 +347,10 @@ export default class CaseExplorer {
     return filteredCases;
   }
 
+  /**
+   * Get all tissues in available cases.
+   * @param localization Language of tissue names.
+   */
   async tissues(localization: string = 'EN'): Promise<CaseTissuesStains[]> {
     if (!this.caseTissues) {
       const cases = await this.getCustomCases();
@@ -331,6 +373,10 @@ export default class CaseExplorer {
     return this.caseTissues;
   }
 
+  /**
+   * Get all stains in available cases.
+   * @param localization Language of stains names.
+   */
   async stains(localization: string = 'EN'): Promise<CaseTissuesStains[]> {
     if (!this.caseStains) {
       const cases = await this.getCustomCases();

@@ -1,3 +1,7 @@
+/**
+ * Use for converting strings representing number to a number.
+ * @param variable Number or string representing a number.
+ */
 const getNumber = (variable: string | number) => {
   if (typeof variable === 'string') {
     variable = Number(variable);
@@ -18,6 +22,13 @@ export const getDayFromEpochTime = (epochTime: number | string) => {
   return new Date(getNumber(epochTime) * 1000).getDate();
 };
 
+/**
+ * Match string on specific substring and value.
+ * @param str String value.
+ * @param separator Regex that should match the provided value.
+ * @param groupIdx Index of a group matched by the regex.
+ * @param value Value the matched group should have.
+ */
 export const matchStringOnSeparatorGroup = (
   str: string,
   separator: string,
@@ -29,6 +40,11 @@ export const matchStringOnSeparatorGroup = (
   return matches[groupIdx] === value;
 };
 
+/**
+ * Match string if it contains some of the specified tokens.
+ * @param stringToMatch String value.
+ * @param tokenString String containing tokens/words split by a " ".
+ */
 export const matchStringOnTokens = (
   stringToMatch: string,
   tokenString: string,
@@ -42,6 +58,11 @@ export const matchStringOnTokens = (
   return stringToMatch.match(searchTermRegex) !== null;
 };
 
+/**
+ * Group by for javascript array.
+ * @param arr Array of objects.
+ * @param key Function to get value from object by which the objects are grouped.
+ */
 export const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
   arr.reduce(
     (groups, item) => {

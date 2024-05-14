@@ -12,11 +12,18 @@ export default class JobConfig {
     this.context = context;
   }
 
-  // used only in tests
+  /**
+   * Configure JobConfig class with data type. Data type is used to filter global items.
+   * @param configDataType Data type of global items used to store job configs.
+   */
   use(configDataType: string): void {
     this.configDataType = configDataType;
   }
 
+  /**
+   * Fetch global item containing job config of an App.
+   * @param appId ID of App
+   */
   private async fetchJobConfigItem(
     appId: string,
   ): Promise<GlobalItem | undefined> {
@@ -28,6 +35,10 @@ export default class JobConfig {
     ).find(Boolean);
   }
 
+  /**
+   * Get job config of an App.
+   * @param appId ID of App
+   */
   async getJobConfig(appId: string): Promise<object | false> {
     const item = await this.fetchJobConfigItem(appId);
     if (item) {
@@ -36,6 +47,11 @@ export default class JobConfig {
     return false;
   }
 
+  /**
+   * Get job config of an App.
+   * @param appId ID of App
+   * @param value Job config of an App
+   */
   async createJobConfig(appId: string, value: object): Promise<object | false> {
     const existingConfig = await this.fetchJobConfigItem(appId);
     if (existingConfig) {
@@ -51,6 +67,10 @@ export default class JobConfig {
     );
   }
 
+  /**
+   * Delete job config of an App.
+   * @param appId ID of App
+   */
   async deleteJobConfig(appId: string): Promise<boolean> {
     const existingConfig = await this.fetchJobConfigItem(appId);
     if (!existingConfig) {
