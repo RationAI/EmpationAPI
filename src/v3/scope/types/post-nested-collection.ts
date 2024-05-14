@@ -19,7 +19,6 @@ import { PostRectangleCollection } from './post-rectangle-collection';
 import { PostSlideCollection } from './post-slide-collection';
 import { PostStringCollection } from './post-string-collection';
 export interface PostNestedCollection {
-
   /**
    * Creator Id
    */
@@ -33,12 +32,12 @@ export interface PostNestedCollection {
   /**
    * Collection description
    */
-  description?: (string | null);
+  description?: string | null;
 
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * Item type of collection
@@ -48,22 +47,40 @@ export interface PostNestedCollection {
   /**
    * List of items
    */
-  items?: (Array<(PostPointCollection | PostLineCollection | PostArrowCollection | PostCirceCollection | PostRectangleCollection | PostPolygonCollection | PostClassCollection | PostIntegerCollection | PostFloatCollection | PostBoolCollection | PostStringCollection | PostContinuousPixelmapCollection | PostDiscretePixelmapCollection | PostNominalPixelmapCollection | PostSlideCollection | PostIdCollection | PostNestedCollection)> | null);
+  items?: Array<
+    | PostPointCollection
+    | PostLineCollection
+    | PostArrowCollection
+    | PostCirceCollection
+    | PostRectangleCollection
+    | PostPolygonCollection
+    | PostClassCollection
+    | PostIntegerCollection
+    | PostFloatCollection
+    | PostBoolCollection
+    | PostStringCollection
+    | PostContinuousPixelmapCollection
+    | PostDiscretePixelmapCollection
+    | PostNominalPixelmapCollection
+    | PostSlideCollection
+    | PostIdCollection
+    | PostNestedCollection
+  > | null;
 
   /**
    * Collection name
    */
-  name?: (string | null);
+  name?: string | null;
 
   /**
    * Id of the object referenced by this collection
    */
-  reference_id?: (string | null);
+  reference_id?: string | null;
 
   /**
    * Refrence type
    */
-  reference_type?: (CollectionReferenceType | null);
+  reference_type?: CollectionReferenceType | null;
 
   /**
    * Collection type

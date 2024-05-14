@@ -3,7 +3,6 @@
 import { JobCreatorType } from './job-creator-type';
 import { JobMode } from './job-mode';
 export interface PostJob {
-
   /**
    * Whether this job uses a container or not (postprocessing only)
    */

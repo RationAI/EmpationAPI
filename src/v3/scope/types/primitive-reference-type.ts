@@ -3,5 +3,5 @@
 export enum PrimitiveReferenceType {
   Annotation = 'annotation',
   Collection = 'collection',
-  Wsi = 'wsi'
+  Wsi = 'wsi',
 }

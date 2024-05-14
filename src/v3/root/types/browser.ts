@@ -4,5 +4,5 @@ export enum Browser {
   Firefox = 'firefox',
   Chrome = 'chrome',
   Edge = 'edge',
-  Safari = 'safari'
+  Safari = 'safari',
 }

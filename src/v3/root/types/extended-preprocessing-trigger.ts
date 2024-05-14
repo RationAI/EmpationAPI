@@ -3,7 +3,6 @@
 import { AppInput } from './app-input';
 import { ProprocessingTriggerCreatorType } from './proprocessing-trigger-creator-type';
 export interface ExtendedPreprocessingTrigger {
-
   /**
    * Corresponding app
    */

@@ -16,5 +16,5 @@ export enum CollectionItemType {
   ContinuousPixelmap = 'continuous_pixelmap',
   DiscretePixelmap = 'discrete_pixelmap',
   NominalPixelmap = 'nominal_pixelmap',
-  Collection = 'collection'
+  Collection = 'collection',
 }

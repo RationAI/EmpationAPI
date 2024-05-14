@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { Class } from './class';
 export interface ClassListResponse {
-
   /**
    * Count of all items
    */

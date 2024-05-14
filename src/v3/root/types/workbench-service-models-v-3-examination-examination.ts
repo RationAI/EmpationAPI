@@ -3,7 +3,6 @@
 import { ExaminationCreatorType } from './examination-creator-type';
 import { ExaminationState } from './examination-state';
 export interface WorkbenchServiceModelsV3ExaminationExamination {
-
   /**
    * App ID
    */

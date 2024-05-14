@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { AppOutput } from './app-output';
 export interface AppList {
-
   /**
    * Number of apps (not affected by skip/limit pagination)
    */

@@ -2,5 +2,5 @@
 /* eslint-disable */
 export enum Language {
   De = 'DE',
-  En = 'EN'
+  En = 'EN',
 }

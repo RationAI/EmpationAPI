@@ -4,7 +4,6 @@ import { CaseCreatorType } from './case-creator-type';
 import { PreprocessingProgress } from './preprocessing-progress';
 import { WorkbenchServiceModelsV3ExaminationExamination } from './workbench-service-models-v-3-examination-examination';
 export interface Case {
-
   /**
    * List of all blocks of slides in case
    */
@@ -28,12 +27,12 @@ export interface Case {
   /**
    * Flag indicating whether the case and all underlying slide files and mappings have been deleted
    */
-  deleted: (boolean | null);
+  deleted: boolean | null;
 
   /**
    * Case description
    */
-  description: (string | null);
+  description: string | null;
 
   /**
    * Examinations in case
@@ -48,12 +47,12 @@ export interface Case {
   /**
    * Local ID provided by AP-LIS
    */
-  local_id: (string | null);
+  local_id: string | null;
 
   /**
    * Base URL of Medical Data Service instance that generated empaia_id
    */
-  mds_url: (string | null);
+  mds_url: string | null;
 
   /**
    * Progress of the preprocessing jobs running within the case
@@ -68,14 +67,12 @@ export interface Case {
   /**
    * List of all stains of all slides in case
    */
-  stains: {
-};
+  stains: {};
 
   /**
    * List of tissue of all slides in case
    */
-  tissues: {
-};
+  tissues: {};
 
   /**
    * Timestamp (milliseconds) when the case was last updated

@@ -6,5 +6,5 @@ export enum AnnotationType {
   Arrow = 'arrow',
   Circle = 'circle',
   Rectangle = 'rectangle',
-  Polygon = 'polygon'
+  Polygon = 'polygon',
 }

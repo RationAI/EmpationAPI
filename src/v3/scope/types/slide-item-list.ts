@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { SlideItem } from './slide-item';
 export interface SlideItemList {
-
   /**
    * Count of all items
    */

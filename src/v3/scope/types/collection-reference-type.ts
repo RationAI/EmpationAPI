@@ -2,5 +2,5 @@
 /* eslint-disable */
 export enum CollectionReferenceType {
   Annotation = 'annotation',
-  Wsi = 'wsi'
+  Wsi = 'wsi',
 }

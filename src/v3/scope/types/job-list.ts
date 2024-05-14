@@ -6,7 +6,6 @@ import { Job } from './job';
  * Job query result.
  */
 export interface JobList {
-
   /**
    * Number of Jobs as queried without skip and limit applied
    */

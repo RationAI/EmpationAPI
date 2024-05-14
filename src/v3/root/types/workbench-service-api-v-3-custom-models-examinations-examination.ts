@@ -5,7 +5,6 @@ import { ExaminationCreatorType } from './examination-creator-type';
 import { ExaminationState } from './examination-state';
 import { Job } from './job';
 export interface WorkbenchServiceApiV3CustomModelsExaminationsExamination {
-
   /**
    * Defines the API compatibility
    */

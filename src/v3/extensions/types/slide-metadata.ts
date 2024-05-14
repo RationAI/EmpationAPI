@@ -27,7 +27,6 @@ export interface SlideMetaVisualizations {
 }
 
 export interface SlideMetadata {
-
   /**
    * Visualizations.
    */

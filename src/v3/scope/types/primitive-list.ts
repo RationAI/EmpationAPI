@@ -5,7 +5,6 @@ import { FloatPrimitive } from './float-primitive';
 import { IntegerPrimitive } from './integer-primitive';
 import { StringPrimitive } from './string-primitive';
 export interface PrimitiveList {
-
   /**
    * Count of all items
    */
@@ -14,5 +13,7 @@ export interface PrimitiveList {
   /**
    * List of items
    */
-  items: Array<(IntegerPrimitive | FloatPrimitive | BoolPrimitive | StringPrimitive)>;
+  items: Array<
+    IntegerPrimitive | FloatPrimitive | BoolPrimitive | StringPrimitive
+  >;
 }

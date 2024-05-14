@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { Collection } from './collection';
 export interface CollectionList {
-
   /**
    * Count of items.
    */

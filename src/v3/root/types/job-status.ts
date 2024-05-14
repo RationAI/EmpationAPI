@@ -14,5 +14,5 @@ export enum JobStatus {
   Failed = 'FAILED',
   Timeout = 'TIMEOUT',
   Error = 'ERROR',
-  Incomplete = 'INCOMPLETE'
+  Incomplete = 'INCOMPLETE',
 }

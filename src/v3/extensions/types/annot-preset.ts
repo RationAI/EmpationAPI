@@ -6,7 +6,6 @@ export interface AnnotPresetObject {
 }
 
 export interface AnnotPreset {
-
   /**
    * UUID of given preset
    */
@@ -34,8 +33,8 @@ export interface AnnotPreset {
     [key: string]: {
       name: string;
       value: string;
-    }
-  }
+    };
+  };
 
   /**
    * Date of creation in epoch time, used during update with merge strategy

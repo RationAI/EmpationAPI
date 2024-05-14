@@ -8,5 +8,5 @@ export enum JobValidationStatus {
   None = 'NONE',
   Running = 'RUNNING',
   Completed = 'COMPLETED',
-  Error = 'ERROR'
+  Error = 'ERROR',
 }

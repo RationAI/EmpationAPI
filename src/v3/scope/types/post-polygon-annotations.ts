@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { PostPolygonAnnotation } from './post-polygon-annotation';
 export interface PostPolygonAnnotations {
-
   /**
    * List of polygon annotations
    */

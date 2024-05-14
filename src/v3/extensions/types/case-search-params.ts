@@ -2,7 +2,6 @@
 /* eslint-disable */
 
 export interface CaseSearchParams {
-
   /**
    * Param key.
    */

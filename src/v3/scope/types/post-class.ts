@@ -3,7 +3,6 @@
 import { ClassReferenceType } from './class-reference-type';
 import { DataCreatorType } from './data-creator-type';
 export interface PostClass {
-
   /**
    * Creator ID
    */
@@ -17,7 +16,7 @@ export interface PostClass {
   /**
    * ID of type UUID4 (only needed in post if external Ids enabled)
    */
-  id?: (string | null);
+  id?: string | null;
 
   /**
    * ID of type UUID4 - ID of referenced annotation

@@ -2,11 +2,10 @@
 /* eslint-disable */
 import { TagMapping } from './tag-mapping';
 export interface Slide {
-
   /**
    * Block
    */
-  block: (string | null);
+  block: string | null;
 
   /**
    * Case ID
@@ -21,7 +20,7 @@ export interface Slide {
   /**
    * Flag indicating whether the underlying slide files and mappings have been deleted
    */
-  deleted: (boolean | null);
+  deleted: boolean | null;
 
   /**
    * ID
@@ -31,22 +30,22 @@ export interface Slide {
   /**
    * Local ID provided by AP-LIS
    */
-  local_id: (string | null);
+  local_id: string | null;
 
   /**
    * Base URL of Medical Data Service instance that generated empaia_id
    */
-  mds_url: (string | null);
+  mds_url: string | null;
 
   /**
    * Stain Mapping
    */
-  stain: (TagMapping | null);
+  stain: TagMapping | null;
 
   /**
    * Tissue Mapping
    */
-  tissue: (TagMapping | null);
+  tissue: TagMapping | null;
 
   /**
    * Slide

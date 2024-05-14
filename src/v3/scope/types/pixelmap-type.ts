@@ -3,5 +3,5 @@
 export enum PixelmapType {
   ContinuousPixelmap = 'continuous_pixelmap',
   DiscretePixelmap = 'discrete_pixelmap',
-  NominalPixelmap = 'nominal_pixelmap'
+  NominalPixelmap = 'nominal_pixelmap',
 }

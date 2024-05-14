@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface AnnotationViewerList {
-
   /**
    * List of annotation Ids
    */

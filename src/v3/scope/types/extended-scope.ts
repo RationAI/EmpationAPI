@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { ExaminationState } from './examination-state';
 export interface ExtendedScope {
-
   /**
    * App ID
    */
@@ -21,8 +20,7 @@ export interface ExtendedScope {
   /**
    * EMPAIA app description
    */
-  ead: {
-};
+  ead: {};
 
   /**
    * Examination ID

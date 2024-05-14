@@ -11,11 +11,10 @@ import { JobValidationStatus } from './job-validation-status';
  * output.
  */
 export interface Job {
-
   /**
    * The ID of the app to start, including the exact version of the app
    */
-  app_id?: (string | null);
+  app_id?: string | null;
 
   /**
    * Whether this job uses a container or not (postprocessing only)
@@ -40,12 +39,12 @@ export interface Job {
   /**
    * Time when the job was completed or when it failed
    */
-  ended_at?: (number | null);
+  ended_at?: number | null;
 
   /**
    * Optional error message in case the job failed
    */
-  error_message?: (string | null);
+  error_message?: string | null;
 
   /**
    * The unique ID of the job, set by the database
@@ -55,7 +54,7 @@ export interface Job {
   /**
    * Optional error message in case the input validation failed
    */
-  input_validation_error_message?: (string | null);
+  input_validation_error_message?: string | null;
 
   /**
    * Validation status for the job inputs
@@ -66,8 +65,8 @@ export interface Job {
    * Data references to input parameters, added after job creation
    */
   inputs: {
-[key: string]: string;
-};
+    [key: string]: string;
+  };
 
   /**
    * The mode of the job corresponding to a mode in the EAD
@@ -77,7 +76,7 @@ export interface Job {
   /**
    * Optional error message in case the output validation failed
    */
-  output_validation_error_message?: (string | null);
+  output_validation_error_message?: string | null;
 
   /**
    * Validation status for the job outputs
@@ -88,23 +87,23 @@ export interface Job {
    * Data references to output values, added when the job is being executed
    */
   outputs: {
-[key: string]: string;
-};
+    [key: string]: string;
+  };
 
   /**
    * The progress of the job between 0.0 and 1.0
    */
-  progress?: (number | null);
+  progress?: number | null;
 
   /**
    * Time in seconds the job is running (if status RUNNING) or was running (if status COMPLETED)
    */
-  runtime?: (number | null);
+  runtime?: number | null;
 
   /**
    * Time when execution of the job was started
    */
-  started_at?: (number | null);
+  started_at?: number | null;
 
   /**
    * The current status of the job

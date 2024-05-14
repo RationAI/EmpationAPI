@@ -3,7 +3,6 @@
 import { Browser } from './browser';
 import { Os } from './os';
 export interface AppUiTested {
-
   /**
    * App UI tested for browser
    */

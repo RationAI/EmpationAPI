@@ -2,7 +2,7 @@
 /* eslint-disable */
 export interface TagMapping {
   mappings: {
-[key: string]: string;
-};
+    [key: string]: string;
+  };
   tag: string;
 }

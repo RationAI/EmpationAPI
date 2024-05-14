@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { Language } from './language';
 export interface TextTranslation {
-
   /**
    * Language abbreviation
    */

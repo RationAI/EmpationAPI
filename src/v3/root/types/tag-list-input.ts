@@ -2,7 +2,6 @@
 /* eslint-disable */
 import { AppTagInput } from './app-tag-input';
 export interface TagListInput {
-
   /**
    * List of analysis
    */

@@ -1,24 +1,23 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface SlideColor {
-
   /**
    * A-value (alpha channel)
    */
-  'a': number;
+  a: number;
 
   /**
    * B-value (blue channel)
    */
-  'b': number;
+  b: number;
 
   /**
    * G-value (green channel)
    */
-  'g': number;
+  g: number;
 
   /**
    * R-value (red channel)
    */
-  'r': number;
+  r: number;
 }
