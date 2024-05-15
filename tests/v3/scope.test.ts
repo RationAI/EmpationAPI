@@ -1,5 +1,4 @@
 /** @jest-environment setup-polly-jest/jest-environment-node */
-import { DataCreatorType } from '../../src/v3/scope/types/data-creator-type';
 import { polly } from '../polly';
 import {
   defaultComparisonUser,
@@ -7,9 +6,7 @@ import {
   setInterceptedUser,
   setupIntercept,
 } from '../setup';
-import { getRoot, getScope, getScopeCase } from './setup';
-import { V3 } from '../../src';
-import { Case } from '../../src/v3/root/types/case';
+import { getScope } from './setup';
 
 describe('scopes api', () => {
   const pollyCtx = polly();
