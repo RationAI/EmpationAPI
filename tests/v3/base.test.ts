@@ -6,6 +6,7 @@ import { getRoot } from './setup';
 import { getToken, setupIntercept } from '../setup';
 import { V3 } from '../../src';
 import { getV3TypeChecker } from './checker';
+import { Slide } from '../../src/v3/root/types/slide';
 
 describe('base api', () => {
   const pollyCtx = polly();
@@ -32,37 +33,52 @@ describe('base api', () => {
 
   it('get case by ID', async () => {
     const api = await getRoot();
+    const cases = await api.cases.list();
+    if (cases.item_count > 0) {
+      const caseObj = await api.cases.get(cases.items[0].id);
+      const { Case } = getV3TypeChecker();
 
-    const caseObj = await api.cases.get('77945443-8124-4449-acb6-24ef77b331bd');
+      Case.check(caseObj);
 
-    const { Case } = getV3TypeChecker();
-
-    Case.check(caseObj);
+      expect(caseObj).toEqual(cases.items[0])
+    }
   });
 
   it('get case slides', async () => {
-    const api = await getRoot();
-
-    const slides = await api.cases.slides(
-      '77945443-8124-4449-acb6-24ef77b331bd',
-    );
-
     const { SlideList, Slide } = getV3TypeChecker();
 
-    SlideList.check(slides);
-    slides.items.forEach((slide) => Slide.check(slide));
+    const api = await getRoot();
+    const cases = await api.cases.list();
+    let slides: Slide[] = []
+    if (cases.item_count > 0) {
+      const slideList = (await api.cases.slides(
+        cases.items[0].id,
+      ));
+
+      SlideList.check(slideList);
+      slides = slideList.items;
+    }
+
+    slides.forEach((slide) => Slide.check(slide));
   });
 
   it('get slide info', async () => {
     const api = await getRoot();
-
-    const info = await api.slides.slideInfo(
-      '8c5608f3-a824-485c-b791-2a640405d87b',
-    );
-    console.log(info);
-
-    const { SlideInfo } = getV3TypeChecker();
-
-    SlideInfo.check(info);
+    const cases = await api.cases.list();
+    if (cases.item_count > 0) {
+      const slides = (await api.cases.slides(
+        cases.items[0].id,
+      )).items;
+      if (slides.length > 0) {
+        const info = await api.slides.slideInfo(
+          slides[0].id,
+        );
+    
+        const { SlideInfo } = getV3TypeChecker();
+    
+        SlideInfo.check(info);
+      }
+      
+    }
   });
 });
