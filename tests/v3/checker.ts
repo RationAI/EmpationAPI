@@ -15,6 +15,7 @@ import SlidePixelSizeNmTI from '../../src/v3/root/types/slide-pixel-size-nm-ti';
 import SlideColorTI from '../../src/v3/root/types/slide-color-ti';
 import SlideListTI from '../../src/v3/root/types/slide-list-ti';
 import CaseHierarchyTI from '../../src/v3/extensions/types/case-hierarchy-result-ti';
+import CaseHTI from '../../src/v3/extensions/types/case-h-ti';
 import { ICheckerSuite, createCheckers } from 'ts-interface-checker';
 
 export function getV3TypeChecker(): ICheckerSuite {
@@ -36,6 +37,7 @@ export function getV3TypeChecker(): ICheckerSuite {
     SlideColorTI,
     SlideListTI,
     CaseHierarchyTI,
+    CaseHTI,
   );
 
   return checker;
