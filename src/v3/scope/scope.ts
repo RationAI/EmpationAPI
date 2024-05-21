@@ -12,6 +12,7 @@ import {
 import Annotations from './annotations';
 import Collections from './collections';
 import Jobs from './jobs';
+import Pixelmaps from "./pixelmaps";
 
 export default class Scope extends ScopeAPI {
   static apiPath = '/v3/scopes';
@@ -23,6 +24,7 @@ export default class Scope extends ScopeAPI {
   annotations: Annotations;
   collections: Collections;
   jobs: Jobs;
+  jobs: Pixelmaps;
 
   // Additional
   scopeContext: ScopeTokenAndScopeId | null = null;
@@ -41,6 +43,7 @@ export default class Scope extends ScopeAPI {
     this.annotations = new Annotations(this);
     this.collections = new Collections(this);
     this.jobs = new Jobs(this);
+    this.pixelmaps = new Pixelmaps(this);
   }
 
   async use(
