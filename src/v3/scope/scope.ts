@@ -24,7 +24,7 @@ export default class Scope extends ScopeAPI {
   annotations: Annotations;
   collections: Collections;
   jobs: Jobs;
-  jobs: Pixelmaps;
+  pixelmaps: Pixelmaps;
 
   // Additional
   scopeContext: ScopeTokenAndScopeId | null = null;
