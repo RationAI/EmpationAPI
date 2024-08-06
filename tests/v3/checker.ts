@@ -16,6 +16,11 @@ import SlideColorTI from '../../src/v3/root/types/slide-color-ti';
 import SlideListTI from '../../src/v3/root/types/slide-list-ti';
 import CaseHierarchyTI from '../../src/v3/extensions/types/case-hierarchy-result-ti';
 import CaseHTI from '../../src/v3/extensions/types/case-h-ti';
+import PointAnnotationTI from "../../src/v3/scope/types/point-annotation-ti";
+import ClassTI from "../../src/v3/scope/types/class-ti"
+import DataCreatorTypeTI from "../../src/v3/scope/types/data-creator-type-ti";
+import ClassReferenceTypeTI from "../../src/v3/scope/types/class-reference-type-ti";
+import AnnotationReferenceTypeTI from "../../src/v3/scope/types/annotation-reference-type-ti";
 import { ICheckerSuite, createCheckers } from 'ts-interface-checker';
 
 export function getV3TypeChecker(): ICheckerSuite {
@@ -38,6 +43,11 @@ export function getV3TypeChecker(): ICheckerSuite {
     SlideListTI,
     CaseHierarchyTI,
     CaseHTI,
+    PointAnnotationTI,
+    ClassTI,
+    DataCreatorTypeTI,
+    ClassReferenceTypeTI,
+    AnnotationReferenceTypeTI
   );
 
   return checker;

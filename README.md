@@ -10,6 +10,8 @@ all necessary data common to all API requests to that context.
 Type definitions are taken from the official Empaia frontend WBC library.
 https://gitlab.com/empaia/integration/frontend-workspace
 
+There are no dependencies, just build and use the library.
+
 ### Supported WBS versions:
 
 - [x] v3
@@ -36,6 +38,16 @@ api.defaultScope.use(caseId, appId); //default scope bound to case AND app
 api.scopes.getScopeUse(caseId, appId?);
 api.scopes.getScopesFrom(examination);
 ```
+
+### Building
+Since the library is without dependencies (and there is -yet- no node
+package available) you can use the code as-is in typescript.
+With browser, you have to build the library with webpack:
+
+````bash
+npm install
+npm run build
+````
 
 ### Testing
 

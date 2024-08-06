@@ -10,7 +10,7 @@ export default async function oidcDirectAccessGrant(
   options: AuthOptions,
 ): Promise<AuthResult> {
   console.log(
-    'Using OIDC Direct access grant! Note that this method must be explicitly enabled for the given client!',
+    'Using OIDC Client Credentials grant! Note that this method must be explicitly enabled for the given client!',
   );
 
   const url = options.url; //must be the token url
@@ -18,13 +18,9 @@ export default async function oidcDirectAccessGrant(
     throw `Invalid AUTH URL: not configured: '${url}'`;
   }
 
-  const authData = {
-    client_id: options.client,
-    username: options.user,
-    password: options.userSecret,
-    grant_type: 'password',
-  };
-  if (options.secret) authData['client_secret'] = options.secret;
+  if (!options.secret) {
+    throw `Client credentials flow must have client secret set!`;
+  }
 
   const response = await fetch(url, {
     method: 'POST',
@@ -33,7 +29,11 @@ export default async function oidcDirectAccessGrant(
       Accept: '*/*',
       'Bypass-Interceptor': 'true',
     },
-    body: new URLSearchParams(authData),
+    body: new URLSearchParams({
+      client_id: options.client,
+      client_secret: options.secret,
+      grant_type: 'client_credentials',
+    }),
   });
 
   if (response.status === 403 || response.status === 401) {

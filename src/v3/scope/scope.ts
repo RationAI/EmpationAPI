@@ -86,8 +86,12 @@ export default class Scope extends ScopeAPI {
     await this.from(examination);
   }
 
-  get scopeToken(): string | undefined {
-    return this.scopeContext?.access_token;
+  get scopeToken(): string {
+    return this.scopeContext?.access_token || "";
+  }
+
+  get id(): string {
+    return this.scopeContext?.scope_id || "";
   }
 
   async from(
