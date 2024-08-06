@@ -100,7 +100,9 @@ export class RawAPI {
     }
 
     if (!response.ok) {
-      throw new HTTPError(response.status, response.statusText, result);
+      throw new HTTPError(response.status, response.statusText, {
+        payload: result
+      });
     }
     return result;
   }

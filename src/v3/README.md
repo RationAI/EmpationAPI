@@ -34,6 +34,18 @@ Delete item from collection         |     ---    |     no      |  ---  |    - ca
 
 Workbench API also limits sizes of values stored. E.g. string primitive values are limited to 200 characters.
 
+### Queries (in general)
+Queries usually require either ``creators`` or `jobs` set. Setting both is invalid. Querying only
+``references`` is invalid. This is not documented anywhere.
+
+
+### Annotations
+Annotations cannot be created by user, only by a scope. That means
+ - we are unable to show the user annotations within the same slide, but on a different examination
+ - we cannot set reference as user, i.e. we cannot search annotations that belong to a given user, 
+   but we must go through all user's scopes first
+
+
 # Additional features non-compliant with base EMPAIA API (without custom endpoints)
 
 ## Global storage (/rationai/global-storage)

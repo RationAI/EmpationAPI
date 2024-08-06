@@ -1,5 +1,5 @@
 import auth, { AuthResult } from './auth';
-import { parseJwtToken } from '../src';
+import {HTTPError, parseJwtToken} from '../src';
 import { getEnv } from './env';
 
 interface InterceptAuthData {
@@ -80,3 +80,18 @@ export async function setupIntercept(polly, allUrls = false): Promise<void> {
   };
   polly.polly.server.any().on('request', interceptor);
 }
+
+
+function customErrorLogger() {
+  const originalConsoleError = console.error;
+  console.error = (...args) => {
+    args.forEach(arg => {
+      if (arg instanceof HTTPError && arg.payload) {
+        originalConsoleError(`${arg.statusCode} Error: ${arg.message}, Payload: ${JSON.stringify(arg.payload)}`);
+      } else {
+        originalConsoleError(arg);
+      }
+    });
+  };
+}
+customErrorLogger();

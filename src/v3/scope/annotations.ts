@@ -1,11 +1,6 @@
 import { ScopeContext } from '../../scope';
 import Scope from './scope';
-import { PointAnnotation } from './types/point-annotation';
-import { LineAnnotation } from './types/line-annotation';
-import { ArrowAnnotation } from './types/arrow-annotation';
-import { CircleAnnotation } from './types/circle-annotation';
-import { RectangleAnnotation } from './types/rectangle-annotation';
-import { PolygonAnnotation } from './types/polygon-annotation';
+import { Annotation } from './types/annotation'
 import { PostPointAnnotations } from './types/post-point-annotations';
 import { PostLineAnnotations } from './types/post-line-annotations';
 import { PostArrowAnnotations } from './types/post-arrow-annotations';
@@ -20,6 +15,14 @@ import { PostRectangleAnnotation } from './types/post-rectangle-annotation';
 import { PostPolygonAnnotation } from './types/post-polygon-annotation';
 import { AnnotationListResponse } from './types/annotation-list-response';
 import { IdObject } from './types/id-object';
+import {AnnotationList} from "./types/annotation-list";
+import {AnnotationQuery} from "./types/annotation-query";
+import {ClassListResponse} from "./types/class-list-response";
+import {Class} from "./types/class";
+import {PostClassList} from "./types/post-class-list";
+import {PostClass} from "./types/post-class";
+import {ClassQuery} from "./types/class-query";
+import {ClassList} from "./types/class-list";
 
 export interface PostAnnotationQueryParams {
   isRoi?: boolean;
@@ -36,9 +39,33 @@ export default class Annotations extends ScopeContext {
   }
 
   /**
-   * Post multiple annotations as one. Inreality the same endpoint as create(...)
+   * Query Annotations
    */
-  async upload(
+  async query(data: AnnotationQuery, withClasses: boolean = true): Promise<AnnotationList> {
+    return await this.context.rawQuery('/annotations/query', {
+      method: 'PUT',
+      query: {
+        with_classes: withClasses
+      },
+      body: data
+    });
+  }
+
+  /**
+   * Get Annotation by ID
+   */
+  async get(id: string, withClasses: boolean = true): Promise<Annotation> {
+    return await this.context.rawQuery(`/annotations/${id}`, {
+      query: {
+        with_classes: withClasses
+      }
+    });
+  }
+
+  /**
+   * Post multiple annotations as one. In reality the same endpoint as create(...)
+   */
+  async createMany(
     data:
       | PostPointAnnotations
       | PostLineAnnotations
@@ -52,7 +79,7 @@ export default class Annotations extends ScopeContext {
     return await this.context.rawQuery('/annotations', {
       method: 'POST',
       query: options,
-      body: this.data,
+      body: data,
     });
   }
 
@@ -68,27 +95,42 @@ export default class Annotations extends ScopeContext {
       | PostRectangleAnnotation
       | PostPolygonAnnotation,
     options: PostAnnotationQueryParams = {},
-  ): Promise<
-    | PointAnnotation
-    | LineAnnotation
-    | ArrowAnnotation
-    | CircleAnnotation
-    | RectangleAnnotation
-    | PolygonAnnotation
-  > {
+  ): Promise<Annotation> {
     return await this.context.rawQuery('/annotations', {
       method: 'POST',
       query: options,
-      body: this.data,
+      body: data,
     });
   }
 
-  async delete(id: string): Promise<IdObject> {
+  /**
+   * Delete an annotation. Does not remove related classes.
+   */
+  async deleteById(id: string): Promise<IdObject> {
     return await this.context.rawQuery(`/annotations/${id}`, {
       method: 'DELETE',
     });
   }
 
+  /**
+   * Delete an annotation with its classes if defined.
+   */
+  async delete(object: Annotation): Promise<IdObject> {
+    if (!object.id) {
+      throw "Cannot delete annotation without ID property!";
+    }
+    const deleted = await this.deleteById(object.id);
+    if (object.classes) {
+      for (let cls of object.classes) {
+        if (cls.id) await this.deleteClass(cls.id);
+      }
+    }
+    return deleted;
+  }
+
+  /**
+   * Update annotation: delete and re-create
+   */
   async update(
     id: string,
     data:
@@ -99,20 +141,59 @@ export default class Annotations extends ScopeContext {
       | PostRectangleAnnotation
       | PostPolygonAnnotation,
     options: PostAnnotationQueryParams = {},
-  ): Promise<
-    | PointAnnotation
-    | LineAnnotation
-    | ArrowAnnotation
-    | CircleAnnotation
-    | RectangleAnnotation
-    | PolygonAnnotation
-  > {
-    await this.delete(id);
+  ): Promise<Annotation> {
+    await this.deleteById(id);
 
     // update might carry id but user forgot to set external IDs to true
     if (!options.externalIds && data.id) {
       options.externalIds = true;
     }
     return await this.create(data, options);
+  }
+
+  /**
+   * Attach class to an existing annotation
+   */
+  async addClass(data: PostClass): Promise<Class> {
+    return await this.context.rawQuery('/classes', {
+      method: 'POST',
+      body: data,
+    });
+  }
+
+  /**
+   * Attach classes to existing annotations
+   */
+  async addClassMany(data: PostClassList): Promise<ClassListResponse> {
+    return await this.context.rawQuery('/classes', {
+      method: 'POST',
+      body: data,
+    });
+  }
+
+  /**
+   * Get class by its ID
+   */
+  async getClass(id: string): Promise<Class> {
+    return await this.context.rawQuery(`/classes/${id}`);
+  }
+
+  /**
+   * Delete class by its ID
+   */
+  async deleteClass(id: string): Promise<IdObject> {
+    return await this.context.rawQuery(`/classes/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Query classes by properties
+   */
+  async queryClasses(data: ClassQuery): Promise<ClassList> {
+    return await this.context.rawQuery('/classes/query', {
+      method: 'PUT',
+      body: data
+    });
   }
 }
