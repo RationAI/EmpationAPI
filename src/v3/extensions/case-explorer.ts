@@ -305,12 +305,14 @@ export default class CaseExplorer {
     currentHierarchyPath: string,
     id?: string,
     name?: string,
+    parent?: CaseHierarchy,
   ): Promise<CaseHierarchy> {
     if (keyIdx >= keys.length) {
       return {
         levelId: id,
         levelName: name,
         lastLevel: true,
+        parent: parent,
         items: cases.map((caseObj) => {
           return { ...caseObj, pathInHierarchy: currentHierarchyPath };
         }),
@@ -325,33 +327,42 @@ export default class CaseExplorer {
       return value;
     });
 
-    const items = await Promise.all(Object.keys(groups).map(async (itemId) => {
+    const result: CaseHierarchy = {
+      levelName: name,
+      levelId: id,
+      lastLevel: false,
+      items: [],
+    };
+    result.items = await Promise.all(Object.keys(groups).map(async (itemId): Promise<CaseHierarchy> => {
       let overrideName =
           this.hierarchyNameOverrides[keys[keyIdx]]?.[itemId] ||
           await this.integration.translatePathSpec(keys[keyIdx], itemId) ||
           itemId;
 
       if (itemId === 'OTHER') {
-        return await this.hierarchyLevel(
+        const child = await this.hierarchyLevel(
+            keys,
+            keys.length,
+            groups[itemId],
+            `${currentHierarchyPath}/${overrideName}`,
+            itemId,
+            overrideName,
+        );
+        child.parent = result;
+        return child;
+      }
+      const child = await this.hierarchyLevel(
           keys,
-          keys.length,
+          keyIdx + 1,
           groups[itemId],
           `${currentHierarchyPath}/${overrideName}`,
           itemId,
           overrideName,
-        );
-      }
-      return await this.hierarchyLevel(
-        keys,
-        keyIdx + 1,
-        groups[itemId],
-        `${currentHierarchyPath}/${overrideName}`,
-        itemId,
-        overrideName,
       );
+      child.parent = result;
+      return child;
     }));
-
-    return { levelName: name, levelId: id, lastLevel: false, items: items };
+    return result;
   }
 
   /**

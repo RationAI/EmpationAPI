@@ -19,6 +19,11 @@ export interface CaseHierarchy {
   lastLevel: boolean;
 
   /**
+   * parent
+   */
+  parent?: CaseHierarchy,
+
+  /**
    * Items that are contained in this level.
    */
   // TODO: Question for Jirka, should it be allowed to have (CaseHierarchy| Case)[] instead?
