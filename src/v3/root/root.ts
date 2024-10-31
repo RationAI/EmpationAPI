@@ -1,5 +1,5 @@
-import { EmpationAPIOptions, RawAPI, RawOptions } from 'src/base';
-import { RootAPI } from 'src/root';
+import { EmpationAPIOptions, RawAPI, RawOptions } from '../../base';
+import { RootAPI } from '../../root';
 import Scope from '../scope/scope';
 import Apps from './apps';
 import Cases from './cases';

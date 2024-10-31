@@ -1,6 +1,6 @@
-import DefaultIntegration, {DefaultIntegrationOptions} from "src/v3/integration/default";
-import LSAAIIntegration from "src/v3/integration/lsaai";
-import IntegrationManager from "src/v3/integration/integration-manager";
+import DefaultIntegration, {DefaultIntegrationOptions} from "./default";
+import LSAAIIntegration from "./lsaai";
+import IntegrationManager from "./integration-manager";
 
 IntegrationManager.register("default", DefaultIntegration);
 IntegrationManager.register("lsaai", LSAAIIntegration);
