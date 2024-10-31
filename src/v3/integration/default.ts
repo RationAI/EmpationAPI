@@ -1,4 +1,4 @@
-import {RootAPI} from "../root";
+import {RootAPI} from "../../root";
 
 export interface DefaultIntegrationOptions {
     implementation?: string
