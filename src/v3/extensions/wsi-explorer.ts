@@ -1,6 +1,7 @@
 import Cases from '../root/cases';
 import { Slide } from '../root/types/slide';
 import { matchStringOnSeparatorGroup } from './utils';
+import {AuthIntegration} from "../integration";
 
 export default class WsiExplorer {
   protected context: Cases;
@@ -8,12 +9,14 @@ export default class WsiExplorer {
   protected data: Slide[] | null = null;
   protected slidesData: Slide[] | null = null;
   protected masksData: Slide[] | null = null;
+  protected integration: AuthIntegration;
 
   maskIdentifierSeparator: string = '';
   maskIdentifierValue: string = '';
 
-  constructor(context: Cases) {
+  constructor(context: Cases, integration: AuthIntegration) {
     this.context = context;
+    this.integration = integration;
   }
 
   /**

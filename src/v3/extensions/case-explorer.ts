@@ -10,6 +10,7 @@ import {
   groupBy,
   matchStringOnTokens,
 } from './utils';
+import {AuthIntegration} from "../integration";
 
 export type CaseTissuesStains = {
   name: string;
@@ -28,13 +29,15 @@ export default class CaseExplorer {
   protected caseHierarchy: CaseHierarchy | null = null;
   protected caseTissues: CaseTissuesStains[] | null = null;
   protected caseStains: CaseTissuesStains[] | null = null;
+  protected integration: AuthIntegration;
 
   identifierSeparator: string = '';
   hierarchySpec: string[] = [];
   hierarchyNameOverrides: HierarchyNameOverrides = {};
 
-  constructor(context: Cases) {
+  constructor(context: Cases, integration: AuthIntegration) {
     this.context = context;
+    this.integration = integration;
   }
 
   /**

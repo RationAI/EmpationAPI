@@ -71,3 +71,27 @@ export const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
     },
     {} as Record<K, T[]>,
   );
+
+/**
+ * Constructor Type
+ */
+export type Constructor<T> = new (...args: any[]) => T;
+
+/**
+ * Load default class by a string
+ * @param classPath
+ * @param name
+ */
+export async function loadClass<T>(classPath: string, name: string = 'default'): Promise<Constructor<T>> {
+  const module = await import(classPath);
+  const ClassConstructor = module[name];
+  if (ClassConstructor === undefined) {
+    throw new Error(`ClassPath ${classPath} does not export ${name}!`);
+  }
+  return ClassConstructor as Constructor<T>;
+}
+
+export async function instantiate<T>(props: any, classPath: string, name: string = 'default'): Promise<T> {
+  const Cls = await loadClass<T>(classPath, name);
+  return new Cls(props);
+}

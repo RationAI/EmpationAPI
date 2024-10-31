@@ -19,7 +19,10 @@
     "useUnknownInCatchVariables": false,
     "declaration": true,
     "strict": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "paths": {
+      "src/*": ["src/*"]
+    }
   },
   "include": ["./src/**/*"]
 }

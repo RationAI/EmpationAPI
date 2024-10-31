@@ -17,8 +17,8 @@ export default class Cases extends RootContext {
     super();
     this.context = context;
 
-    this.caseExplorer = new CaseExplorer(this);
-    this.wsiExplorer = new WsiExplorer(this);
+    this.caseExplorer = new CaseExplorer(this, context.integration);
+    this.wsiExplorer = new WsiExplorer(this, context.integration);
   }
 
   async list(): Promise<CaseList> {
