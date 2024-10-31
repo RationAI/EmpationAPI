@@ -25,10 +25,10 @@ export default class DefaultIntegration<T extends DefaultIntegrationOptions> {
 
     /**
      * Maps local id parts to the specific name (see extensions)
-     * @param part local id name, e.g.
+     * @param specKey see extension on case hierarchy keys / specs
      * @param value
      */
-    async translateLocalID(part: string, value: string): Promise<string> {
+    async translatePathSpec(specKey: string, value: string): Promise<string> {
         return value;
     }
 }

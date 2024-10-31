@@ -13,13 +13,11 @@ export default class IntegrationManager {
     }
 
     static register(name: string, cls: Constructor<AuthIntegration>): Constructor<AuthIntegration> {
-        console.log("refistered", cls);
         this.items.set(name, cls);
         return cls;
     }
 
     static get(name: string): Constructor<AuthIntegration> | undefined {
-        console.log("GET", name);
         return this.items.get(name);
     }
 }

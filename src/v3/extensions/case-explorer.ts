@@ -91,6 +91,35 @@ export default class CaseExplorer {
     }, '');
   }
 
+  // private async getCaseHierarchyPath(caseObj: Case): Promise<{pathInHierarchy: string, hierarchy: CaseHElement}> {
+  //   if (!this.identifierSeparator || !this.hierarchySpec) {
+  //     throw `ArgumentError[CaseExplorer] identifierSeparator or hierarchySpec is missing - required property!`;
+  //   }
+  //
+  //   let currentNode = undefined;
+  //   const result = {
+  //     pathInHierarchy: "",
+  //     hierarchy: currentNode
+  //   };
+  //   for (let specKey of this.hierarchySpec) {
+  //     const val = this.getCaseValue(specKey, caseObj);
+  //     const translated = this.integration.translatePathSpec(specKey,
+  //         (typeof val === "string") ? val : val.toString());
+  //
+  //     result.pathInHierarchy = `${result.pathInHierarchy}/${val}`;
+  //     currentNode = {
+  //       id: val,
+  //       name: translated,
+  //       currentNode: currentNode
+  //     };
+  //
+  //     if (val === 'OTHER') {
+  //       break;
+  //     }
+  //   }
+  //   return result;
+  // }
+
   /**
    * Returns single case.
    * @param caseId ID of a case.
@@ -269,15 +298,17 @@ export default class CaseExplorer {
   /**
    * Recursively constructs a hierarchy by single levels
    */
-  private hierarchyLevel(
+  private async hierarchyLevel(
     keys: string[],
     keyIdx: number,
     cases: Case[],
     currentHierarchyPath: string,
+    id?: string,
     name?: string,
-  ): CaseHierarchy {
+  ): Promise<CaseHierarchy> {
     if (keyIdx >= keys.length) {
       return {
+        levelId: id,
         levelName: name,
         lastLevel: true,
         items: cases.map((caseObj) => {
@@ -294,28 +325,33 @@ export default class CaseExplorer {
       return value;
     });
 
-    const items = Object.keys(groups).map((name) => {
-      const overrideName =
-        this.hierarchyNameOverrides[keys[keyIdx]]?.[name] || name;
-      if (name === 'OTHER') {
-        return this.hierarchyLevel(
+    const items = await Promise.all(Object.keys(groups).map(async (itemId) => {
+      let overrideName =
+          this.hierarchyNameOverrides[keys[keyIdx]]?.[itemId] ||
+          await this.integration.translatePathSpec(keys[keyIdx], itemId) ||
+          itemId;
+
+      if (itemId === 'OTHER') {
+        return await this.hierarchyLevel(
           keys,
           keys.length,
-          groups[name],
+          groups[itemId],
           `${currentHierarchyPath}/${overrideName}`,
+          itemId,
           overrideName,
         );
       }
-      return this.hierarchyLevel(
+      return await this.hierarchyLevel(
         keys,
         keyIdx + 1,
-        groups[name],
+        groups[itemId],
         `${currentHierarchyPath}/${overrideName}`,
+        itemId,
         overrideName,
       );
-    });
+    }));
 
-    return { levelName: name, lastLevel: false, items: items };
+    return { levelName: name, levelId: id, lastLevel: false, items: items };
   }
 
   /**
@@ -324,7 +360,7 @@ export default class CaseExplorer {
   async hierarchy(): Promise<CaseHierarchy> {
     if (!this.caseHierarchy) {
       const cases = await this.getCustomCases();
-      this.caseHierarchy = this.hierarchyLevel(
+      this.caseHierarchy = await this.hierarchyLevel(
         this.hierarchySpec,
         0,
         cases,

@@ -14,7 +14,7 @@ export default class LSAAIIntegration extends DefaultIntegration<LSAAIIntegratio
 
     private userData: any;
 
-    async translateLocalID(part: string, value: string): Promise<string> {
+    async translatePathSpec(specKey: string, value: string): Promise<string> {
         if (!this.context.accessToken || !this.props.userinfo) {
             return value;
         }
@@ -23,10 +23,10 @@ export default class LSAAIIntegration extends DefaultIntegration<LSAAIIntegratio
             await this.parseUserInstitutionsAndProjects();
         }
 
-        if (part === "id1") {
+        if (specKey === "id_part_1") {
             return this.userData.institutions[value] || value;
         }
-        if (part === "id2") {
+        if (specKey === "id_part_2") {
             return this.userData.projects[value] || value;
         }
         return value;
