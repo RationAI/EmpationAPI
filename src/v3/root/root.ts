@@ -37,11 +37,6 @@ export default class Root extends RootAPI {
     this.rootURI = this.options.apiUrl + Root.apiPath;
     this.raw = new RawAPI(this.rootURI);
 
-    this.apps = new Apps(this);
-    this.cases = new Cases(this);
-    this.examinations = new Examinations(this);
-    this.slides = new Slides(this);
-    this.rationai = new RationAI(this);
 
     if (!options.integrationOptions) {
       options.integrationOptions = {};
@@ -56,6 +51,14 @@ export default class Root extends RootAPI {
       throw new Error(`Could not instantiate integration provider ${provider} - is it a valid name?`);
     }
     this.integration = new IntegrationClass(options.integrationOptions);
+
+
+
+    this.apps = new Apps(this);
+    this.cases = new Cases(this);
+    this.examinations = new Examinations(this);
+    this.slides = new Slides(this);
+    this.rationai = new RationAI(this);
 
     this.scopes = new Map<string, Scope>();
   }

@@ -1,5 +1,5 @@
-import {AuthIntegration} from "src/v3/integration";
-import {Constructor} from "src/v3/extensions/utils";
+import {AuthIntegration} from "./index";
+import {Constructor} from "../extensions/utils";
 
 /**
  * Integration manager / dealer

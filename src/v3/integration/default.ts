@@ -1,5 +1,4 @@
-import {RootAPI} from "src/root";
-import IntegrationManager from "src/v3/integration/integration-manager";
+import {RootAPI} from "../root";
 
 export interface DefaultIntegrationOptions {
     implementation?: string

@@ -1,5 +1,4 @@
 import DefaultIntegration, {DefaultIntegrationOptions} from "./default";
-import IntegrationManager from "src/v3/integration/integration-manager";
 
 interface LSAAIIntegrationOptions extends DefaultIntegrationOptions {
     userinfo: string
