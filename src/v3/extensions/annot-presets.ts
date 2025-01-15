@@ -82,7 +82,7 @@ export default class AnnotPresets {
   }
 
   /**
-   * Create global item containing annotation presets (only one should exist).
+   * Create global item containing annotation presets.
    * @param value Annotation preset
    */
   private async createPresetsItem(
@@ -92,6 +92,21 @@ export default class AnnotPresets {
       value,
       `Global annotation presets`,
       undefined,
+      undefined,
+      undefined,
+      this.presetDataType,
+    );
+  }
+  /**
+   * Create annotation collection.
+   * @param name Name of the collection
+   * @param description Description of the collection
+   */
+  async createAnnotCollection(name: string, description: string | undefined): Promise<void> {
+    await this.context.createValue(
+      { presets: []},
+      name,
+      description,
       undefined,
       undefined,
       this.presetDataType,
@@ -152,14 +167,17 @@ export default class AnnotPresets {
    * @param value New presets
    * @param localVersion Local version of presets (modified_at attribute of global item)
    * @param failOnParallelUpdate Force update fail if local version is outdated
+   * @param id Item id to look for, otherwise fetch first item
    */
   async updateAnnotPresets(
     value: AnnotPreset[],
     localVersion: number,
     failOnParallelUpdate: boolean = false,
+    id: string | null = null,
   ): Promise<AnnotPresetUpdateResult> {
     // fetch fresh presets
-    const remotePresetsItem = await this.getPresetsItem(true);
+    const remotePresetsItem = await this.getPresetsItem(true, id);
+    console.log("for id", id, "remotePresetsItem", remotePresetsItem);
     const remotePresets = (
       JSON.parse(remotePresetsItem.value as string) as AnnotPresetObject
     ).presets;
@@ -201,6 +219,8 @@ export default class AnnotPresets {
         const retryAttempt = await this.updateAnnotPresets(
           localPresets,
           remotePresetsItem.modified_at,
+          undefined,
+          id,
         );
         return { ...retryAttempt, successfulUpdate: successfulUpdate };
       }
@@ -210,9 +230,10 @@ export default class AnnotPresets {
 
   /**
    * Delete annotation presets.
+   * @param id Item id to look for, otherwise fetch first item
    */
-  async deleteAnnotPresets(): Promise<void> {
-    const presetsItem = await this.getPresetsItem(true);
+  async deleteAnnotPresets(id: string | null = null): Promise<void> {
+    const presetsItem = await this.getPresetsItem(true, id);
     await this.context.delete(presetsItem.id);
     this.data = null;
   }
