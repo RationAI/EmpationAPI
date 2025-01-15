@@ -3,6 +3,10 @@
 import { GlobalItemType } from './global-item-type';
 export interface GlobalStorageQuery {
   /**
+   * If true, only the shallow version of the items will be returned
+   */
+  shallow?: boolean;
+  /**
    * List of creator Ids
    */
   creators?: Array<string> | null;
