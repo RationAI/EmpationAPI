@@ -9,13 +9,6 @@ type AnnotPresetGetResult = {
   id: string;
 };
 
-type GlobalShallowItem = {
-  id: string;
-  name: string;
-};
-
-type AnnotCollectionShallowGetResult = GlobalShallowItem[];
-
 type AnnotPresetUpdateResult = {
   presets: AnnotPreset[];
   successfulUpdate: boolean;
@@ -44,9 +37,8 @@ export default class AnnotPresets {
    * Fetch item containing annotation presets.
    * @param fresh Force fresh fetch of global item, otherwise cached version might be used
    * @param id Item id to look for, otherwise fetch first item
-   * @param shallow Fetch only shallow version of the item
    */
-  private async getPresetsItem(
+  private async fetchPresetCollection(
     fresh: boolean = false,
     id: string | null = null,
   ): Promise<GlobalItem> {
@@ -59,33 +51,18 @@ export default class AnnotPresets {
         })
       ).find((item) => true);
       if (!presetsItem) {
-        presetsItem = await this.createPresetsItem({ presets: [] });
+        presetsItem = await this.createPresetCollection({ presets: [] });
       }
       this.data = presetsItem;
     }
     return this.data;
   }
 
-  private async getPresetsItemsShallow(
-    id: string | null = null,
-  ): Promise<GlobalShallowItem[]> {
-    let presetsItems: GlobalShallowItem[] = await this.context.query({
-      item_ids: id ? [id] : undefined,
-      references: [null],
-      data_types: [this.presetDataType],
-      shallow: true,
-    });
-    if (!presetsItems) {
-      presetsItems = [];
-    }
-    return presetsItems;
-  }
-
   /**
    * Create global item containing annotation presets.
    * @param value Annotation preset
    */
-  private async createPresetsItem(
+  private async createPresetCollection(
     value: AnnotPresetObject,
   ): Promise<GlobalItem> {
     return await this.context.createValue(
@@ -97,6 +74,7 @@ export default class AnnotPresets {
       this.presetDataType,
     );
   }
+
   /**
    * Create annotation collection.
    * @param name Name of the collection
@@ -122,24 +100,13 @@ export default class AnnotPresets {
     fresh: boolean = false,
     id: string | null = null,
   ): Promise<AnnotPresetGetResult> {
-    const presetItem = await this.getPresetsItem(fresh, id);
+    const presetItem = await this.fetchPresetCollection(fresh, id);
     return {
       presets: (JSON.parse(presetItem.value as string) as AnnotPresetObject)
         .presets,
       lastModifiedAt: presetItem.modified_at,
       id: presetItem.id,
     };
-  }
-  /**
-   * Get annotation presets shallow.
-   * @param fresh Force fresh fetch
-   * @param id Item id to look for, otherwise fetch first item
-   */
-  async getAnnotPresetsShallow(
-    fresh: boolean = false,
-    id: string | null = null,
-  ): Promise<AnnotCollectionShallowGetResult> {
-    return await this.getPresetsItemsShallow(id);
   }
 
   /**
@@ -176,8 +143,7 @@ export default class AnnotPresets {
     id: string | null = null,
   ): Promise<AnnotPresetUpdateResult> {
     // fetch fresh presets
-    const remotePresetsItem = await this.getPresetsItem(true, id);
-    console.log("for id", id, "remotePresetsItem", remotePresetsItem);
+    const remotePresetsItem = await this.fetchPresetCollection(true, id);
     const remotePresets = (
       JSON.parse(remotePresetsItem.value as string) as AnnotPresetObject
     ).presets;
@@ -233,7 +199,7 @@ export default class AnnotPresets {
    * @param id Item id to look for, otherwise fetch first item
    */
   async deleteAnnotPresets(id: string | null = null): Promise<void> {
-    const presetsItem = await this.getPresetsItem(true, id);
+    const presetsItem = await this.fetchPresetCollection(true, id);
     await this.context.delete(presetsItem.id);
     this.data = null;
   }

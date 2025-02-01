@@ -3,10 +3,6 @@
 import { GlobalItemType } from './global-item-type';
 export interface GlobalStorageQuery {
   /**
-   * If true, only the shallow version of the items will be returned
-   */
-  shallow?: boolean;
-  /**
    * List of creator Ids
    */
   creators?: Array<string> | null;
@@ -22,7 +18,7 @@ export interface GlobalStorageQuery {
   references?: Array<string | null> | null;
 
   /**
-   * List of global item types
+   * List of global item 'value' field types (now we have just a string)
    */
   types?: Array<GlobalItemType> | null;
 
