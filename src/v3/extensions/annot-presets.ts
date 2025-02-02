@@ -2,6 +2,7 @@ import { HTTPError } from '../../../src/base';
 import GlobalStorage from '../rationai/global-storage';
 import { GlobalItem } from '../rationai/types/global-item';
 import { AnnotPreset, AnnotPresetObject } from './types/annot-preset';
+import { GlobalItemBase } from '../rationai/types/global-item-base';
 
 type AnnotPresetGetResult = {
   presets: AnnotPreset[];
@@ -89,6 +90,13 @@ export default class AnnotPresets {
       undefined,
       this.presetDataType,
     );
+  }
+
+  async listAnnotationPresets(): Promise<[GlobalItemBase]> {
+    return await this.context.shallowQuery({
+      references: [null],
+      data_types: [this.presetDataType]
+    })
   }
 
   /**

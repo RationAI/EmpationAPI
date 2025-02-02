@@ -64,12 +64,14 @@ export default class GlobalStorage {
   }
 
   async shallowQuery(query: GlobalStorageQuery): Promise<GlobalItemBase[]> {
-    query["shallow"] = true;
     const data: GlobalItemShallowList = await this.context.rawQuery(
         `/global-storage/query`,
         {
           method: 'PUT',
           body: query,
+          query: {
+            shallow: true
+          }
         },
     );
     return data.items;
