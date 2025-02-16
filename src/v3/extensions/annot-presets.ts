@@ -92,7 +92,7 @@ export default class AnnotPresets {
     );
   }
 
-  async listAnnotationPresets(): Promise<[GlobalItemBase]> {
+  async listAnnotationPresets(): Promise<GlobalItemBase[]> {
     return await this.context.shallowQuery({
       references: [null],
       data_types: [this.presetDataType]
