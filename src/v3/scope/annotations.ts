@@ -1,6 +1,6 @@
 import { ScopeContext } from '../../scope';
 import Scope from './scope';
-import { Annotation } from './types/annotation'
+import { Annotation } from './types/annotation';
 import { PostPointAnnotations } from './types/post-point-annotations';
 import { PostLineAnnotations } from './types/post-line-annotations';
 import { PostArrowAnnotations } from './types/post-arrow-annotations';
@@ -15,14 +15,14 @@ import { PostRectangleAnnotation } from './types/post-rectangle-annotation';
 import { PostPolygonAnnotation } from './types/post-polygon-annotation';
 import { AnnotationListResponse } from './types/annotation-list-response';
 import { IdObject } from './types/id-object';
-import {AnnotationList} from "./types/annotation-list";
-import {AnnotationQuery} from "./types/annotation-query";
-import {ClassListResponse} from "./types/class-list-response";
-import {Class} from "./types/class";
-import {PostClassList} from "./types/post-class-list";
-import {PostClass} from "./types/post-class";
-import {ClassQuery} from "./types/class-query";
-import {ClassList} from "./types/class-list";
+import { AnnotationList } from './types/annotation-list';
+import { AnnotationQuery } from './types/annotation-query';
+import { ClassListResponse } from './types/class-list-response';
+import { Class } from './types/class';
+import { PostClassList } from './types/post-class-list';
+import { PostClass } from './types/post-class';
+import { ClassQuery } from './types/class-query';
+import { ClassList } from './types/class-list';
 
 export interface PostAnnotationQueryParams {
   isRoi?: boolean;
@@ -41,13 +41,16 @@ export default class Annotations extends ScopeContext {
   /**
    * Query Annotations
    */
-  async query(data: AnnotationQuery, withClasses: boolean = true): Promise<AnnotationList> {
+  async query(
+    data: AnnotationQuery,
+    withClasses: boolean = true,
+  ): Promise<AnnotationList> {
     return await this.context.rawQuery('/annotations/query', {
       method: 'PUT',
       query: {
-        with_classes: withClasses
+        with_classes: withClasses,
       },
-      body: data
+      body: data,
     });
   }
 
@@ -57,8 +60,8 @@ export default class Annotations extends ScopeContext {
   async get(id: string, withClasses: boolean = true): Promise<Annotation> {
     return await this.context.rawQuery(`/annotations/${id}`, {
       query: {
-        with_classes: withClasses
-      }
+        with_classes: withClasses,
+      },
     });
   }
 
@@ -117,7 +120,7 @@ export default class Annotations extends ScopeContext {
    */
   async delete(object: Annotation): Promise<IdObject> {
     if (!object.id) {
-      throw "Cannot delete annotation without ID property!";
+      throw 'Cannot delete annotation without ID property!';
     }
     const deleted = await this.deleteById(object.id);
     if (object.classes) {
@@ -193,7 +196,7 @@ export default class Annotations extends ScopeContext {
   async queryClasses(data: ClassQuery): Promise<ClassList> {
     return await this.context.rawQuery('/classes/query', {
       method: 'PUT',
-      body: data
+      body: data,
     });
   }
 }

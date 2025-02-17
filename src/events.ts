@@ -155,20 +155,20 @@ export class EventSource {
    * @function
    * @param {String} eventName - Name of event to get handlers for.
    */
-  getAwaitingHandler(eventName) {
+  getAwaitingHandler(eventName: string) {
     let events = this.events[eventName];
     if (!events || !events.length) {
       return null;
     }
     events = events.length === 1 ? [events[0]] : Array.apply(null, events);
 
-    return function (source, args) {
+    return function (source: any, args: Record<string, any>) {
       // We return a promise that gets resolved after all the events finish.
       // Returning loop result is not correct, loop promises chain dynamically
       // and outer code could process finishing logics in the middle of event loop.
       return new Promise((resolve) => {
         const length = events.length;
-        function loop(index) {
+        function loop(index: number) {
           if (index >= length || !events[index]) {
             resolve('Resolved!');
             return null;
@@ -208,7 +208,7 @@ export class EventSource {
    * @param {Object} eventArgs - Event-specific data.
    * @return {Promise|undefined} - Promise resolved upon the event completion.
    */
-  raiseEventAwaiting(eventName, eventArgs) {
+  raiseEventAwaiting(eventName: string, eventArgs: Record<string, any>) {
     //uncomment if you want to get a log of all events
     //$.console.log( "Awaiting event fired:", eventName );
 

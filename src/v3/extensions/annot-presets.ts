@@ -257,7 +257,7 @@ export default class AnnotPresets {
           data_type: this.presetDataType,
         })),
       );
-      if (newPresets['items']) {
+      if ('items' in newPresets) {
         updatedPresets.push(...newPresets['items']);
       } else {
         updatedPresets.push(newPresets as GlobalStringItem);

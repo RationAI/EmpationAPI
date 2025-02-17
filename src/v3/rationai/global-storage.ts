@@ -8,8 +8,8 @@ import { GlobalItemReferenceType } from './types/global-item-reference-type';
 import { PostGlobalItem } from './types/post-global-item';
 import { GlobalDataCreatorType } from './types/global-data-creator-type';
 import { PutGlobalItem } from './types/put-global-item';
-import {GlobalItemBase} from "./types/global-item-base";
-import {GlobalItemShallowList} from "./types/global-item-shallow-list";
+import { GlobalItemBase } from './types/global-item-base';
+import { GlobalItemShallowList } from './types/global-item-shallow-list';
 import WsiMetadata from '../extensions/wsi-metadata';
 import VisualizationTemplates from '../extensions/visualization-templates';
 import AnnotPresets from '../extensions/annot-presets';
@@ -90,14 +90,14 @@ export default class GlobalStorage {
 
   async shallowQuery(query: GlobalStorageQuery): Promise<GlobalItemBase[]> {
     const data: GlobalItemShallowList = await this.context.rawQuery(
-        `/global-storage/query`,
-        {
-          method: 'PUT',
-          body: query,
-          query: {
-            shallow: true
-          }
+      `/global-storage/query`,
+      {
+        method: 'PUT',
+        body: query,
+        query: {
+          shallow: true,
         },
+      },
     );
     return data.items;
   }
@@ -155,7 +155,7 @@ export default class GlobalStorage {
           item.data_type,
         ),
       ),
-    }
+    };
 
     return (await this.create(newItems)) as GlobalItems;
   }

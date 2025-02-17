@@ -1,12 +1,12 @@
 import { EventSource } from './events';
 import { STATUS_CODES } from './status-codes';
-import {DefaultIntegrationOptions} from "./v3/integration/default";
+import { DefaultIntegrationOptions } from './v3/integration/default';
 
 export interface EmpationAPIOptions {
   anonymousUserId?: string;
   workbenchApiUrl: string;
   apiRootPath?: string;
-  integrationOptions?: DefaultIntegrationOptions
+  integrationOptions?: DefaultIntegrationOptions;
 }
 
 type ResponseType = 'json' | 'blob' | 'text';
@@ -103,7 +103,7 @@ export class RawAPI {
 
     if (!response.ok) {
       throw new HTTPError(response.status, response.statusText, {
-        payload: result
+        payload: result,
       });
     }
     return result;

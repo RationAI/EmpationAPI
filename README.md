@@ -40,14 +40,15 @@ api.scopes.getScopesFrom(examination);
 ```
 
 ### Building
+
 Since the library is without dependencies (and there is -yet- no node
 package available) you can use the code as-is in typescript.
 With browser, you have to build the library with webpack:
 
-````bash
+```bash
 npm install
 npm run build
-````
+```
 
 ### Testing
 

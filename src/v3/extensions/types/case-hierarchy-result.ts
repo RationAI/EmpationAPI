@@ -21,7 +21,7 @@ export interface CaseHierarchy {
   /**
    * parent
    */
-  parent?: CaseHierarchy,
+  parent?: CaseHierarchy;
 
   /**
    * Items that are contained in this level.

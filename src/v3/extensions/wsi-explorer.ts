@@ -1,7 +1,7 @@
 import Cases from '../root/cases';
 import { Slide } from '../root/types/slide';
 import { matchStringOnSeparatorGroup } from './utils';
-import {AuthIntegration} from "../integration";
+import { AuthIntegration } from '../integration';
 
 export default class WsiExplorer {
   protected context: Cases;

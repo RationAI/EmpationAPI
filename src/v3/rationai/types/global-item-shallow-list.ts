@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import {GlobalItemBase} from "./global-item-base";
+import { GlobalItemBase } from './global-item-base';
 export interface GlobalItemShallowList {
   /**
    * Count of all items

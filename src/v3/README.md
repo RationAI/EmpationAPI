@@ -1,4 +1,5 @@
 # V3
+
 Folder contains classes implementing selected endpoints of Workbench API v3. Apart from these, classes implementing additional logic on top of the API are implemented in the extensions folder.
 Methods of extension classes are documented, as their functionality can't be derived from API. In contrast, classes that map the Workbench API contain only methods for specific endpoints, which are documented in the API description of WBS.
 
@@ -35,16 +36,17 @@ Delete item from collection         |     ---    |     no      |  ---  |    - ca
 Workbench API also limits sizes of values stored. E.g. string primitive values are limited to 200 characters.
 
 ### Queries (in general)
-Queries usually require either ``creators`` or `jobs` set. Setting both is invalid. Querying only
-``references`` is invalid. This is not documented anywhere.
 
+Queries usually require either `creators` or `jobs` set. Setting both is invalid. Querying only
+`references` is invalid. This is not documented anywhere.
 
 ### Annotations
-Annotations cannot be created by user, only by a scope. That means
- - we are unable to show the user annotations within the same slide, but on a different examination
- - we cannot set reference as user, i.e. we cannot search annotations that belong to a given user, 
-   but we must go through all user's scopes first
 
+Annotations cannot be created by user, only by a scope. That means
+
+- we are unable to show the user annotations within the same slide, but on a different examination
+- we cannot set reference as user, i.e. we cannot search annotations that belong to a given user,
+  but we must go through all user's scopes first
 
 # Additional features non-compliant with base EMPAIA API (without custom endpoints)
 
@@ -68,7 +70,7 @@ NONE FOR NOW
 
 ### Visualization templates (/extensions/visualization-templates)
 
-Globally accesible items without reference, 'data_type' of format 'vis_templates_&lt;template type&gt;' (currently template type can be 'params', 'background', 'shader', 'visualization').
+Globally accesible items without reference, 'data*type' of format 'vis_templates*&lt;template type&gt;' (currently template type can be 'params', 'background', 'shader', 'visualization').
 
 ### Annotation presets (/extensions/annot-presets)
 
@@ -80,8 +82,10 @@ presets: [...]
 }
 
 ### Job config (/extensions/job-config)
-Used to store custom EAD-like configs. Case browser uses these configs to create xOpat sessions out of completed jobs. 
+
+Used to store custom EAD-like configs. Case browser uses these configs to create xOpat sessions out of completed jobs.
 Config example:
+
 ```
 {
    "name":"Prostate job",

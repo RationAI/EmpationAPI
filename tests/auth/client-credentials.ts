@@ -44,7 +44,7 @@ export default async function oidcDirectAccessGrant(
   if (response.ok) {
     const parsed = (await response.json()) as AuthResult;
     if (parsed.hasOwnProperty('access_token')) {
-      console.log("Authenticated.");
+      console.log('Authenticated.');
       return parsed;
     }
     throw `Authentication response is missing 'access_token' data!. Response: '${JSON.stringify(parsed)}'`;

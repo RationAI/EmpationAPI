@@ -95,7 +95,7 @@ export default class WsiMetadata {
    * @param shaders Array of shaders
    */
   private async getShadersConfig(shaders: Shader[]): Promise<object> {
-    const shadersConfig = {};
+    const shadersConfig: Record<string, any> = {};
     for (let i = 0; i < shaders.length; i++) {
       const shaderTemp = await this.context.visTemplates.getTemplate(
         TemplateType.Shader,
