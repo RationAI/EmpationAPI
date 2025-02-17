@@ -95,3 +95,8 @@ export async function instantiate<T>(props: any, classPath: string, name: string
   const Cls = await loadClass<T>(classPath, name);
   return new Cls(props);
 }
+
+export function withoutDates<T>(obj: T): Omit<T, 'created_at' | 'modified_at'> {
+  const { created_at, modified_at, ...rest } = obj as any;
+  return rest;
+}
