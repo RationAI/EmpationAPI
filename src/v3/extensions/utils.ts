@@ -82,7 +82,10 @@ export type Constructor<T> = new (...args: any[]) => T;
  * @param classPath
  * @param name
  */
-export async function loadClass<T>(classPath: string, name: string = 'default'): Promise<Constructor<T>> {
+export async function loadClass<T>(
+  classPath: string,
+  name: string = 'default',
+): Promise<Constructor<T>> {
   const module = await import(classPath);
   const ClassConstructor = module[name];
   if (ClassConstructor === undefined) {
@@ -91,7 +94,16 @@ export async function loadClass<T>(classPath: string, name: string = 'default'):
   return ClassConstructor as Constructor<T>;
 }
 
-export async function instantiate<T>(props: any, classPath: string, name: string = 'default'): Promise<T> {
+export async function instantiate<T>(
+  props: any,
+  classPath: string,
+  name: string = 'default',
+): Promise<T> {
   const Cls = await loadClass<T>(classPath, name);
   return new Cls(props);
+}
+
+export function withoutDates<T>(obj: T): Omit<T, 'created_at' | 'modified_at'> {
+  const { created_at, modified_at, ...rest } = obj as any;
+  return rest;
 }

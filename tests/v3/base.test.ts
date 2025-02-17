@@ -40,7 +40,7 @@ describe('base api', () => {
 
       Case.check(caseObj);
 
-      expect(caseObj).toEqual(cases.items[0])
+      expect(caseObj).toEqual(cases.items[0]);
     }
   });
 
@@ -49,11 +49,9 @@ describe('base api', () => {
 
     const api = await getRoot();
     const cases = await api.cases.list();
-    let slides: Slide[] = []
+    let slides: Slide[] = [];
     if (cases.item_count > 0) {
-      const slideList = (await api.cases.slides(
-        cases.items[0].id,
-      ));
+      const slideList = await api.cases.slides(cases.items[0].id);
 
       SlideList.check(slideList);
       slides = slideList.items;
@@ -66,19 +64,14 @@ describe('base api', () => {
     const api = await getRoot();
     const cases = await api.cases.list();
     if (cases.item_count > 0) {
-      const slides = (await api.cases.slides(
-        cases.items[0].id,
-      )).items;
+      const slides = (await api.cases.slides(cases.items[0].id)).items;
       if (slides.length > 0) {
-        const info = await api.slides.slideInfo(
-          slides[0].id,
-        );
-    
+        const info = await api.slides.slideInfo(slides[0].id);
+
         const { SlideInfo } = getV3TypeChecker();
-    
+
         SlideInfo.check(info);
       }
-      
     }
   });
 });

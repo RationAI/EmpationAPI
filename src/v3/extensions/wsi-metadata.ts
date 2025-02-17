@@ -4,6 +4,7 @@ import { GlobalItemReferenceType } from '../rationai/types/global-item-reference
 import { MaskMetadata } from './types/mask-metadata';
 import { Shader, SlideMetadata } from './types/slide-metadata';
 import { TemplateType } from './types/template-type';
+import { withoutDates } from './utils';
 
 export default class WsiMetadata {
   protected context: GlobalStorage;
@@ -80,7 +81,7 @@ export default class WsiMetadata {
     const metadataItem = await this.getWsiMetadataItem(slideId);
     try {
       const updatedItem = await this.context.update(metadataItem.id, {
-        ...metadataItem,
+        ...withoutDates(metadataItem),
         value: JSON.stringify(value),
       });
       return JSON.parse(updatedItem.value);
@@ -94,7 +95,7 @@ export default class WsiMetadata {
    * @param shaders Array of shaders
    */
   private async getShadersConfig(shaders: Shader[]): Promise<object> {
-    const shadersConfig = {};
+    const shadersConfig: Record<string, any> = {};
     for (let i = 0; i < shaders.length; i++) {
       const shaderTemp = await this.context.visTemplates.getTemplate(
         TemplateType.Shader,

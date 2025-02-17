@@ -4,7 +4,7 @@
  * !IMPORTANT! ensure the given client has been enabled direct access
  */
 
-import { AuthOptions, AuthResult } from '../auth';
+import { AuthData, AuthOptions, AuthResult } from '../auth';
 
 export default async function oidcDirectAccessGrant(
   options: AuthOptions,
@@ -18,7 +18,7 @@ export default async function oidcDirectAccessGrant(
     throw `Invalid AUTH URL: not configured: '${url}'`;
   }
 
-  const authData = {
+  const authData: AuthData = {
     client_id: options.client,
     username: options.user,
     password: options.userSecret,
@@ -44,7 +44,7 @@ export default async function oidcDirectAccessGrant(
   if (response.ok) {
     const parsed = (await response.json()) as AuthResult;
     if (parsed.hasOwnProperty('access_token')) {
-      console.log("Authenticated.");
+      console.log('Authenticated.');
       return parsed;
     }
     throw `Authentication response is missing 'access_token' data!. Response: '${JSON.stringify(parsed)}'`;

@@ -12,7 +12,7 @@ import {
 import Annotations from './annotations';
 import Collections from './collections';
 import Jobs from './jobs';
-import Pixelmaps from "./pixelmaps";
+import Pixelmaps from './pixelmaps';
 
 export default class Scope extends ScopeAPI {
   static apiPath = '/v3/scopes';
@@ -87,11 +87,11 @@ export default class Scope extends ScopeAPI {
   }
 
   get scopeToken(): string {
-    return this.scopeContext?.access_token || "";
+    return this.scopeContext?.access_token || '';
   }
 
   get id(): string {
-    return this.scopeContext?.scope_id || "";
+    return this.scopeContext?.scope_id || '';
   }
 
   async from(
@@ -136,7 +136,7 @@ export default class Scope extends ScopeAPI {
         `/${this.scopeContext?.scope_id}${endpoint}`,
         options,
       );
-    } catch (e) {
+    } catch (e: any) {
       if (e.statusCode === 401) {
         this.scopeContext = await this.context.examinations.scope(
           this.activeExaminationId,

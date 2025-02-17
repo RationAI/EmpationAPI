@@ -19,6 +19,14 @@ export interface AuthResult {
   scope: string;
 }
 
+export type AuthData = {
+  client_id: string;
+  username: string;
+  password: string;
+  grant_type: string;
+  client_secret?: string;
+};
+
 /**
  * @param userName user name from ENV to perform auth as
  * @return polly instance namespace: usage
@@ -27,7 +35,7 @@ export interface AuthResult {
  *   polly.polly.server.all().on('request', interceptor);
  *   ... and polly.auth contains the AuthResult item
  */
-export default async function auth(userName) {
+export default async function auth(userName: string) {
   const defaults: AuthOptions = {
     authModule: getEnv('AUTH_MODULE', 'direct-access-grant')!,
     client: getEnv('AUTH_CLIENT', 'WBC_CLIENT')!,

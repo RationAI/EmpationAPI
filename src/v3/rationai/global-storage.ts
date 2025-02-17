@@ -8,8 +8,8 @@ import { GlobalItemReferenceType } from './types/global-item-reference-type';
 import { PostGlobalItem } from './types/post-global-item';
 import { GlobalDataCreatorType } from './types/global-data-creator-type';
 import { PutGlobalItem } from './types/put-global-item';
-import {GlobalItemBase} from "./types/global-item-base";
-import {GlobalItemShallowList} from "./types/global-item-shallow-list";
+import { GlobalItemBase } from './types/global-item-base';
+import { GlobalItemShallowList } from './types/global-item-shallow-list';
 import WsiMetadata from '../extensions/wsi-metadata';
 import VisualizationTemplates from '../extensions/visualization-templates';
 import AnnotPresets from '../extensions/annot-presets';
@@ -30,6 +30,31 @@ export default class GlobalStorage {
     this.visTemplates = new VisualizationTemplates(this);
     this.annotPresets = new AnnotPresets(this);
     this.jobConfig = new JobConfig(this);
+  }
+
+  private valueCreator(
+    value: any,
+    name: string,
+    description?: string,
+    reference_id?: string,
+    reference_type?: GlobalItemReferenceType,
+    data_type?: string,
+    id?: string,
+  ): PostGlobalItem {
+    value = JSON.stringify(value);
+
+    return {
+      name: name,
+      description: description,
+      creator_id: this.context.userId,
+      creator_type: GlobalDataCreatorType.USER,
+      reference_id: reference_id,
+      reference_type: reference_type,
+      type: 'string',
+      value: value,
+      data_type: data_type,
+      id: id,
+    } satisfies PostGlobalItem;
   }
 
   async get(itemId: string): Promise<GlobalItem> {
@@ -65,14 +90,14 @@ export default class GlobalStorage {
 
   async shallowQuery(query: GlobalStorageQuery): Promise<GlobalItemBase[]> {
     const data: GlobalItemShallowList = await this.context.rawQuery(
-        `/global-storage/query`,
-        {
-          method: 'PUT',
-          body: query,
-          query: {
-            shallow: true
-          }
+      `/global-storage/query`,
+      {
+        method: 'PUT',
+        body: query,
+        query: {
+          shallow: true,
         },
+      },
     );
     return data.items;
   }
@@ -97,21 +122,42 @@ export default class GlobalStorage {
     reference_type?: GlobalItemReferenceType,
     data_type?: string,
   ): Promise<GlobalItem> {
-    value = JSON.stringify(value);
-
-    const newItem: PostGlobalItem = {
-      name: name,
-      description: description,
-      creator_id: this.context.userId,
-      creator_type: GlobalDataCreatorType.USER,
-      reference_id: reference_id,
-      reference_type: reference_type,
-      type: 'string',
-      value: value,
-      data_type: data_type,
-    };
+    const newItem = this.valueCreator(
+      value,
+      name,
+      description,
+      reference_id,
+      reference_type,
+      data_type,
+    );
 
     return (await this.create(newItem)) as GlobalItem;
+  }
+
+  async createValues(
+    values: Array<{
+      value: any;
+      name: string;
+      description?: string;
+      reference_id?: string;
+      reference_type?: GlobalItemReferenceType;
+      data_type?: string;
+    }>,
+  ): Promise<GlobalItems> {
+    const newItems = {
+      items: values.map((item) =>
+        this.valueCreator(
+          item.value,
+          item.name,
+          item.description,
+          item.reference_id,
+          item.reference_type,
+          item.data_type,
+        ),
+      ),
+    };
+
+    return (await this.create(newItems)) as GlobalItems;
   }
 
   async update(itemId: string, item: PutGlobalItem): Promise<GlobalItem> {

@@ -10,7 +10,7 @@ import {
   groupBy,
   matchStringOnTokens,
 } from './utils';
-import {AuthIntegration} from "../integration";
+import { AuthIntegration } from '../integration';
 
 export type CaseTissuesStains = {
   name: string;
@@ -333,35 +333,37 @@ export default class CaseExplorer {
       lastLevel: false,
       items: [],
     };
-    result.items = await Promise.all(Object.keys(groups).map(async (itemId): Promise<CaseHierarchy> => {
-      let overrideName =
+    result.items = await Promise.all(
+      Object.keys(groups).map(async (itemId): Promise<CaseHierarchy> => {
+        let overrideName =
           this.hierarchyNameOverrides[keys[keyIdx]]?.[itemId] ||
-          await this.integration.translatePathSpec(keys[keyIdx], itemId) ||
+          (await this.integration.translatePathSpec(keys[keyIdx], itemId)) ||
           itemId;
 
-      if (itemId === 'OTHER') {
-        const child = await this.hierarchyLevel(
+        if (itemId === 'OTHER') {
+          const child = await this.hierarchyLevel(
             keys,
             keys.length,
             groups[itemId],
             `${currentHierarchyPath}/${overrideName}`,
             itemId,
             overrideName,
-        );
-        child.parent = result;
-        return child;
-      }
-      const child = await this.hierarchyLevel(
+          );
+          child.parent = result;
+          return child;
+        }
+        const child = await this.hierarchyLevel(
           keys,
           keyIdx + 1,
           groups[itemId],
           `${currentHierarchyPath}/${overrideName}`,
           itemId,
           overrideName,
-      );
-      child.parent = result;
-      return child;
-    }));
+        );
+        child.parent = result;
+        return child;
+      }),
+    );
     return result;
   }
 

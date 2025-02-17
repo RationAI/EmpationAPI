@@ -3,6 +3,8 @@ import GlobalStorage from '../rationai/global-storage';
 import { GlobalItem } from '../rationai/types/global-item';
 import { AnnotPreset, AnnotPresetObject } from './types/annot-preset';
 import { GlobalItemBase } from '../rationai/types/global-item-base';
+import { GlobalStringItem } from '../rationai/types/global-string-item';
+import { withoutDates } from './utils';
 
 type AnnotPresetGetResult = {
   presets: AnnotPreset[];
@@ -16,11 +18,16 @@ type AnnotPresetUpdateResult = {
   lastModifiedAt: number;
 };
 
+type ParsedAnnotPresetItem = Omit<GlobalStringItem, 'value'> & {
+  value: { presets: AnnotPreset[] };
+};
+
 export default class AnnotPresets {
   protected context: GlobalStorage;
-  protected data: GlobalItem | null = null;
+  protected data: { [id: string]: ParsedAnnotPresetItem } = {};
 
-  protected presetDataType: string = 'annot_presets';
+  protected presetCollectionDataType: string = 'annot_collection';
+  protected presetDataType: string = 'annot_preset';
 
   constructor(context: GlobalStorage) {
     this.context = context;
@@ -28,10 +35,10 @@ export default class AnnotPresets {
 
   /**
    * Configure AnnotPresets class with data type. Data type is used to filter global items.
-   * @param presetDataType Data type of global items used to store annotation presets.
+   * @param presetCollectionDataType Data type of global items used to store annotation presets.
    */
-  use(presetDataType: string): void {
-    this.presetDataType = presetDataType;
+  use(presetCollectionDataType: string): void {
+    this.presetCollectionDataType = presetCollectionDataType;
   }
 
   /**
@@ -42,37 +49,67 @@ export default class AnnotPresets {
   private async fetchPresetCollection(
     fresh: boolean = false,
     id: string | null = null,
-  ): Promise<GlobalItem> {
-    if (!this.data || fresh) {
+  ): Promise<ParsedAnnotPresetItem> {
+    if (!this.data[id ?? '0'] || fresh) {
       let presetsItem = (
         await this.context.query({
           item_ids: id ? [id] : undefined,
           references: [null],
-          data_types: [this.presetDataType],
+          data_types: [this.presetCollectionDataType],
         })
-      ).find((item) => true);
-      if (!presetsItem) {
-        presetsItem = await this.createPresetCollection({ presets: [] });
+      )?.[0];
+      let presetsItemParsed: ParsedAnnotPresetItem;
+      if (!presetsItem && !id) {
+        presetsItem = await this.createPresetCollection();
+        presetsItemParsed = { ...presetsItem, value: { presets: [] } };
+      } else {
+        if (!presetsItem) {
+          presetsItem = (
+            await this.context.query({
+              references: [null],
+              data_types: [this.presetCollectionDataType],
+            })
+          )?.[0];
+          if (!presetsItem) {
+            presetsItem = await this.createPresetCollection();
+          }
+        }
+        const presetsIds = JSON.parse(presetsItem.value) as string[];
+        const presets =
+          presetsIds.length > 0
+            ? await this.context.query({
+                item_ids: presetsIds,
+                references: [null],
+                data_types: [this.presetDataType],
+              })
+            : [];
+        const valuesWithIds = presets.map((v) => ({
+          ...JSON.parse(v.value),
+          id: v.id,
+          presetID: v.name,
+        }));
+        presetsItemParsed = {
+          ...presetsItem,
+          value: { presets: valuesWithIds },
+        };
       }
-      this.data = presetsItem;
+      this.data[!id ? '0' : presetsItem.id] = presetsItemParsed;
     }
-    return this.data;
+    return this.data[id ?? '0'];
   }
 
   /**
    * Create global item containing annotation presets.
    * @param value Annotation preset
    */
-  private async createPresetCollection(
-    value: AnnotPresetObject,
-  ): Promise<GlobalItem> {
+  private async createPresetCollection(): Promise<GlobalItem> {
     return await this.context.createValue(
-      value,
+      [],
       `Global annotation presets`,
       undefined,
       undefined,
       undefined,
-      this.presetDataType,
+      this.presetCollectionDataType,
     );
   }
 
@@ -81,22 +118,25 @@ export default class AnnotPresets {
    * @param name Name of the collection
    * @param description Description of the collection
    */
-  async createAnnotCollection(name: string, description: string | undefined): Promise<void> {
+  async createAnnotCollection(
+    name: string,
+    description: string | undefined,
+  ): Promise<void> {
     await this.context.createValue(
-      { presets: []},
+      [],
       name,
       description,
       undefined,
       undefined,
-      this.presetDataType,
+      this.presetCollectionDataType,
     );
   }
 
   async listAnnotationPresets(): Promise<GlobalItemBase[]> {
     return await this.context.shallowQuery({
       references: [null],
-      data_types: [this.presetDataType]
-    })
+      data_types: [this.presetCollectionDataType],
+    });
   }
 
   /**
@@ -110,8 +150,7 @@ export default class AnnotPresets {
   ): Promise<AnnotPresetGetResult> {
     const presetItem = await this.fetchPresetCollection(fresh, id);
     return {
-      presets: (JSON.parse(presetItem.value as string) as AnnotPresetObject)
-        .presets,
+      presets: presetItem.value.presets,
       lastModifiedAt: presetItem.modified_at,
       id: presetItem.id,
     };
@@ -152,9 +191,7 @@ export default class AnnotPresets {
   ): Promise<AnnotPresetUpdateResult> {
     // fetch fresh presets
     const remotePresetsItem = await this.fetchPresetCollection(true, id);
-    const remotePresets = (
-      JSON.parse(remotePresetsItem.value as string) as AnnotPresetObject
-    ).presets;
+    const remotePresets = remotePresetsItem.value.presets;
 
     let localPresets = value;
     let successfulUpdate = true;
@@ -176,15 +213,62 @@ export default class AnnotPresets {
     }
 
     try {
+      const newPresetsValues: AnnotPreset[] = [];
+      const existingPresets =
+        remotePresets.length > 0
+          ? await this.context.query({
+              item_ids: remotePresets.map((v) => v.id),
+              references: [null],
+              data_types: [this.presetDataType],
+            })
+          : [];
+
+      const updatedPresets = await localPresets.reduce(
+        async (accPromise, preset) => {
+          const acc = await accPromise;
+          const existingPreset = existingPresets.find(
+            (v) => v.id === preset.id,
+          );
+          if (existingPreset) {
+            if (existingPreset.value === JSON.stringify(preset)) {
+              acc.push(existingPreset);
+              return acc;
+            }
+            const updatedPreset = await this.context.update(preset.id, {
+              ...withoutDates(existingPreset),
+              value: JSON.stringify(preset),
+            });
+            acc.push(updatedPreset);
+          } else {
+            newPresetsValues.push(preset);
+          }
+          return acc;
+        },
+        Promise.resolve([] as GlobalStringItem[]),
+      );
+
+      const newPresets = await this.context.createValues(
+        newPresetsValues.map((preset) => ({
+          value: preset,
+          name: preset.presetID,
+          description: undefined,
+          reference_id: undefined,
+          reference_type: undefined,
+          data_type: this.presetDataType,
+        })),
+      );
+      if ('items' in newPresets) {
+        updatedPresets.push(...newPresets['items']);
+      } else {
+        updatedPresets.push(newPresets as GlobalStringItem);
+      }
+
       const updatedItem = await this.context.update(remotePresetsItem.id, {
-        ...remotePresetsItem,
-        value: JSON.stringify({ presets: localPresets }),
+        ...withoutDates(remotePresetsItem),
+        value: JSON.stringify(updatedPresets.map((v) => v.id)),
       });
-      const updatedPresets = (
-        JSON.parse(updatedItem.value) as AnnotPresetObject
-      ).presets;
       return {
-        presets: updatedPresets,
+        presets: localPresets,
         successfulUpdate: successfulUpdate,
         lastModifiedAt: updatedItem.modified_at,
       };
@@ -209,6 +293,6 @@ export default class AnnotPresets {
   async deleteAnnotPresets(id: string | null = null): Promise<void> {
     const presetsItem = await this.fetchPresetCollection(true, id);
     await this.context.delete(presetsItem.id);
-    this.data = null;
+    delete this.data[id ?? '0'];
   }
 }

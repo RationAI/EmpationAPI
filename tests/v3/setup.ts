@@ -7,11 +7,14 @@ let rootApis: Map<string, V3.Root> = new Map<string, V3.Root>();
 
 // TODO: tests must also write setInterceptedUser() in order to work - must be specified twice, reduce!
 export async function getRoot(userName = defaultTestUser): Promise<V3.Root> {
-  let rootApi: V3.Root = rootApis[userName];
+  let rootApi: V3.Root = rootApis.get(userName)!;
   if (!rootApi) {
-    rootApis[userName] = rootApi = new V3.Root({
-      workbenchApiUrl: getEnv('TEST_WB_URL')!,
-    });
+    rootApis.set(
+      userName,
+      (rootApi = new V3.Root({
+        workbenchApiUrl: getEnv('TEST_WB_URL')!,
+      })),
+    );
     await rootApi.from(await getToken(userName));
   }
   return rootApi;

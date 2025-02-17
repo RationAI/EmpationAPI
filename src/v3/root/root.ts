@@ -9,7 +9,7 @@ import RationAI from '../rationai/rationai';
 import { WorkbenchServiceApiV3CustomModelsExaminationsExamination } from './types/workbench-service-api-v-3-custom-models-examinations-examination';
 
 // Important to trigger all the index code!
-import * as Integration from "../integration";
+import * as Integration from '../integration';
 
 export default class Root extends RootAPI {
   static apiPath = '/v3';
@@ -37,7 +37,6 @@ export default class Root extends RootAPI {
     this.rootURI = this.options.apiUrl + Root.apiPath;
     this.raw = new RawAPI(this.rootURI);
 
-
     if (!options.integrationOptions) {
       options.integrationOptions = {};
     }
@@ -45,14 +44,14 @@ export default class Root extends RootAPI {
     // Private this injection (instantiate has only one argument)
     options.integrationOptions._context = this;
 
-    const provider = options.integrationOptions.implementation || "default";
+    const provider = options.integrationOptions.implementation || 'default';
     const IntegrationClass = Integration.IntegrationManager.get(provider);
     if (!IntegrationClass) {
-      throw new Error(`Could not instantiate integration provider ${provider} - is it a valid name?`);
+      throw new Error(
+        `Could not instantiate integration provider ${provider} - is it a valid name?`,
+      );
     }
     this.integration = new IntegrationClass(options.integrationOptions);
-
-
 
     this.apps = new Apps(this);
     this.cases = new Cases(this);
