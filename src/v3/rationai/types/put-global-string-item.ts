@@ -52,4 +52,14 @@ export interface PutGlobalStringItem {
    * Data type
    */
   data_type?: string | null;
+
+  /**
+   * Date of creation stored in seconds from start of epoch
+   */
+  created_at: number;
+
+  /**
+   * Date of last modification stored in seconds from start of epoch
+   */
+  modified_at: number;
 }
