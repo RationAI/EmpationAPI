@@ -117,12 +117,13 @@ export default class AnnotPresets {
    * Create annotation collection.
    * @param name Name of the collection
    * @param description Description of the collection
+   * @return annotation collection ID
    */
   async createAnnotCollection(
     name: string,
     description: string | undefined,
-  ): Promise<void> {
-    await this.context.createValue(
+  ): Promise<string> {
+    const item = await this.context.createValue(
       [],
       name,
       description,
@@ -130,6 +131,7 @@ export default class AnnotPresets {
       undefined,
       this.presetCollectionDataType,
     );
+    return item.id;
   }
 
   async listAnnotationPresets(): Promise<GlobalItemBase[]> {
