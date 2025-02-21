@@ -237,7 +237,7 @@ export default class AnnotPresets {
               return acc;
             }
             const updatedPreset = await this.context.update(preset.id, {
-              ...withoutDates(existingPreset),
+              ...existingPreset,
               value: JSON.stringify(preset),
             });
             acc.push(updatedPreset);
@@ -266,7 +266,7 @@ export default class AnnotPresets {
       }
 
       const updatedItem = await this.context.update(remotePresetsItem.id, {
-        ...withoutDates(remotePresetsItem),
+        ...remotePresetsItem,
         value: JSON.stringify(updatedPresets.map((v) => v.id)),
       });
       return {

@@ -81,7 +81,7 @@ export default class WsiMetadata {
     const metadataItem = await this.getWsiMetadataItem(slideId);
     try {
       const updatedItem = await this.context.update(metadataItem.id, {
-        ...withoutDates(metadataItem),
+        ...metadataItem,
         value: JSON.stringify(value),
       });
       return JSON.parse(updatedItem.value);
