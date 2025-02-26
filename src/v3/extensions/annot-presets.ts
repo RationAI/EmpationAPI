@@ -6,11 +6,17 @@ import { GlobalItemBase } from '../rationai/types/global-item-base';
 import { GlobalStringItem } from '../rationai/types/global-string-item';
 import { withoutDates } from './utils';
 
-type AnnotPresetGetResult = {
-  presets: AnnotPreset[];
-  lastModifiedAt: number;
-  id: string;
-};
+type AnnotPresetGetResult =
+  | {
+      presets: AnnotPreset[];
+      lastModifiedAt: number;
+      id: string;
+    }
+  | {
+      presets: [];
+      lastModifiedAt: 0;
+      id: null;
+    };
 
 type AnnotPresetUpdateResult = {
   presets: AnnotPreset[];
@@ -151,6 +157,13 @@ export default class AnnotPresets {
     id: string | null = null,
   ): Promise<AnnotPresetGetResult> {
     const presetItem = await this.fetchPresetCollection(fresh, id);
+    if (!presetItem) {
+      return {
+        presets: [],
+        lastModifiedAt: 0,
+        id: null,
+      };
+    }
     return {
       presets: presetItem.value.presets,
       lastModifiedAt: presetItem.modified_at,
