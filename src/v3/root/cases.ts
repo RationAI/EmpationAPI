@@ -21,11 +21,24 @@ export default class Cases extends RootContext {
     this.wsiExplorer = new WsiExplorer(this, context.integration);
   }
 
+  private async getCaseList(deleted: boolean): Promise<CaseList> {
+    const data = (await this.context.rawQuery('/cases')) as CaseList;
+    const validEntries = {
+      items: data.items.filter((item) => item.deleted === deleted),
+    } as CaseList;
+    validEntries.item_count = validEntries.items.length;
+    return validEntries;
+  }
+
   async list(): Promise<CaseList> {
     if (!this.data) {
-      this.data = (await this.context.rawQuery('/cases')) as CaseList;
+      this.data = await this.getCaseList(false);
     }
     return this.data;
+  }
+
+  async listDeleted(): Promise<CaseList> {
+    return await this.getCaseList(true);
   }
 
   async get(caseId: string): Promise<Case> {
