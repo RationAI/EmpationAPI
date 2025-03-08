@@ -7,7 +7,7 @@ import {Scope} from "../";
 import {StringPrimitive} from "../scope/types/string-primitive";
 import {
   WorkbenchServiceApiV3CustomModelsExaminationsExamination
-} from "src/v3/root/types/workbench-service-api-v-3-custom-models-examinations-examination";
+} from "../root/types/workbench-service-api-v-3-custom-models-examinations-examination";
 
 
 export const PROCESSING_STATES = [
