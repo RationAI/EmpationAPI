@@ -5,6 +5,7 @@ import Root from './root';
 import { Case } from './types/case';
 import { CaseList } from './types/case-list';
 import { SlideList } from './types/slide-list';
+import JobExplorer from "../extensions/job-explorer";
 
 export default class Cases extends RootContext {
   protected context: RootAPI;
@@ -12,6 +13,7 @@ export default class Cases extends RootContext {
 
   caseExplorer: CaseExplorer;
   wsiExplorer: WsiExplorer;
+  jobExplorer: JobExplorer;
 
   constructor(context: Root) {
     super();
@@ -19,6 +21,7 @@ export default class Cases extends RootContext {
 
     this.caseExplorer = new CaseExplorer(this, context.integration);
     this.wsiExplorer = new WsiExplorer(this, context.integration);
+    this.jobExplorer = new JobExplorer(context);
   }
 
   private async getCaseList(deleted: boolean): Promise<CaseList> {

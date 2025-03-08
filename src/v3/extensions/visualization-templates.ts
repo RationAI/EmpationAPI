@@ -4,6 +4,7 @@ import { TemplateType } from './types/template-type';
 
 const templatesGlobalItemDataType = 'vis_templates';
 
+// Todo this is not being used - delete?
 export default class VisualizationTemplates {
   protected context: GlobalStorage;
   protected data: object | null = null;
