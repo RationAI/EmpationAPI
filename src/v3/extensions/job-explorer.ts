@@ -17,15 +17,22 @@ export default class JobExplorer {
 
   /**
    * Get all jobs formatted for viewing for a given case
-   * @param caseObj Case object
+   * @param caseObj Case object or case ID
    * @param usedSlide Only return jobs that used this slide (optional)
    * @returns Array of jobs
    */
-  getJobsForViewing = async (caseObj: Case, usedSlide?: string) => {
-    console.log(`Fetching job info: ${caseObj.local_id || caseObj.id}`);
+  getJobsForViewing = async (caseObj: Case | string, usedSlide?: string) => {
+    let caseId: string;
+    if (typeof caseObj === 'string') {
+      caseId = caseObj;
+      console.log(`Fetching job info: ${caseObj}`);
+    } else {
+      caseId = caseObj.id;
+      console.log(`Fetching job info: ${caseObj.local_id || caseObj.id}`);
+    }
     const examinations = (
       await this.rootAPI.examinations.query({
-        cases: [caseObj.id],
+        cases: [caseId],
       })
     ).items;
 
