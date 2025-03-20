@@ -27,9 +27,9 @@ export default class Cases extends RootContext {
   private async getCaseList(deleted: boolean): Promise<CaseList> {
     const data = (await this.context.rawQuery('/cases')) as CaseList;
     const validEntries = {
-      items: data.items.filter((item) => item.deleted === deleted),
+      items: data.items.filter((item) => (!!item.deleted) === deleted),
     } as CaseList;
-    validEntries.item_count = validEntries.items.length;
+    // DO NOT modify item count, it is the 'all items in db' value: validEntries.item_count = ...
     return validEntries;
   }
 
