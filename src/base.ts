@@ -1,7 +1,6 @@
 import { EventSource } from './events';
 import { STATUS_CODES } from './status-codes';
 import { DefaultIntegrationOptions } from './v3/integration/default';
-import {getAllQueuedRequests, removeFromQueue} from "src/fail-storage";
 
 export interface EmpationAPIOptions {
   anonymousUserId?: string;
