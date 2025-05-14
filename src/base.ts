@@ -1,6 +1,7 @@
 import { EventSource } from './events';
 import { STATUS_CODES } from './status-codes';
 import { DefaultIntegrationOptions } from './v3/integration/default';
+import {getAllQueuedRequests, removeFromQueue} from "src/fail-storage";
 
 export interface EmpationAPIOptions {
   anonymousUserId?: string;
@@ -11,12 +12,18 @@ export interface EmpationAPIOptions {
 
 type ResponseType = 'json' | 'blob' | 'text';
 
+/**
+ * persistsKey is a unique key used to repeat (and store) the query
+ * in case of failures, if undefined, the method just throws error but does not
+ * handle it in any way
+ */
 export interface RawOptions {
   body?: object | string;
   query?: any;
   method?: string;
   headers?: { [key: string]: string };
   responseType?: ResponseType;
+  persistsKey?: string;
 }
 
 //https://gist.github.com/TooTallNate/4fd641f820e1325695487dfd883e5285
@@ -45,9 +52,13 @@ export class HTTPError extends Error {
         STATUS_CODES[code as keyof typeof STATUS_CODES] ||
         `HTTP Code ${code}`,
     );
-    if (arguments.length >= 3 && extras) {
-      // noinspection TypeScriptValidateTypes
-      Object.assign(this, extras);
+    if (arguments.length >= 3) {
+      if (typeof extras === "object") {
+        // noinspection TypeScriptValidateTypes
+        Object.assign(this, extras);
+      } else {
+        this.payload = extras;
+      }
     }
     this.name = httpErrorToName(code);
     this.statusCode = code;
@@ -91,12 +102,20 @@ export class RawAPI {
     try {
       result = await response[options.responseType || 'json']();
     } catch (e) {
+      try {
+        result = await response.text();
+      } catch (e) {
+        // just pass
+        result = undefined;
+      }
+
       throw new HTTPError(
         500,
         `Failed to parse response data. Original status: ${response.status} | ${response.statusText}`,
         {
           url: url,
           error: e,
+          payload: result
         },
       );
     }
@@ -122,7 +141,8 @@ export class RawAPI {
       options.body = JSON.stringify(options.body);
     } else options.body = undefined;
 
-    return await this._fetch(this.url + endpoint + options.query, options);
+    const finalUrl = this.url + endpoint + options.query;
+    return await this._fetch(finalUrl, options);
   }
 }
 

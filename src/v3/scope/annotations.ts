@@ -99,6 +99,12 @@ export default class Annotations extends ScopeContext {
       | PostPolygonAnnotation,
     options: PostAnnotationQueryParams = {},
   ): Promise<Annotation> {
+
+    // respect external ID if set
+    if (!options.externalIds && data.id) {
+      options.externalIds = true;
+    }
+
     return await this.context.rawQuery('/annotations', {
       method: 'POST',
       query: options,
@@ -146,11 +152,8 @@ export default class Annotations extends ScopeContext {
     options: PostAnnotationQueryParams = {},
   ): Promise<Annotation> {
     await this.deleteById(id);
-
-    // update might carry id but user forgot to set external IDs to true
-    if (!options.externalIds && data.id) {
-      options.externalIds = true;
-    }
+    // create will respect existing ID
+    data.id = id;
     return await this.create(data, options);
   }
 
