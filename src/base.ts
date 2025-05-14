@@ -1,4 +1,4 @@
-import { EventSource } from './events';
+import { EventSource, HttpErrorEvents } from './events';
 import { STATUS_CODES } from './status-codes';
 import { DefaultIntegrationOptions } from './v3/integration/default';
 
@@ -120,6 +120,7 @@ export class RawAPI {
     }
 
     if (!response.ok) {
+      HttpErrorEvents.raiseEvent(String(response.status), response);
       throw new HTTPError(response.status, response.statusText, {
         payload: result,
       });

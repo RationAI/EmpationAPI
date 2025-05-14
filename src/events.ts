@@ -255,3 +255,6 @@ export class EventSource {
           (typeof obj === 'function' ? 'function' : 'object');
   }
 }
+
+
+export const HttpErrorEvents = new EventSource();
