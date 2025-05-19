@@ -1,10 +1,9 @@
 import { HTTPError } from '../../../src/base';
 import GlobalStorage from '../rationai/global-storage';
 import { GlobalItem } from '../rationai/types/global-item';
-import { AnnotPreset, AnnotPresetObject } from './types/annot-preset';
+import { AnnotPreset } from './types/annot-preset';
 import { GlobalItemBase } from '../rationai/types/global-item-base';
 import { GlobalStringItem } from '../rationai/types/global-string-item';
-import { withoutDates } from './utils';
 
 type AnnotPresetGetResult =
   | {
@@ -17,6 +16,11 @@ type AnnotPresetGetResult =
       lastModifiedAt: 0;
       id: null;
     };
+
+type AllAnnotationPresetsAndCollections = {
+  collection: GlobalItemBase;
+  presets: AnnotPreset[];
+}[];
 
 type AnnotPresetUpdateResult = {
   presets: AnnotPreset[];
@@ -140,11 +144,45 @@ export default class AnnotPresets {
     return item.id;
   }
 
+  // todo bad naming, for example this lists collections!
   async listAnnotationPresets(): Promise<GlobalItemBase[]> {
     return await this.context.shallowQuery({
       references: [null],
       data_types: [this.presetCollectionDataType],
     });
+  }
+
+  // todo type
+  async getAllCollectionsPopulated(): Promise<AllAnnotationPresetsAndCollections> {
+    const collections = await this.context.query({
+      references: [null],
+      data_types: [this.presetCollectionDataType],
+    });
+
+    // References are not populated by the query
+    const result = collections.map(c => ({
+      collection: c as GlobalItemBase,
+      presets: [] as AnnotPreset[],
+      _presets: JSON.parse(c.value) as string[],
+    }));
+
+    const presets = await this.context.query({
+      references: [null],
+      data_types: [this.presetDataType],
+    });
+
+    for (let preset of presets) {
+        const collection = result.find(c => c._presets.includes(preset.id));
+        if (collection) {
+            const parsedPreset = {
+              ...JSON.parse(preset.value),
+              id: preset.id,
+              presetID: preset.name,
+            } as AnnotPreset;
+            collection.presets.push(parsedPreset);
+        }
+    }
+    return result as AllAnnotationPresetsAndCollections;
   }
 
   /**

@@ -87,10 +87,10 @@ describe('extensions tests', () => {
       "activeBackgroundIndex": 0,
       "activeVisualizationIndex": 0
     })
-    await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Shader, "heatmap", { 
+    await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Shader, "heatmap", {
       "name": "Heatmap",
-      "type": "heatmap", 
-      "visible": 1, 
+      "type": "heatmap",
+      "visible": 1,
       "params": {}
     })
     await rationAI.globalStorage.visTemplates.createTemplate(TemplateType.Visualization, "visualization", {
@@ -179,7 +179,7 @@ describe('extensions tests', () => {
       {
         id: 'b2a1576c-45a5-4551-9bc4-cb50ddad8ff2',
         color: '#7f00ff',
-        factoryID: 'rectangle',
+        factoryID: 'rect',
         presetID: 'Ignore*',
         meta: {
           category: {
@@ -303,7 +303,7 @@ describe('extensions tests', () => {
       {
         id: 'b2a1576c-45a5-4551-9bc4-cb50ddad8ff2',
         color: '#7f00ff',
-        factoryID: 'rectangle',
+        factoryID: 'rect',
         presetID: 'Ignore*',
         meta: {
           category: {
@@ -347,7 +347,7 @@ describe('extensions tests', () => {
       {
         id: 'b3a1576c-45a5-4551-9bc4-cb50ddad8ff2',
         color: '#7f00ff',
-        factoryID: 'rectangle',
+        factoryID: 'rect',
         presetID: 'Ignore*',
         meta: {
           category: {
@@ -360,7 +360,7 @@ describe('extensions tests', () => {
       {
         id: 'b4a1576c-45a5-4551-9bc4-cb50ddad8ff2',
         color: '#7f00ff',
-        factoryID: 'rectangle',
+        factoryID: 'rect',
         presetID: 'Ignore*',
         meta: {
           category: {

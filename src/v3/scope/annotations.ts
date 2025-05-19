@@ -25,8 +25,8 @@ import { ClassQuery } from './types/class-query';
 import { ClassList } from './types/class-list';
 
 export interface PostAnnotationQueryParams {
-  isRoi?: boolean;
-  externalIds?: boolean;
+  is_roi?: boolean;
+  external_ids?: boolean;
 }
 
 export default class Annotations extends ScopeContext {
@@ -101,8 +101,8 @@ export default class Annotations extends ScopeContext {
   ): Promise<Annotation> {
 
     // respect external ID if set
-    if (!options.externalIds && data.id) {
-      options.externalIds = true;
+    if (data.id) {
+      options.external_ids = true;
     }
 
     return await this.context.rawQuery('/annotations', {

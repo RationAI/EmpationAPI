@@ -1,10 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface AnnotPresetObject {
-  presets: AnnotPreset[];
-}
-
 export interface AnnotPreset {
   /**
    * UUID of given preset
