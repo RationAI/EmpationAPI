@@ -300,20 +300,22 @@ export default class AnnotPresets {
         Promise.resolve([] as GlobalStringItem[]),
       );
 
-      const newPresets = await this.context.createValues(
-        newPresetsValues.map((preset) => ({
-          value: preset,
-          name: preset.presetID,
-          description: undefined,
-          reference_id: undefined,
-          reference_type: undefined,
-          data_type: this.presetDataType,
-        })),
-      );
-      if ('items' in newPresets) {
-        updatedPresets.push(...newPresets['items']);
-      } else {
-        updatedPresets.push(newPresets as GlobalStringItem);
+      if (newPresetsValues.length) {
+        const newPresets = await this.context.createValues(
+            newPresetsValues.map((preset) => ({
+              value: preset,
+              name: preset.presetID,
+              description: undefined,
+              reference_id: undefined,
+              reference_type: undefined,
+              data_type: this.presetDataType,
+            })),
+        );
+        if ('items' in newPresets) {
+          updatedPresets.push(...newPresets['items']);
+        } else {
+          updatedPresets.push(newPresets as GlobalStringItem);
+        }
       }
 
       const updatedItem = await this.context.update(remotePresetsItem.id, {
